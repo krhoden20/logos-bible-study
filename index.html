@@ -1086,8 +1086,9 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
   #word-panel { display: none; }
   #reader-panel { border-right: none; }
 
-  /* Verse tools: always visible on touch (no hover) */
-  .verse-tools { display: flex; opacity: 1; }
+  /* Verse tools: show only on selected verse (tap-to-select) */
+  .verse-wrap.selected .verse-tools { display: flex; }
+  .verse-wrap { cursor: pointer; }
 
   /* Reader toolbar: wrap */
   #reader-toolbar {
@@ -2074,9 +2075,9 @@ const App = {
           const hasNote = hlMap[vKey] && hlMap[vKey].note;
           const isBookmarked = this.isBookmarked(vKey);
           const verseText = this.escapeHtml(v.text).trim();
-          html += `<div class="verse-wrap ${hl ? 'hl-'+hl : ''}" id="vw-${vKey}" data-key="${vKey}">`;
+          html += `<div class="verse-wrap ${hl ? 'hl-'+hl : ''}" id="vw-${vKey}" data-key="${vKey}" onclick="App.selectVerse('${vKey}',event)">`;
           // Verse tools bar
-          html += `<div class="verse-tools">
+          html += `<div class="verse-tools" onclick="event.stopPropagation()">
             <button class="verse-tool-btn" onclick="App.highlight('${vKey}','yellow')" title="Highlight yellow" style="color:#C8960A">●</button>
             <button class="verse-tool-btn" onclick="App.highlight('${vKey}','green')" title="Highlight green" style="color:#4A8A4A">●</button>
             <button class="verse-tool-btn" onclick="App.highlight('${vKey}','blue')" title="Highlight blue" style="color:#3A6FAA">●</button>
@@ -2178,6 +2179,16 @@ const App = {
       document.getElementById('sidebar-overlay').classList.remove('visible');
       document.body.style.overflow = '';
     }
+  },
+
+  selectVerse(key, e) {
+    const el = document.getElementById('vw-' + key);
+    if (!el) return;
+    const wasSelected = el.classList.contains('selected');
+    // Deselect all
+    document.querySelectorAll('.verse-wrap.selected').forEach(v => v.classList.remove('selected'));
+    // Toggle: if it wasn't selected, select it
+    if (!wasSelected) el.classList.add('selected');
   },
 
   renderLexicon(filter = 'all') {
