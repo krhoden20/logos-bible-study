@@ -986,6 +986,49 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
 .nc-text { font-size: 13.5px; font-family: 'EB Garamond', serif; color: var(--text); line-height: 1.65; margin-bottom: 6px; }
 .nc-note { font-size: 12.5px; color: var(--text-3); font-style: italic; border-top: 1px solid var(--border-light); padding-top: 6px; margin-top: 6px; }
 .notes-empty { grid-column: 1/-1; text-align: center; padding: 48px; }
+/* Bottom nav + hamburger — hidden on desktop, shown via media query below */
+#bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  z-index: 100;
+  height: 60px;
+  align-items: stretch;
+}
+#mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 12px 0 4px;
+  font-size: 20px;
+  color: var(--text-2);
+  flex-shrink: 0;
+}
+.bnav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  gap: 3px;
+  padding: 6px 0;
+  color: var(--text-3);
+  font-family: 'Inter', sans-serif;
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.bnav-btn .bnav-icon { font-size: 18px; line-height: 1; }
+.bnav-btn .bnav-label { font-size: 9.5px; font-weight: 500; letter-spacing: 0.2px; }
+.bnav-btn.active { color: var(--gold-dark); }
+
 /* ─── MOBILE / IPHONE ─────────────────────────────────── */
 @media (max-width: 768px) {
   /* Sidebar: off-screen by default, slides in as overlay */
@@ -1043,6 +1086,9 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
   #word-panel { display: none; }
   #reader-panel { border-right: none; }
 
+  /* Verse tools: always visible on touch (no hover) */
+  .verse-tools { display: flex; opacity: 1; }
+
   /* Reader toolbar: wrap */
   #reader-toolbar {
     padding: 8px 12px;
@@ -1093,48 +1139,6 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
   #main { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
 }
 
-/* Bottom nav — hidden on desktop */
-#bottom-nav {
-  display: none;
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  background: var(--card);
-  border-top: 1px solid var(--border);
-  z-index: 100;
-  height: 60px;
-  align-items: stretch;
-}
-#mobile-menu-btn {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0 12px 0 4px;
-  font-size: 20px;
-  color: var(--text-2);
-  flex-shrink: 0;
-}
-.bnav-btn {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  gap: 3px;
-  padding: 6px 0;
-  color: var(--text-3);
-  font-family: 'Inter', sans-serif;
-  transition: color 0.15s;
-  -webkit-tap-highlight-color: transparent;
-}
-.bnav-btn .bnav-icon { font-size: 18px; line-height: 1; }
-.bnav-btn .bnav-label { font-size: 9.5px; font-weight: 500; letter-spacing: 0.2px; }
-.bnav-btn.active { color: var(--gold-dark); }
 </style>
 </head>
 <body>
