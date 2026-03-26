@@ -986,6 +986,155 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
 .nc-text { font-size: 13.5px; font-family: 'EB Garamond', serif; color: var(--text); line-height: 1.65; margin-bottom: 6px; }
 .nc-note { font-size: 12.5px; color: var(--text-3); font-style: italic; border-top: 1px solid var(--border-light); padding-top: 6px; margin-top: 6px; }
 .notes-empty { grid-column: 1/-1; text-align: center; padding: 48px; }
+/* ─── MOBILE / IPHONE ─────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Sidebar: off-screen by default, slides in as overlay */
+  #sidebar {
+    position: fixed;
+    top: 0; left: -272px;
+    width: 272px;
+    min-width: 272px;
+    height: 100%;
+    z-index: 300;
+    transition: left 0.28s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: none;
+  }
+  #sidebar.open {
+    left: 0;
+    box-shadow: 4px 0 32px rgba(0,0,0,0.45);
+  }
+  #sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.48);
+    z-index: 299;
+  }
+  #sidebar-overlay.visible { display: block; }
+
+  /* Main: full width, allow bottom nav space */
+  #app { overflow: visible; }
+  #main {
+    padding-bottom: 60px; /* bottom nav height */
+  }
+
+  /* Header: compact, show hamburger */
+  #header {
+    padding: 0 12px;
+    height: 50px;
+    gap: 0;
+    overflow-x: hidden;
+  }
+  /* Hide top tab buttons — replaced by bottom nav */
+  .tab-btn { display: none; }
+  #mobile-menu-btn { display: flex; }
+  #header-loc { gap: 4px; }
+  #header-loc #loc-text { font-size: 12px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #header-loc .toggle-btn { display: none; } /* hide Compare on mobile */
+  #header-loc select { font-size: 11px; padding: 3px 4px; max-width: 100px; }
+
+  /* Bottom navigation bar */
+  #bottom-nav {
+    display: flex;
+  }
+
+  /* Read view: stack vertically, hide word panel */
+  #view-read { flex-direction: column; }
+  #word-panel { display: none; }
+  #reader-panel { border-right: none; }
+
+  /* Reader toolbar: wrap */
+  #reader-toolbar {
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  #reader-toolbar > div[style] { margin-left: 0 !important; width: 100%; justify-content: flex-start; }
+  #chapter-title { font-size: 14px; }
+  .toggle-btn { font-size: 11px; padding: 4px 8px; }
+
+  /* Reader content: comfortable mobile reading */
+  #reader-content { padding: 16px 16px; }
+  .bible-chapter { font-size: 17px; line-height: 2.0; }
+  .verse-num { font-size: 10px; }
+
+  /* Compare: single column */
+  #compare-panels { grid-template-columns: 1fr !important; }
+
+  /* Interlinear: allow scroll */
+  .interlinear-verse { overflow-x: auto; padding-bottom: 4px; }
+
+  /* Modals: full-width */
+  #search-box { width: 95vw; max-width: 95vw; }
+  #note-modal-inner { width: 92vw; max-width: 92vw; }
+  #word-modal-content { width: 95vw; max-width: 95vw; border-radius: 16px 16px 0 0; position: fixed; bottom: 0; top: auto; max-height: 80vh; }
+
+  /* Lexicon: 1 column */
+  #lexicon-grid { grid-template-columns: 1fr; }
+
+  /* Timeline: full scroll */
+  #view-timeline { overflow-y: auto; }
+
+  /* Maps: full width */
+  .map-svg { width: 100%; height: auto; }
+
+  /* Ask: reduce padding */
+  #ask-header { padding: 16px; }
+  #chat-input-area { padding: 8px 12px; }
+
+  /* Bookmarks panel in sidebar */
+  .bk-list { max-height: 200px; }
+
+  /* Notes grid: 1 col */
+  #notes-grid { grid-template-columns: 1fr !important; }
+
+  /* Safe area for iPhone notch/home bar */
+  #bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
+  #main { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
+}
+
+/* Bottom nav — hidden on desktop */
+#bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  z-index: 100;
+  height: 60px;
+  align-items: stretch;
+}
+#mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 12px 0 4px;
+  font-size: 20px;
+  color: var(--text-2);
+  flex-shrink: 0;
+}
+.bnav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  gap: 3px;
+  padding: 6px 0;
+  color: var(--text-3);
+  font-family: 'Inter', sans-serif;
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.bnav-btn .bnav-icon { font-size: 18px; line-height: 1; }
+.bnav-btn .bnav-label { font-size: 9.5px; font-weight: 500; letter-spacing: 0.2px; }
+.bnav-btn.active { color: var(--gold-dark); }
 </style>
 </head>
 <body>
@@ -1048,6 +1197,8 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
 </div>
 
 <!-- Main App -->
+<div id="sidebar-overlay" onclick="App.toggleSidebar()"></div>
+
 <div id="app">
 
   <!-- Sidebar -->
@@ -1084,6 +1235,7 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
   <!-- Main Content -->
   <div id="main">
     <div id="header">
+      <button id="mobile-menu-btn" onclick="App.toggleSidebar()" aria-label="Open books menu">☰</button>
       <button class="tab-btn active" onclick="App.switchView('read')">📖 Read</button>
       <button class="tab-btn" onclick="App.switchView('lexicon')">🔤 Lexicon</button>
       <button class="tab-btn" onclick="App.switchView('timeline')">📅 Timeline</button>
@@ -1861,6 +2013,7 @@ const App = {
     this.switchView('read');
     this.loadChapter();
     this.updateWordPanel();
+    this.closeSidebarMobile();
   },
 
   goToChapter(ch) { this.state.chapter = ch; this.loadChapter(); this.updateWordPanel(); },
@@ -1992,12 +2145,35 @@ const App = {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     const viewEl = document.getElementById(`view-${view}`);
     if (viewEl) viewEl.classList.add('active');
+    // Desktop tabs
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => {
       const map = {read:'read',lexicon:'lex',timeline:'time',maps:'map',ask:'ask',notes:'note'};
       if (b.textContent.toLowerCase().includes(map[view]||view)) b.classList.add('active');
     });
+    // Mobile bottom nav
+    document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+    const icons = {read:'📖',lexicon:'🔤',timeline:'📅',maps:'🗺',notes:'📌',ask:'💬'};
+    document.querySelectorAll('.bnav-btn').forEach(b => {
+      if (b.querySelector('.bnav-icon')?.textContent === icons[view]) b.classList.add('active');
+    });
     if (view === 'notes') this.renderNotesView();
+  },
+
+  toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const open = sidebar.classList.toggle('open');
+    overlay.classList.toggle('visible', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  },
+
+  closeSidebarMobile() {
+    if (window.innerWidth <= 768) {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').classList.remove('visible');
+      document.body.style.overflow = '';
+    }
   },
 
   renderLexicon(filter = 'all') {
@@ -2518,5 +2694,15 @@ document.getElementById('search-input').addEventListener('input', e => App.doSea
 
 App.init();
 </script>
+
+<!-- Mobile bottom navigation -->
+<nav id="bottom-nav">
+  <button class="bnav-btn active" onclick="App.switchView('read')"><span class="bnav-icon">📖</span><span class="bnav-label">Read</span></button>
+  <button class="bnav-btn" onclick="App.switchView('lexicon')"><span class="bnav-icon">🔤</span><span class="bnav-label">Words</span></button>
+  <button class="bnav-btn" onclick="App.switchView('timeline')"><span class="bnav-icon">📅</span><span class="bnav-label">Timeline</span></button>
+  <button class="bnav-btn" onclick="App.switchView('maps')"><span class="bnav-icon">🗺</span><span class="bnav-label">Maps</span></button>
+  <button class="bnav-btn" onclick="App.switchView('notes')"><span class="bnav-icon">📌</span><span class="bnav-label">Notes</span></button>
+  <button class="bnav-btn" onclick="App.switchView('ask')"><span class="bnav-icon">💬</span><span class="bnav-label">Ask</span></button>
+</nav>
 </body>
 </html>
