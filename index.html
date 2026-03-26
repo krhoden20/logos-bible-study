@@ -1,0 +1,2522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logos — Biblical Word Study</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+Hebrew:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F2EDE4;
+  --surface: #FAF7F2;
+  --card: #FFFFFF;
+  --sidebar-bg: #18130E;
+  --sidebar-hover: #261C14;
+  --sidebar-active: #33241A;
+  --sidebar-section: #8B7560;
+  --gold: #B8916A;
+  --gold-light: #D4AE8C;
+  --gold-dark: #8B6642;
+  --gold-bg: #FBF4EC;
+  --text: #18130E;
+  --text-2: #4A3C2C;
+  --text-3: #8B7A65;
+  --text-inv: #F2EDE4;
+  --border: #DDD3C4;
+  --border-light: #EDE6DA;
+  --hebrew: #6B4FA8;
+  --hebrew-bg: #F5F0FF;
+  --greek: #2A6B8B;
+  --greek-bg: #EFF7FC;
+  --note-bg: #F5F0E4;
+  --note-border: #C4A870;
+  --error: #B85555;
+  --radius: 8px;
+  --radius-lg: 14px;
+  --shadow: 0 1px 3px rgba(24,19,14,0.08), 0 4px 12px rgba(24,19,14,0.05);
+  --shadow-lg: 0 4px 16px rgba(24,19,14,0.12), 0 8px 32px rgba(24,19,14,0.08);
+  --transition: 0.18s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ─── LAYOUT ─────────────────────────────────────────── */
+#app { display: flex; height: 100vh; overflow: hidden; }
+
+#sidebar {
+  width: 252px;
+  min-width: 252px;
+  background: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid rgba(255,255,255,0.04);
+}
+
+#sidebar-header {
+  padding: 22px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+
+#sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#sidebar-logo .lambda {
+  width: 32px; height: 32px;
+  background: var(--gold);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'EB Garamond', serif;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+#sidebar-logo .name {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-inv);
+  letter-spacing: 0.3px;
+}
+
+#sidebar-logo .sub {
+  font-size: 10px;
+  color: var(--sidebar-section);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 1px;
+}
+
+#sidebar-search {
+  margin: 12px 16px 0;
+  position: relative;
+}
+
+#sidebar-search input {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 7px 10px 7px 30px;
+  color: var(--text-inv);
+  font-size: 12.5px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: var(--transition);
+}
+#sidebar-search input::placeholder { color: var(--sidebar-section); }
+#sidebar-search input:focus { border-color: var(--gold); background: rgba(255,255,255,0.09); }
+#sidebar-search .icon {
+  position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
+  color: var(--sidebar-section); font-size: 13px; pointer-events: none;
+}
+
+#books-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0 16px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.12) transparent;
+}
+#books-container::-webkit-scrollbar { width: 4px; }
+#books-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+
+.sidebar-section {
+  padding: 14px 16px 5px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--sidebar-section);
+}
+
+.book-btn {
+  display: block;
+  width: 100%;
+  padding: 6px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: rgba(242,237,228,0.72);
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  transition: var(--transition);
+  border-radius: 0;
+}
+.book-btn:hover { background: var(--sidebar-hover); color: var(--text-inv); }
+.book-btn.active { background: var(--sidebar-active); color: var(--gold-light); font-weight: 500; }
+
+#sidebar-footer {
+  padding: 10px 16px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+.api-key-indicator {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--sidebar-section); cursor: pointer;
+  padding: 5px 0;
+  transition: var(--transition);
+}
+.api-key-indicator:hover { color: var(--gold-light); }
+.api-key-indicator .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--error); flex-shrink: 0;
+}
+.api-key-indicator .dot.active { background: #7BBB7B; }
+
+/* ─── MAIN ────────────────────────────────────────────── */
+#main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+#header {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  flex-shrink: 0;
+  height: 52px;
+}
+
+.tab-btn {
+  padding: 0 16px;
+  height: 52px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-3);
+  font-family: 'Inter', sans-serif;
+  border-bottom: 2px solid transparent;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text-2); }
+.tab-btn.active { color: var(--gold-dark); border-bottom-color: var(--gold); }
+
+#header-loc {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#header-loc select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 3px 8px;
+  font-size: 12px;
+  color: var(--text-2);
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  outline: none;
+}
+#header-loc select:focus { border-color: var(--gold); }
+
+/* ─── VIEWS ───────────────────────────────────────────── */
+.view { display: none; flex: 1; overflow: hidden; }
+.view.active { display: flex; }
+
+/* ─── READ VIEW ───────────────────────────────────────── */
+#view-read {
+  flex-direction: row;
+  overflow: hidden;
+}
+
+#reader-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--border);
+}
+
+#reader-toolbar {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border-light);
+  gap: 8px;
+  flex-shrink: 0;
+  background: var(--card);
+}
+
+.nav-btn {
+  width: 30px; height: 30px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-3);
+  font-size: 14px;
+  transition: var(--transition);
+}
+.nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+.nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+#chapter-title {
+  font-family: 'EB Garamond', serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+  flex: 1;
+  text-align: center;
+}
+
+.chapter-select {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 12.5px;
+  color: var(--text-2);
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  outline: none;
+}
+.chapter-select:focus { border-color: var(--gold); }
+
+#reader-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 48px 48px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.passage-note {
+  background: var(--note-bg);
+  border-left: 3px solid var(--note-border);
+  border-radius: 0 6px 6px 0;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  font-size: 13.5px;
+  color: var(--text-2);
+  line-height: 1.65;
+}
+.passage-note strong { color: var(--text); }
+
+.bible-chapter {
+  font-family: 'EB Garamond', serif;
+  font-size: 20px;
+  line-height: 1.85;
+  color: var(--text);
+}
+
+.verse-num {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold);
+  vertical-align: super;
+  margin-right: 3px;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.2px;
+}
+
+.loading-state {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 200px; gap: 12px;
+  color: var(--text-3); font-size: 14px;
+}
+.spinner {
+  width: 24px; height: 24px;
+  border: 2px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-state {
+  background: #FFF5F5;
+  border: 1px solid #F5CECE;
+  border-radius: var(--radius);
+  padding: 16px;
+  color: var(--error);
+  font-size: 13.5px;
+  margin: 24px 0;
+}
+
+/* ─── WORD STUDY SIDEBAR ──────────────────────────────── */
+#word-panel {
+  width: 320px;
+  min-width: 320px;
+  overflow-y: auto;
+  padding: 20px;
+  background: var(--card);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+#word-panel h3 {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 14px;
+}
+
+.word-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--surface);
+}
+.word-card:hover { border-color: var(--gold); box-shadow: var(--shadow); }
+
+.word-card .script {
+  font-size: 22px;
+  font-family: 'Noto Serif Hebrew', serif;
+  color: var(--hebrew);
+  display: block;
+  margin-bottom: 2px;
+  line-height: 1.4;
+}
+.word-card .script.greek { font-family: 'EB Garamond', serif; font-size: 20px; color: var(--greek); }
+
+.word-card .translit {
+  font-size: 12px;
+  color: var(--text-3);
+  font-style: italic;
+  display: block;
+  margin-bottom: 4px;
+}
+.word-card .gloss {
+  font-size: 13.5px;
+  color: var(--text);
+  font-weight: 500;
+}
+.word-card .strongs {
+  font-size: 10.5px;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+.word-card .lang-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+.word-card .lang-tag.heb { background: var(--hebrew-bg); color: var(--hebrew); }
+.word-card .lang-tag.grk { background: var(--greek-bg); color: var(--greek); }
+
+/* ─── WORD MODAL ──────────────────────────────────────── */
+#word-modal {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(24,19,14,0.55);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+#word-modal.open { display: flex; }
+#word-modal-inner {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+.modal-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 22px 24px 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+.modal-header .close-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-3); font-size: 20px; line-height: 1;
+  padding: 0; transition: var(--transition);
+}
+.modal-header .close-btn:hover { color: var(--text); }
+.modal-body { padding: 20px 24px 24px; }
+.modal-body section { margin-bottom: 18px; }
+.modal-body section:last-child { margin-bottom: 0; }
+.modal-body .section-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 5px;
+}
+.modal-body .section-content { font-size: 14px; color: var(--text-2); line-height: 1.7; }
+.highlight-box {
+  background: var(--note-bg); border-left: 3px solid var(--note-border);
+  border-radius: 0 6px 6px 0; padding: 10px 14px;
+  font-size: 13.5px; color: var(--text-2); line-height: 1.65;
+}
+.script-large {
+  font-size: 36px; font-family: 'Noto Serif Hebrew', serif;
+  color: var(--hebrew); line-height: 1.3; margin-bottom: 2px; display: block;
+}
+.script-large.greek { font-family: 'EB Garamond', serif; font-size: 34px; color: var(--greek); }
+
+/* ─── LEXICON VIEW ────────────────────────────────────── */
+#view-lexicon {
+  flex-direction: column;
+  overflow: hidden;
+}
+#lexicon-toolbar {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  background: var(--card); flex-shrink: 0;
+}
+.filter-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: none; cursor: pointer;
+  font-size: 12.5px; color: var(--text-3);
+  font-family: 'Inter', sans-serif;
+  transition: var(--transition);
+}
+.filter-btn:hover { border-color: var(--gold); color: var(--text-2); }
+.filter-btn.active { background: var(--gold); border-color: var(--gold); color: white; font-weight: 500; }
+#lexicon-grid {
+  flex: 1; overflow-y: auto; padding: 24px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px; align-content: start;
+}
+
+/* ─── TIMELINE VIEW ───────────────────────────────────── */
+#view-timeline {
+  flex-direction: column;
+  overflow: hidden;
+}
+#timeline-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card); flex-shrink: 0;
+}
+#timeline-header h2 {
+  font-family: 'EB Garamond', serif;
+  font-size: 20px; font-weight: 500; margin-bottom: 4px;
+}
+#timeline-header p { font-size: 13px; color: var(--text-3); }
+#timeline-scroll {
+  flex: 1; overflow-x: auto; overflow-y: hidden; padding: 32px 40px;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+#timeline-track {
+  display: flex; align-items: flex-start; gap: 0;
+  min-width: max-content; padding-bottom: 16px;
+}
+.timeline-era {
+  display: flex; flex-direction: column;
+  border-top: 3px solid var(--border);
+  padding-top: 12px; min-width: 180px;
+}
+.era-label {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--text-3); margin-bottom: 14px; padding: 0 12px;
+}
+.timeline-events { display: flex; gap: 0; }
+.timeline-event {
+  display: flex; flex-direction: column; align-items: center;
+  width: 140px; cursor: pointer;
+  padding: 0 8px;
+}
+.event-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid var(--gold); background: var(--card);
+  transition: var(--transition); flex-shrink: 0;
+  margin-bottom: 8px;
+}
+.timeline-event:hover .event-dot { background: var(--gold); }
+.event-body {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 10px 12px; width: 100%;
+  transition: var(--transition);
+}
+.timeline-event:hover .event-body { border-color: var(--gold); box-shadow: var(--shadow); }
+.event-date { font-size: 10px; font-weight: 600; color: var(--gold-dark); margin-bottom: 2px; letter-spacing: 0.3px; }
+.event-name { font-size: 12.5px; font-weight: 500; color: var(--text); line-height: 1.3; margin-bottom: 3px; }
+.event-books { font-size: 10.5px; color: var(--text-3); }
+.event-detail {
+  display: none; position: fixed; background: var(--card);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 16px 18px; max-width: 300px; z-index: 500;
+  box-shadow: var(--shadow-lg); font-size: 13.5px; color: var(--text-2);
+  line-height: 1.65; pointer-events: none;
+}
+.event-detail.visible { display: block; }
+
+/* ─── MAPS VIEW ───────────────────────────────────────── */
+#view-maps { flex-direction: column; overflow: hidden; }
+#maps-toolbar {
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card); display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
+#maps-content { flex: 1; overflow-y: auto; padding: 24px; }
+.map-container {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow); max-width: 900px; margin: 0 auto;
+}
+.map-caption {
+  padding: 12px 16px; border-top: 1px solid var(--border-light);
+  font-size: 12.5px; color: var(--text-3); line-height: 1.5;
+}
+svg.map-svg { display: block; width: 100%; cursor: crosshair; }
+.city-dot { cursor: pointer; transition: var(--transition); }
+.city-dot circle { transition: var(--transition); }
+.city-dot:hover circle { r: 7; }
+.city-dot text { pointer-events: none; font-family: 'Inter', sans-serif; font-weight: 500; }
+#city-tooltip {
+  position: fixed; background: var(--sidebar-bg); color: var(--text-inv);
+  border-radius: 8px; padding: 12px 14px; font-size: 13px;
+  max-width: 240px; z-index: 500; pointer-events: none; display: none;
+  box-shadow: var(--shadow-lg); line-height: 1.6;
+}
+#city-tooltip .city-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+#city-tooltip .city-info { color: rgba(242,237,228,0.75); font-size: 12.5px; }
+
+/* ─── ASK VIEW ────────────────────────────────────────── */
+#view-ask { flex-direction: column; overflow: hidden; }
+#ask-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card); flex-shrink: 0;
+}
+#ask-header h2 { font-family: 'EB Garamond', serif; font-size: 19px; font-weight: 500; margin-bottom: 3px; }
+#ask-header p { font-size: 13px; color: var(--text-3); }
+#chat-messages {
+  flex: 1; overflow-y: auto; padding: 24px;
+  display: flex; flex-direction: column; gap: 16px;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.msg { display: flex; gap: 12px; max-width: 760px; }
+.msg.user { flex-direction: row-reverse; align-self: flex-end; }
+.msg-avatar {
+  width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600;
+}
+.msg.assistant .msg-avatar { background: var(--gold-bg); color: var(--gold-dark); }
+.msg.user .msg-avatar { background: var(--sidebar-bg); color: var(--gold-light); font-family: 'EB Garamond', serif; }
+.msg-bubble {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 14px 16px;
+  font-size: 14px; line-height: 1.75; color: var(--text);
+  max-width: 680px;
+}
+.msg.user .msg-bubble { background: var(--sidebar-bg); color: var(--text-inv); border-color: transparent; }
+.msg-bubble p { margin-bottom: 10px; }
+.msg-bubble p:last-child { margin-bottom: 0; }
+.msg-bubble strong { color: var(--gold-dark); }
+.msg.user .msg-bubble strong { color: var(--gold-light); }
+#chat-input-wrap {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  background: var(--card); flex-shrink: 0;
+}
+.no-key-banner {
+  background: var(--note-bg); border: 1px solid var(--note-border);
+  border-radius: var(--radius); padding: 12px 16px; margin-bottom: 12px;
+  font-size: 13px; color: var(--text-2); display: flex; align-items: center;
+  justify-content: space-between; gap: 12px;
+}
+.no-key-banner button {
+  background: var(--gold); color: white; border: none;
+  border-radius: 6px; padding: 5px 14px; font-size: 12.5px;
+  font-family: 'Inter', sans-serif; cursor: pointer; white-space: nowrap;
+  transition: var(--transition);
+}
+.no-key-banner button:hover { background: var(--gold-dark); }
+#chat-form { display: flex; gap: 8px; }
+#chat-input {
+  flex: 1; padding: 10px 14px;
+  border: 1px solid var(--border); border-radius: 8px;
+  font-size: 14px; font-family: 'Inter', sans-serif;
+  background: var(--surface); color: var(--text); outline: none;
+  resize: none; min-height: 42px; max-height: 120px; overflow-y: auto;
+  transition: var(--transition);
+}
+#chat-input:focus { border-color: var(--gold); }
+#chat-input::placeholder { color: var(--text-3); }
+#send-btn {
+  width: 42px; height: 42px; border-radius: 8px;
+  background: var(--gold); border: none; cursor: pointer;
+  color: white; font-size: 16px; display: flex;
+  align-items: center; justify-content: center;
+  transition: var(--transition); flex-shrink: 0;
+}
+#send-btn:hover { background: var(--gold-dark); }
+#send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ─── API KEY MODAL ───────────────────────────────────── */
+#api-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(24,19,14,0.65); z-index: 2000;
+  align-items: center; justify-content: center; padding: 24px;
+}
+#api-modal.open { display: flex; }
+#api-modal-inner {
+  background: var(--card); border-radius: var(--radius-lg);
+  max-width: 440px; width: 100%; box-shadow: var(--shadow-lg); padding: 28px;
+}
+#api-modal h2 {
+  font-family: 'EB Garamond', serif; font-size: 22px;
+  font-weight: 500; margin-bottom: 6px;
+}
+#api-modal p { font-size: 13.5px; color: var(--text-2); line-height: 1.65; margin-bottom: 18px; }
+#api-modal input {
+  width: 100%; padding: 10px 14px;
+  border: 1px solid var(--border); border-radius: 7px;
+  font-size: 13.5px; font-family: 'Inter', sans-serif;
+  background: var(--surface); color: var(--text); outline: none;
+  margin-bottom: 14px; transition: var(--transition);
+}
+#api-modal input:focus { border-color: var(--gold); }
+#api-modal input::placeholder { color: var(--text-3); }
+.modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
+.btn { padding: 8px 20px; border-radius: 7px; font-size: 13.5px; font-family: 'Inter', sans-serif; cursor: pointer; transition: var(--transition); border: none; }
+.btn-primary { background: var(--gold); color: white; font-weight: 500; }
+.btn-primary:hover { background: var(--gold-dark); }
+.btn-secondary { background: var(--bg); border: 1px solid var(--border); color: var(--text-2); }
+.btn-secondary:hover { border-color: var(--gold); color: var(--text); }
+.note-text { font-size: 11.5px; color: var(--text-3); margin-top: 10px; margin-bottom: 0 !important; }
+
+/* ─── WELCOME STATE ───────────────────────────────────── */
+.welcome-msg {
+  text-align: center; padding: 48px 24px;
+  max-width: 500px; margin: 0 auto;
+}
+.welcome-msg .icon { font-size: 40px; margin-bottom: 16px; }
+.welcome-msg h3 { font-family: 'EB Garamond', serif; font-size: 22px; margin-bottom: 8px; }
+.welcome-msg p { font-size: 14px; color: var(--text-3); line-height: 1.7; }
+
+/* ─── SCROLLBARS ──────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-light); }
+
+/* ─── FEATURE: VERSE WRAPPER & HIGHLIGHTS ────────────── */
+.verse-wrap {
+  display: inline;
+  position: relative;
+  border-radius: 3px;
+  transition: background var(--transition);
+}
+.verse-wrap.hl-yellow { background: rgba(255,220,80,0.28); }
+.verse-wrap.hl-green  { background: rgba(100,185,120,0.25); }
+.verse-wrap.hl-blue   { background: rgba(80,150,220,0.22); }
+.verse-tools {
+  display: none;
+  position: absolute;
+  top: -32px; left: 0;
+  background: var(--sidebar-bg);
+  border-radius: 7px;
+  padding: 3px 4px;
+  gap: 2px;
+  align-items: center;
+  z-index: 200;
+  box-shadow: var(--shadow-lg);
+  white-space: nowrap;
+}
+.verse-wrap:hover .verse-tools { display: flex; }
+.verse-tool-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-inv); font-size: 13px; padding: 3px 6px;
+  border-radius: 5px; transition: var(--transition);
+  font-family: 'Inter', sans-serif; line-height: 1;
+}
+.verse-tool-btn:hover { background: rgba(255,255,255,0.12); }
+.verse-tool-btn.hl { width: 14px; height: 14px; border-radius: 50%; padding: 0; display: inline-flex; align-items:center;justify-content:center; }
+.verse-tool-btn.hl-y { background: rgba(255,220,80,0.8); }
+.verse-tool-btn.hl-g { background: rgba(100,185,120,0.8); }
+.verse-tool-btn.hl-b { background: rgba(80,150,220,0.8); }
+.verse-tool-btn.star-active { color: var(--gold-light); }
+.verse-has-note .verse-num::after { content: '✎'; font-size: 8px; color: var(--gold); margin-left: 1px; vertical-align: super; }
+
+/* ─── FEATURE: CROSS-REFERENCES ──────────────────────── */
+.xref-section {
+  font-size: 12.5px; margin-top: 6px; margin-left: 4px;
+}
+.xref-toggle {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-3); font-size: 11px; font-family: 'Inter', sans-serif;
+  padding: 2px 0; display: flex; align-items: center; gap: 4px;
+  transition: var(--transition);
+}
+.xref-toggle:hover { color: var(--gold); }
+.xref-toggle .arrow { font-size: 9px; transition: transform 0.15s; }
+.xref-toggle.open .arrow { transform: rotate(90deg); }
+.xref-list {
+  display: none; flex-direction: column; gap: 4px; margin-top: 6px;
+  padding: 8px 10px; background: var(--bg);
+  border-left: 2px solid var(--border); border-radius: 0 4px 4px 0;
+}
+.xref-list.open { display: flex; }
+.xref-item {
+  cursor: pointer; padding: 4px 6px; border-radius: 4px;
+  transition: var(--transition);
+}
+.xref-item:hover { background: var(--gold-bg); }
+.xref-ref { font-weight: 600; color: var(--gold-dark); font-size: 11.5px; }
+.xref-text { color: var(--text-3); font-size: 11.5px; font-style: italic; display: block; }
+
+/* ─── FEATURE: INTERLINEAR ───────────────────────────── */
+.interlinear-verse {
+  display: flex; flex-wrap: wrap; gap: 6px 14px;
+  margin: 2px 0 8px; padding: 10px 12px;
+  background: var(--bg); border-radius: 6px;
+  border: 1px solid var(--border-light);
+}
+.wg {
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer; padding: 4px 6px; border-radius: 5px;
+  transition: var(--transition); min-width: 40px; text-align: center;
+}
+.wg:hover { background: var(--gold-bg); }
+.wg .wg-eng { font-size: 12.5px; color: var(--text); font-family: 'EB Garamond', serif; line-height: 1.2; margin-bottom: 4px; }
+.wg .wg-orig { font-size: 18px; color: var(--hebrew); font-family: 'Noto Serif Hebrew', serif; line-height: 1.3; }
+.wg .wg-orig.greek { font-family: 'EB Garamond', serif; font-size: 16px; color: var(--greek); }
+.wg .wg-snum { font-size: 9px; color: var(--text-3); margin-top: 2px; letter-spacing: 0.3px; font-weight: 600; }
+.wg .wg-translit { font-size: 9.5px; color: var(--text-3); font-style: italic; margin-top: 1px; }
+.int-note { font-size: 11.5px; color: var(--text-3); font-style: italic; padding: 6px 8px; }
+
+/* ─── FEATURE: TOGGLE BUTTON ─────────────────────────── */
+.toggle-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 11px; border-radius: 20px;
+  border: 1px solid var(--border); background: none;
+  font-size: 11.5px; font-family: 'Inter', sans-serif;
+  color: var(--text-3); cursor: pointer; transition: var(--transition);
+  white-space: nowrap;
+}
+.toggle-btn:hover { border-color: var(--gold); color: var(--text-2); }
+.toggle-btn.on { background: var(--gold-bg); border-color: var(--gold); color: var(--gold-dark); font-weight: 500; }
+.toggle-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); transition: var(--transition); }
+.toggle-btn.on .toggle-dot { background: var(--gold); }
+
+/* ─── FEATURE: COMPARE (SIDE-BY-SIDE) ────────────────── */
+#compare-bar {
+  display: none; align-items: center; gap: 8px;
+  padding: 8px 24px; border-bottom: 1px solid var(--border-light);
+  background: var(--bg); flex-shrink: 0; flex-wrap: wrap;
+}
+#compare-bar.visible { display: flex; }
+#compare-bar label { font-size: 12px; color: var(--text-3); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+.compare-check { display: flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--text-2); cursor: pointer; }
+.compare-check input { accent-color: var(--gold); width: 14px; height: 14px; cursor: pointer; }
+.compare-layout { display: grid; gap: 0; }
+.compare-col { padding: 24px 20px; border-right: 1px solid var(--border-light); }
+.compare-col:last-child { border-right: none; }
+.compare-col-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--gold-dark); margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+.compare-col .bible-chapter { font-size: 17px; }
+
+/* ─── FEATURE: COMMENTARY ────────────────────────────── */
+.commentary-section {
+  margin: 0 0 20px; border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+}
+.commentary-toggle {
+  width: 100%; padding: 10px 16px; background: var(--gold-bg);
+  border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; font-family: 'Inter', sans-serif; font-weight: 600;
+  color: var(--gold-dark); text-align: left; transition: var(--transition);
+}
+.commentary-toggle:hover { background: var(--note-bg); }
+.commentary-toggle .arr { font-size: 10px; margin-left: auto; transition: transform 0.15s; }
+.commentary-toggle.open .arr { transform: rotate(180deg); }
+.commentary-body {
+  display: none; padding: 14px 16px; font-size: 13.5px;
+  color: var(--text-2); line-height: 1.8; background: var(--card);
+}
+.commentary-body.open { display: block; }
+
+/* ─── FEATURE: SEARCH OVERLAY ────────────────────────── */
+#search-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(24,19,14,0.6); z-index: 1500;
+  align-items: flex-start; justify-content: center; padding: 60px 24px 24px;
+}
+#search-overlay.open { display: flex; }
+#search-box {
+  background: var(--card); border-radius: var(--radius-lg);
+  width: 100%; max-width: 640px; box-shadow: var(--shadow-lg);
+  display: flex; flex-direction: column; max-height: 70vh; overflow: hidden;
+}
+#search-input-wrap {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 20px; border-bottom: 1px solid var(--border-light);
+}
+#search-input-wrap .icon { font-size: 18px; color: var(--text-3); }
+#search-input {
+  flex: 1; border: none; outline: none; font-size: 16px;
+  font-family: 'Inter', sans-serif; color: var(--text); background: none;
+}
+#search-input::placeholder { color: var(--text-3); }
+#search-close {
+  background: none; border: none; cursor: pointer; font-size: 20px;
+  color: var(--text-3); padding: 0; transition: var(--transition);
+}
+#search-close:hover { color: var(--text); }
+#search-results {
+  flex: 1; overflow-y: auto; padding: 8px 0;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.search-group { padding: 6px 0; }
+.search-group-label {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-3); padding: 6px 20px; display: block;
+}
+.search-result {
+  padding: 10px 20px; cursor: pointer; transition: var(--transition);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.search-result:hover { background: var(--bg); }
+.sr-title { font-size: 13.5px; font-weight: 600; color: var(--text); }
+.sr-sub { font-size: 12.5px; color: var(--text-3); }
+.sr-match { background: rgba(184,145,106,0.2); border-radius: 2px; font-weight: 500; }
+.search-empty { padding: 32px 20px; text-align: center; color: var(--text-3); font-size: 14px; }
+
+/* ─── FEATURE: NOTE MODAL ────────────────────────────── */
+#note-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(24,19,14,0.55); z-index: 1200;
+  align-items: center; justify-content: center; padding: 24px;
+}
+#note-modal.open { display: flex; }
+#note-modal-inner {
+  background: var(--card); border-radius: var(--radius-lg);
+  max-width: 480px; width: 100%; box-shadow: var(--shadow-lg); padding: 24px;
+}
+#note-modal h3 {
+  font-family: 'EB Garamond', serif; font-size: 19px;
+  font-weight: 500; margin-bottom: 4px; color: var(--text);
+}
+#note-modal .note-ref { font-size: 12px; color: var(--text-3); margin-bottom: 14px; display: block; }
+#note-textarea {
+  width: 100%; min-height: 100px; padding: 10px 14px;
+  border: 1px solid var(--border); border-radius: 7px;
+  font-size: 14px; font-family: 'EB Garamond', serif; line-height: 1.7;
+  color: var(--text); background: var(--surface); outline: none;
+  resize: vertical; transition: var(--transition);
+}
+#note-textarea:focus { border-color: var(--gold); }
+
+/* ─── FEATURE: BOOKMARKS SIDEBAR ─────────────────────── */
+#bookmarks-panel {
+  border-top: 1px solid rgba(255,255,255,0.07); padding: 10px 0 6px; flex-shrink: 0;
+}
+.bk-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 16px 4px; cursor: pointer;
+}
+.bk-header span { font-size: 9.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--sidebar-section); }
+.bk-header .bk-count { font-size: 9px; background: rgba(255,255,255,0.1); border-radius: 8px; padding: 1px 6px; color: var(--gold-light); }
+.bk-list { max-height: 120px; overflow-y: auto; }
+.bk-item {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 16px; cursor: pointer; transition: var(--transition);
+}
+.bk-item:hover { background: var(--sidebar-hover); }
+.bk-item .bk-star { color: var(--gold); font-size: 11px; flex-shrink: 0; }
+.bk-item .bk-ref { font-size: 11.5px; color: rgba(242,237,228,0.75); }
+.bk-item .bk-remove { margin-left: auto; background: none; border: none; cursor: pointer; color: var(--sidebar-section); font-size: 13px; padding: 0; transition: var(--transition); }
+.bk-item .bk-remove:hover { color: rgba(220,100,100,0.8); }
+
+/* ─── FEATURE: MY NOTES VIEW ─────────────────────────── */
+#view-notes { flex-direction: column; overflow: hidden; }
+#notes-header {
+  padding: 16px 24px; border-bottom: 1px solid var(--border);
+  background: var(--card); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+#notes-header h2 { font-family: 'EB Garamond', serif; font-size: 19px; font-weight: 500; }
+#notes-header p { font-size: 13px; color: var(--text-3); }
+#notes-grid {
+  flex: 1; overflow-y: auto; padding: 24px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px; align-content: start;
+}
+.note-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 16px; cursor: pointer;
+  transition: var(--transition); border-left: 3px solid var(--border);
+}
+.note-card:hover { border-color: var(--gold); box-shadow: var(--shadow); }
+.note-card.nc-yellow { border-left-color: rgba(200,170,40,0.7); }
+.note-card.nc-green  { border-left-color: rgba(80,155,100,0.7); }
+.note-card.nc-blue   { border-left-color: rgba(60,120,190,0.7); }
+.nc-ref { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 5px; }
+.nc-text { font-size: 13.5px; font-family: 'EB Garamond', serif; color: var(--text); line-height: 1.65; margin-bottom: 6px; }
+.nc-note { font-size: 12.5px; color: var(--text-3); font-style: italic; border-top: 1px solid var(--border-light); padding-top: 6px; margin-top: 6px; }
+.notes-empty { grid-column: 1/-1; text-align: center; padding: 48px; }
+</style>
+</head>
+<body>
+
+<!-- API Key Modal -->
+<div id="api-modal">
+  <div id="api-modal-inner">
+    <h2>Connect Claude API</h2>
+    <p>Your API key is stored only in this browser session and never sent anywhere except Anthropic's API directly.</p>
+    <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off">
+    <div class="modal-btns">
+      <button class="btn btn-secondary" onclick="App.closeApiModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="App.saveApiKey()">Connect</button>
+    </div>
+    <p class="note-text">Get your key at console.anthropic.com → API Keys</p>
+  </div>
+</div>
+
+<!-- Word Detail Modal -->
+<div id="word-modal">
+  <div id="word-modal-inner">
+    <div class="modal-header">
+      <div id="word-modal-header-content"></div>
+      <button class="close-btn" onclick="App.closeWordModal()">×</button>
+    </div>
+    <div class="modal-body" id="word-modal-body"></div>
+  </div>
+</div>
+
+<!-- City Tooltip -->
+<div id="city-tooltip"></div>
+
+<!-- Timeline Event Detail -->
+<div class="event-detail" id="event-detail"></div>
+
+<!-- Note Editor Modal -->
+<div id="note-modal">
+  <div id="note-modal-inner">
+    <h3>Personal Note</h3>
+    <span class="note-ref" id="note-modal-ref"></span>
+    <textarea id="note-textarea" placeholder="Write your note, observation, or prayer..."></textarea>
+    <div class="modal-btns" style="margin-top:12px">
+      <button class="btn btn-secondary" onclick="App.closeNoteModal()">Cancel</button>
+      <button class="btn btn-secondary" onclick="App.deleteNote()" style="color:var(--error);border-color:var(--error)">Delete</button>
+      <button class="btn btn-primary" onclick="App.saveNote()">Save Note</button>
+    </div>
+  </div>
+</div>
+
+<!-- Search Overlay -->
+<div id="search-overlay">
+  <div id="search-box">
+    <div id="search-input-wrap">
+      <span class="icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Search Strong's, your notes, or type a reference…" oninput="App.doSearch(this.value)" autocomplete="off">
+      <button id="search-close" onclick="App.closeSearch()">×</button>
+    </div>
+    <div id="search-results"><div class="search-empty">Start typing to search across Strong's definitions, your notes, and passage references.</div></div>
+  </div>
+</div>
+
+<!-- Main App -->
+<div id="app">
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <div id="sidebar-logo">
+        <div class="lambda">λ</div>
+        <div>
+          <div class="name">Logos</div>
+          <div class="sub">Biblical Word Study</div>
+        </div>
+      </div>
+      <div id="sidebar-search">
+        <span class="icon">⌕</span>
+        <input type="text" id="book-search" placeholder="Search books..." oninput="App.filterBooks(this.value)">
+      </div>
+    </div>
+    <div id="books-container"></div>
+    <div id="bookmarks-panel">
+      <div class="bk-header" onclick="App.toggleBookmarkPanel()">
+        <span>Bookmarks</span>
+        <span class="bk-count" id="bk-count">0</span>
+      </div>
+      <div class="bk-list" id="bk-list" style="display:none"></div>
+    </div>
+    <div id="sidebar-footer">
+      <div class="api-key-indicator" onclick="App.openApiModal()">
+        <div class="dot" id="api-dot"></div>
+        <span id="api-status-text">Claude API: not connected</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div id="main">
+    <div id="header">
+      <button class="tab-btn active" onclick="App.switchView('read')">📖 Read</button>
+      <button class="tab-btn" onclick="App.switchView('lexicon')">🔤 Lexicon</button>
+      <button class="tab-btn" onclick="App.switchView('timeline')">📅 Timeline</button>
+      <button class="tab-btn" onclick="App.switchView('maps')">🗺 Maps</button>
+      <button class="tab-btn" onclick="App.switchView('notes')">📌 Notes</button>
+      <button class="tab-btn" onclick="App.switchView('ask')">💬 Ask</button>
+      <div id="header-loc">
+        <span id="loc-text"></span>
+        <button class="toggle-btn" id="compare-toggle" onclick="App.toggleCompare()" title="Side-by-side translations">
+          <span class="toggle-dot"></span> Compare
+        </button>
+        <button style="background:none;border:none;cursor:pointer;font-size:18px;padding:4px 8px;color:var(--text-3);transition:var(--transition)" onclick="App.openSearch()" title="Search (Ctrl+K)">🔍</button>
+        <select id="translation-select" onchange="App.changeTranslation(this.value)">
+          <option value="web">WEB — World English</option>
+          <option value="ylt">YLT — Young's Literal</option>
+          <option value="kjv">KJV — King James</option>
+          <option value="asv">ASV — American Standard</option>
+        </select>
+      </div>
+    </div>
+    <!-- Compare Bar (hidden until activated) -->
+    <div id="compare-bar">
+      <label>Compare:</label>
+      <label class="compare-check"><input type="checkbox" value="web" checked onchange="App.updateCompare()"> WEB</label>
+      <label class="compare-check"><input type="checkbox" value="kjv" onchange="App.updateCompare()"> KJV</label>
+      <label class="compare-check"><input type="checkbox" value="ylt" onchange="App.updateCompare()"> YLT</label>
+      <label class="compare-check"><input type="checkbox" value="asv" onchange="App.updateCompare()"> ASV</label>
+    </div>
+
+    <!-- Read View -->
+    <div class="view active" id="view-read">
+      <div id="reader-panel">
+        <div id="reader-toolbar">
+          <button class="nav-btn" id="prev-ch" onclick="App.prevChapter()" title="Previous chapter">‹</button>
+          <div id="chapter-title">Select a book to begin</div>
+          <select class="chapter-select" id="chapter-select" onchange="App.goToChapter(parseInt(this.value))"></select>
+          <button class="nav-btn" id="next-ch" onclick="App.nextChapter()" title="Next chapter">›</button>
+          <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
+            <button class="toggle-btn" id="interlinear-toggle" onclick="App.toggleInterlinear()" title="Show original language under each word">
+              <span class="toggle-dot"></span> Interlinear
+            </button>
+            <button class="toggle-btn" id="commentary-toggle" onclick="App.toggleCommentary()" title="Show scholarly commentary">
+              <span class="toggle-dot"></span> Commentary
+            </button>
+          </div>
+        </div>
+        <div id="compare-content" style="display:none;flex:1;overflow:hidden">
+          <div id="compare-panels" style="display:grid;height:100%;overflow-y:auto"></div>
+        </div>
+        <div id="reader-content">
+          <div class="welcome-msg">
+            <div class="icon">📜</div>
+            <h3>Choose a book to begin</h3>
+            <p>Select any book from the sidebar. Switch translations using the dropdown above to compare how the text reads in different versions — especially Young's Literal Translation for maximum linguistic precision.</p>
+          </div>
+        </div>
+      </div>
+      <div id="word-panel">
+        <h3>Word Studies</h3>
+        <div id="word-panel-content">
+          <p style="font-size:13px;color:var(--text-3);line-height:1.6;">Key Hebrew and Greek terms will appear here as you read. Click any card to explore the full semantic range of the original word.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lexicon View -->
+    <div class="view" id="view-lexicon">
+      <div id="lexicon-toolbar">
+        <strong style="font-size:13.5px;color:var(--text-2);margin-right:4px;">Filter:</strong>
+        <button class="filter-btn active" onclick="App.filterLexicon('all',this)">All</button>
+        <button class="filter-btn" onclick="App.filterLexicon('hebrew',this)">Hebrew</button>
+        <button class="filter-btn" onclick="App.filterLexicon('greek',this)">Greek</button>
+      </div>
+      <div id="lexicon-grid"></div>
+    </div>
+
+    <!-- Timeline View -->
+    <div class="view" id="view-timeline">
+      <div id="timeline-header">
+        <h2>Biblical Timeline</h2>
+        <p>Scroll horizontally · Click any event for detail · Dates marked BC are approximate</p>
+      </div>
+      <div id="timeline-scroll">
+        <div id="timeline-track"></div>
+      </div>
+    </div>
+
+    <!-- Maps View -->
+    <div class="view" id="view-maps">
+      <div id="maps-toolbar">
+        <strong style="font-size:13.5px;color:var(--text-2);margin-right:4px;">Map:</strong>
+        <button class="filter-btn active" onclick="App.switchMap('ane',this)">Ancient Near East</button>
+        <button class="filter-btn" onclick="App.switchMap('israel',this)">Land of Israel</button>
+        <button class="filter-btn" onclick="App.switchMap('paul',this)">Paul's Journeys</button>
+      </div>
+      <div id="maps-content"><div id="map-render"></div></div>
+    </div>
+
+    <!-- My Notes View -->
+    <div class="view" id="view-notes">
+      <div id="notes-header">
+        <div>
+          <h2>My Notes & Highlights</h2>
+          <p>All your annotations, organized by passage</p>
+        </div>
+        <button class="btn btn-secondary" onclick="App.clearAllNotes()" style="font-size:12px">Clear All</button>
+      </div>
+      <div id="notes-grid"><div class="notes-empty" style="color:var(--text-3);font-size:14px">No notes yet. Hover any verse while reading to highlight or add a note.</div></div>
+    </div>
+
+    <!-- Ask View -->
+    <div class="view" id="view-ask">
+      <div id="ask-header">
+        <h2>Ask the Scholar</h2>
+        <p>Powered by Claude · Answers grounded in original Hebrew, Greek, and historical context</p>
+      </div>
+      <div id="chat-messages">
+        <div class="msg assistant">
+          <div class="msg-avatar">λ</div>
+          <div class="msg-bubble">
+            <p>Shalom. I'm here to help you understand Scripture in its original languages and cultural context.</p>
+            <p>Ask me about any word, passage, or theme — I'll always reference the underlying Hebrew or Greek and explain what the original audience would have understood.</p>
+            <p><strong>Try asking:</strong> "What does hesed mean in Psalm 23?" or "Why does Genesis 1:1 say 'with the beginning' in Hebrew?" or "What's the difference between zoe and bios in John's Gospel?"</p>
+          </div>
+        </div>
+      </div>
+      <div id="chat-input-wrap">
+        <div class="no-key-banner" id="no-key-banner" style="display:none;">
+          <span>Connect your Claude API key to enable the AI assistant.</span>
+          <button onclick="App.openApiModal()">Add API Key</button>
+        </div>
+        <div id="chat-form">
+          <textarea id="chat-input" placeholder="Ask about any passage, word, or biblical theme..." rows="1" onkeydown="App.chatKeyDown(event)"></textarea>
+          <button id="send-btn" onclick="App.sendMessage()">↑</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+
+const BOOKS = [
+  // TORAH
+  {id:'genesis',name:'Genesis',abbr:'Gen',ch:50,t:'OT',sec:'Torah',lang:'Hebrew',author:'Moses (traditional)',date:'~1450–1400 BC',theme:'Origins: creation, fall, covenant with Abraham, Isaac, Jacob, Joseph'},
+  {id:'exodus',name:'Exodus',abbr:'Exo',ch:40,t:'OT',sec:'Torah',lang:'Hebrew',author:'Moses',date:'~1450–1400 BC',theme:'Deliverance from Egypt, the Law, and the Tabernacle'},
+  {id:'leviticus',name:'Leviticus',abbr:'Lev',ch:27,t:'OT',sec:'Torah',lang:'Hebrew',author:'Moses',date:'~1450–1400 BC',theme:'Holiness, sacrifice, and priestly law'},
+  {id:'numbers',name:'Numbers',abbr:'Num',ch:36,t:'OT',sec:'Torah',lang:'Hebrew',author:'Moses',date:'~1450–1400 BC',theme:'Wilderness wandering and community structure'},
+  {id:'deuteronomy',name:'Deuteronomy',abbr:'Deu',ch:34,t:'OT',sec:'Torah',lang:'Hebrew',author:'Moses',date:'~1407 BC',theme:"Moses' final speeches renewing the covenant"},
+  // HISTORICAL
+  {id:'joshua',name:'Joshua',abbr:'Jos',ch:24,t:'OT',sec:'History',lang:'Hebrew',author:'Joshua / editors',date:'~1400–1370 BC',theme:'Conquest and settlement of Canaan'},
+  {id:'judges',name:'Judges',abbr:'Jdg',ch:21,t:'OT',sec:'History',lang:'Hebrew',author:'Unknown (Samuel?)',date:'~1050–1000 BC',theme:'Cycles of apostasy, oppression, and deliverance'},
+  {id:'ruth',name:'Ruth',abbr:'Rth',ch:4,t:'OT',sec:'History',lang:'Hebrew',author:'Unknown',date:'~1000 BC',theme:'Loyalty (hesed) and redemption in the lineage of David'},
+  {id:'1+samuel',name:'1 Samuel',abbr:'1Sa',ch:31,t:'OT',sec:'History',lang:'Hebrew',author:'Unknown',date:'~960–900 BC',theme:'Israel\'s transition from judges to monarchy'},
+  {id:'2+samuel',name:'2 Samuel',abbr:'2Sa',ch:24,t:'OT',sec:'History',lang:'Hebrew',author:'Unknown',date:'~960–900 BC',theme:'David\'s reign, triumphs, and failures'},
+  {id:'1+kings',name:'1 Kings',abbr:'1Ki',ch:22,t:'OT',sec:'History',lang:'Hebrew',author:'Unknown',date:'~560 BC',theme:'Solomon\'s glory, the divided kingdom'},
+  {id:'2+kings',name:'2 Kings',abbr:'2Ki',ch:25,t:'OT',sec:'History',lang:'Hebrew',author:'Unknown',date:'~560 BC',theme:'Decline and fall of both kingdoms; exile'},
+  {id:'1+chronicles',name:'1 Chronicles',abbr:'1Ch',ch:29,t:'OT',sec:'History',lang:'Hebrew',author:'Ezra (traditional)',date:'~450–400 BC',theme:'Genealogies and David\'s preparations for the Temple'},
+  {id:'2+chronicles',name:'2 Chronicles',abbr:'2Ch',ch:36,t:'OT',sec:'History',lang:'Hebrew',author:'Ezra (traditional)',date:'~450–400 BC',theme:'Temple worship from Solomon to the exile'},
+  {id:'ezra',name:'Ezra',abbr:'Ezr',ch:10,t:'OT',sec:'History',lang:'Hebrew/Aramaic',author:'Ezra',date:'~440 BC',theme:'Return from exile and rebuilding the community'},
+  {id:'nehemiah',name:'Nehemiah',abbr:'Neh',ch:13,t:'OT',sec:'History',lang:'Hebrew',author:'Nehemiah / Ezra',date:'~430 BC',theme:'Rebuilding Jerusalem\'s walls and covenant renewal'},
+  {id:'esther',name:'Esther',abbr:'Est',ch:10,t:'OT',sec:'History',lang:'Hebrew',author:'Unknown',date:'~480–470 BC',theme:'God\'s hidden providence preserving his people in Persia'},
+  // POETRY
+  {id:'job',name:'Job',abbr:'Job',ch:42,t:'OT',sec:'Poetry',lang:'Hebrew',author:'Unknown',date:'Unknown (patriarchal era?)',theme:'Suffering, theodicy, and the limits of human understanding'},
+  {id:'psalms',name:'Psalms',abbr:'Psa',ch:150,t:'OT',sec:'Poetry',lang:'Hebrew',author:'David, Asaph, Korah, Moses, others',date:'~1000–400 BC',theme:'Israel\'s hymnbook — praise, lament, thanksgiving, trust'},
+  {id:'proverbs',name:'Proverbs',abbr:'Pro',ch:31,t:'OT',sec:'Poetry',lang:'Hebrew',author:'Solomon, Agur, Lemuel',date:'~970–700 BC',theme:'Practical wisdom for righteous living'},
+  {id:'ecclesiastes',name:'Ecclesiastes',abbr:'Ecc',ch:12,t:'OT',sec:'Poetry',lang:'Hebrew',author:'Qoheleth (Solomon?)',date:'~935 BC',theme:'The vanity of life apart from God'},
+  {id:'song+of+solomon',name:'Song of Solomon',abbr:'SOS',ch:8,t:'OT',sec:'Poetry',lang:'Hebrew',author:'Solomon',date:'~970 BC',theme:'Sacred love poetry; marriage; divine-human relationship'},
+  // MAJOR PROPHETS
+  {id:'isaiah',name:'Isaiah',abbr:'Isa',ch:66,t:'OT',sec:'Major Prophets',lang:'Hebrew',author:'Isaiah ben Amoz',date:'~740–680 BC',theme:'Judgment and restoration; the Servant Songs; messianic hope'},
+  {id:'jeremiah',name:'Jeremiah',abbr:'Jer',ch:52,t:'OT',sec:'Major Prophets',lang:'Hebrew',author:'Jeremiah',date:'~627–586 BC',theme:'The fall of Jerusalem; the new covenant promise'},
+  {id:'lamentations',name:'Lamentations',abbr:'Lam',ch:5,t:'OT',sec:'Major Prophets',lang:'Hebrew',author:'Jeremiah (traditional)',date:'~586 BC',theme:'Grief over Jerusalem\'s destruction; hope amid desolation'},
+  {id:'ezekiel',name:'Ezekiel',abbr:'Eze',ch:48,t:'OT',sec:'Major Prophets',lang:'Hebrew',author:'Ezekiel',date:'~593–570 BC',theme:'Vision, judgment, and restoration of Israel in exile'},
+  {id:'daniel',name:'Daniel',abbr:'Dan',ch:12,t:'OT',sec:'Major Prophets',lang:'Hebrew/Aramaic',author:'Daniel',date:'~605–530 BC',theme:'Faithfulness in exile; apocalyptic visions of world history'},
+  // MINOR PROPHETS
+  {id:'hosea',name:'Hosea',abbr:'Hos',ch:14,t:'OT',sec:'Minor Prophets',lang:'Hebrew',author:'Hosea',date:'~755–715 BC',theme:'God\'s covenant love (hesed) despite Israel\'s unfaithfulness'},
+  {id:'joel',name:'Joel',abbr:'Joe',ch:3,t:'OT',sec:'Minor Prophets',lang:'Hebrew',author:'Joel',date:'~835 BC (or ~400 BC)',theme:'The Day of the Lord; promise of the Spirit'},
+  {id:'amos',name:'Amos',abbr:'Amo',ch:9,t:'OT',sec:'Minor Prophets',lang:'Hebrew',author:'Amos',date:'~760–750 BC',theme:'Social justice; God\'s judgment against Israel\'s injustice'},
+  {id:'obadiah',name:'Obadiah',abbr:'Oba',ch:1,t:'OT',sec:'Minor Prophets',lang:'Hebrew',author:'Obadiah',date:'~586 BC',theme:'Judgment against Edom for betraying Judah'},
+  {id:'jonah',name:'Jonah',abbr:'Jon',ch:4,t:'OT',sec:'Minor Prophets',lang:'Hebrew',author:'Jonah (traditional)',date:'~785–760 BC',theme:"God's mercy extended beyond Israel; reluctant prophet"},
+  {id:'micah',name:'Micah',abbr:'Mic',ch:7,t:'OT',sec:'Minor Prophets',lang:'Hebrew',author:'Micah',date:'~737–700 BC',theme:'Justice, mercy, humility; messianic prophecy of Bethlehem'},
+  {id:'nahum',name:'Nahum',abbr:'Nah',ch:3,t:'OT',sec:'Minor Prophets',lang:'Hebrew',author:'Nahum',date:'~663–612 BC',theme:"Nineveh's fall; God's justice against violent empires"},
+  {id:'habakkuk',name:'Habakkuk',abbr:'Hab',ch:3,t:'OT',sec:'Minor Prophets',lang:'Hebrew',author:'Habakkuk',date:'~612–589 BC',theme:'Wrestling with God\'s justice; trust despite suffering'},
+  {id:'zephaniah',name:'Zephaniah',abbr:'Zep',ch:3,t:'OT',sec:'Minor Prophets',lang:'Hebrew',author:'Zephaniah',date:'~640–609 BC',theme:'The Day of the Lord; remnant restored'},
+  {id:'haggai',name:'Haggai',abbr:'Hag',ch:2,t:'OT',sec:'Minor Prophets',lang:'Hebrew',author:'Haggai',date:'~520 BC',theme:'Rebuilding the Temple; God\'s presence among his people'},
+  {id:'zechariah',name:'Zechariah',abbr:'Zec',ch:14,t:'OT',sec:'Minor Prophets',lang:'Hebrew',author:'Zechariah',date:'~520–518 BC',theme:'Apocalyptic visions; messianic prophecy; the humble king'},
+  {id:'malachi',name:'Malachi',abbr:'Mal',ch:4,t:'OT',sec:'Minor Prophets',lang:'Hebrew',author:'Malachi',date:'~430 BC',theme:'Covenant faithfulness; forerunner prophecy; the last OT voice'},
+  // GOSPELS
+  {id:'matthew',name:'Matthew',abbr:'Mat',ch:28,t:'NT',sec:'Gospels',lang:'Greek',author:'Matthew (Levi)',date:'~50–70 AD',theme:'Jesus as the fulfillment of Jewish Scripture; the Kingdom of Heaven'},
+  {id:'mark',name:'Mark',abbr:'Mar',ch:16,t:'NT',sec:'Gospels',lang:'Greek',author:'Mark (Peter\'s interpreter)',date:'~50–65 AD',theme:'Jesus as the suffering servant; action and immediacy'},
+  {id:'luke',name:'Luke',abbr:'Luk',ch:24,t:'NT',sec:'Gospels',lang:'Greek',author:'Luke the physician',date:'~60–80 AD',theme:'Jesus as Savior of all humanity; outsiders, women, the poor'},
+  {id:'john',name:'John',abbr:'Jhn',ch:21,t:'NT',sec:'Gospels',lang:'Greek',author:'John son of Zebedee',date:'~85–95 AD',theme:'Jesus as the divine Logos; belief and eternal life'},
+  // ACTS
+  {id:'acts',name:'Acts',abbr:'Act',ch:28,t:'NT',sec:'History',lang:'Greek',author:'Luke',date:'~62–80 AD',theme:'The Spirit-empowered spread of the gospel from Jerusalem to Rome'},
+  // PAULINE LETTERS
+  {id:'romans',name:'Romans',abbr:'Rom',ch:16,t:'NT',sec:"Paul's Letters",lang:'Greek',author:'Paul',date:'~57 AD',theme:'The righteousness of God; justification by faith; Jew and Gentile united in Christ'},
+  {id:'1+corinthians',name:'1 Corinthians',abbr:'1Co',ch:16,t:'NT',sec:"Paul's Letters",lang:'Greek',author:'Paul',date:'~54–55 AD',theme:'Church unity, spiritual gifts, resurrection, and agape love'},
+  {id:'2+corinthians',name:'2 Corinthians',abbr:'2Co',ch:13,t:'NT',sec:"Paul's Letters",lang:'Greek',author:'Paul',date:'~55–56 AD',theme:'Paul\'s apostolic ministry; strength in weakness; new creation'},
+  {id:'galatians',name:'Galatians',abbr:'Gal',ch:6,t:'NT',sec:"Paul's Letters",lang:'Greek',author:'Paul',date:'~48–55 AD',theme:'Freedom from the law; justification by faith alone; the fruit of the Spirit'},
+  {id:'ephesians',name:'Ephesians',abbr:'Eph',ch:6,t:'NT',sec:"Paul's Letters",lang:'Greek',author:'Paul',date:'~60–62 AD',theme:'The church as Christ\'s body; unity, spiritual warfare, household codes'},
+  {id:'philippians',name:'Philippians',abbr:'Php',ch:4,t:'NT',sec:"Paul's Letters",lang:'Greek',author:'Paul',date:'~61–62 AD',theme:'Joy in Christ; the kenosis hymn; the peace that surpasses understanding'},
+  {id:'colossians',name:'Colossians',abbr:'Col',ch:4,t:'NT',sec:"Paul's Letters",lang:'Greek',author:'Paul',date:'~60–62 AD',theme:'The supremacy of Christ; freedom from human philosophy'},
+  {id:'1+thessalonians',name:'1 Thessalonians',abbr:'1Th',ch:5,t:'NT',sec:"Paul's Letters",lang:'Greek',author:'Paul',date:'~50–51 AD',theme:'Encouragement amid persecution; the return of Christ'},
+  {id:'2+thessalonians',name:'2 Thessalonians',abbr:'2Th',ch:3,t:'NT',sec:"Paul's Letters",lang:'Greek',author:'Paul',date:'~51–52 AD',theme:'Correction on the day of the Lord; faithfulness while waiting'},
+  {id:'1+timothy',name:'1 Timothy',abbr:'1Ti',ch:6,t:'NT',sec:"Paul's Letters",lang:'Greek',author:'Paul',date:'~63–65 AD',theme:'Church leadership, sound doctrine, and godliness'},
+  {id:'2+timothy',name:'2 Timothy',abbr:'2Ti',ch:4,t:'NT',sec:"Paul's Letters",lang:'Greek',author:'Paul',date:'~64–67 AD',theme:"Paul's final letter; perseverance and faithfulness to the end"},
+  {id:'titus',name:'Titus',abbr:'Tit',ch:3,t:'NT',sec:"Paul's Letters",lang:'Greek',author:'Paul',date:'~63–65 AD',theme:'Sound teaching and godly conduct in the church'},
+  {id:'philemon',name:'Philemon',abbr:'Phm',ch:1,t:'NT',sec:"Paul's Letters",lang:'Greek',author:'Paul',date:'~60–62 AD',theme:'Reconciliation; Onesimus the slave received as a brother'},
+  // GENERAL LETTERS
+  {id:'hebrews',name:'Hebrews',abbr:'Heb',ch:13,t:'NT',sec:'General Letters',lang:'Greek',author:'Unknown (Paul? Apollos? Priscilla?)',date:'~60–70 AD',theme:'Jesus as the ultimate high priest; the new covenant; perseverance in faith'},
+  {id:'james',name:'James',abbr:'Jas',ch:5,t:'NT',sec:'General Letters',lang:'Greek',author:'James brother of Jesus',date:'~44–49 AD',theme:'Faith without works is dead; wisdom, speech, and practical holiness'},
+  {id:'1+peter',name:'1 Peter',abbr:'1Pe',ch:5,t:'NT',sec:'General Letters',lang:'Greek',author:'Peter',date:'~64–68 AD',theme:'Living as exiles; hope through suffering; the suffering Servant'},
+  {id:'2+peter',name:'2 Peter',abbr:'2Pe',ch:3,t:'NT',sec:'General Letters',lang:'Greek',author:'Peter',date:'~65–68 AD',theme:'Warning against false teachers; the certainty of Christ\'s return'},
+  {id:'1+john',name:'1 John',abbr:'1Jn',ch:5,t:'NT',sec:'General Letters',lang:'Greek',author:'John',date:'~85–95 AD',theme:'Abiding in love and light; testing the spirits; assurance of life'},
+  {id:'2+john',name:'2 John',abbr:'2Jn',ch:1,t:'NT',sec:'General Letters',lang:'Greek',author:'John (the Elder)',date:'~90–95 AD',theme:'Walking in truth and love; warning against false teachers'},
+  {id:'3+john',name:'3 John',abbr:'3Jn',ch:1,t:'NT',sec:'General Letters',lang:'Greek',author:'John (the Elder)',date:'~90–95 AD',theme:'Hospitality and opposition in the early church'},
+  {id:'jude',name:'Jude',abbr:'Jud',ch:1,t:'NT',sec:'General Letters',lang:'Greek',author:'Jude brother of Jesus',date:'~65–80 AD',theme:'Contending for the faith against false teaching and immorality'},
+  // PROPHECY
+  {id:'revelation',name:'Revelation',abbr:'Rev',ch:22,t:'NT',sec:'Prophecy',lang:'Greek',author:'John of Patmos',date:'~95–96 AD',theme:'Apocalyptic vision: the victory of the Lamb; the new creation'},
+];
+
+const WORD_STUDIES = {
+  hebrew: [
+    {
+      id:'bereshit', word:'בְּרֵאשִׁית', translit:'be-re-SHEET', strongs:'H7225',
+      pos:'noun, feminine (construct state)', root:'רֹאשׁ (rosh) — head, first, chief',
+      gloss:'In/with the beginning', lang:'hebrew',
+      common_translation:'"In the beginning"',
+      better_translation:'"In/with the beginning of" — possibly a temporal dependent clause',
+      meaning:`The very first word of the Hebrew Bible carries a grammatical ambiguity that reshapes the entire opening of Genesis. Most English Bibles render it "In the beginning" (absolute state), implying God acted at time zero. But the Hebrew form בְּרֵאשִׁית is in the construct state — meaning it governs a following noun like "the beginning of [God's creating]." This would make Genesis 1:1–3 a temporal clause: "When God began creating the heavens and the earth — the earth being formless and void — God said: Let there be light."\n\nThe construct reading does NOT mean creation was eternal or that God didn't create from nothing — it simply changes the sentence structure. Both the Septuagint (Greek OT, ~3rd century BC) and most ancient Rabbis read it as an absolute ("In the beginning"), while modern Hebrew scholars like Rashi and E.A. Speiser favor the construct/dependent reading.\n\nThe root רֹאשׁ (rosh) gives us the modern Hebrew word for "head." The word reshit means "first-fruits" or "the best/chief of something," adding a nuance of primacy and excellence beyond mere chronological sequence.`,
+      passages:['Genesis 1:1','Proverbs 8:22–23','Isaiah 46:10'],
+    },
+    {
+      id:'elohim', word:'אֱלֹהִים', translit:"e-lo-HEEM", strongs:'H430',
+      pos:'noun, masculine plural', root:'אֵל (El) — God, mighty one, power',
+      gloss:'God (grammatically plural, conceptually singular)', lang:'hebrew',
+      common_translation:'"God" (treated as singular throughout)',
+      better_translation:'"God" — but noting the plural form is significant',
+      meaning:`Elohim is the most common word for God in the Hebrew Bible (over 2,600 occurrences) and immediately raises a fascinating linguistic question: it is grammatically plural but almost always takes a singular verb.\n\nWhy the plural form?\n\n1. Plural of majesty (pluralis majestatis): Many ancient Near Eastern languages used plural forms for exalted titles. Egyptian pharaohs used similar constructions. This is the dominant Jewish interpretation.\n\n2. Fullness/intensity: The plural may indicate the infinite fullness and totality of God's being rather than mere singularity.\n\n3. A hint of divine complexity: Some Christian scholars see foreshadowing of the Trinity. Whether intended or not, the form at minimum defies simplistic monotheism's expectations.\n\nElohim is distinguished from YHWH (God's personal name). Elohim is the majestic creator-God; YHWH is the covenant-keeping personal God. In Genesis 1, only Elohim appears. In Genesis 2, YHWH-Elohim appears — the personal name joined to the majestic title.`,
+      passages:['Genesis 1:1','Psalm 82:1','Deuteronomy 6:4'],
+    },
+    {
+      id:'yhwh', word:'יְהוָה', translit:'Yah-WEH (the Tetragrammaton)', strongs:'H3068',
+      pos:'proper noun, divine name', root:'הָיָה (hayah) — to be, to exist',
+      gloss:'LORD (the self-existent, covenant God)', lang:'hebrew',
+      common_translation:'"LORD" (in all caps, per Jewish/Christian tradition)',
+      better_translation:'Yahweh — the personal name of the God of Israel',
+      meaning:`YHWH (the four letters yod-heh-vav-heh, called the Tetragrammaton) is God's personal covenant name, revealed to Moses at the burning bush (Exodus 3:14). It derives from the root hayah (to be) and means something like "He who is" or "the self-existent one" or "I AM WHAT I AM."\n\nJewish tradition ceased pronouncing this name out of reverence, substituting "Adonai" (my Lord) in reading. When Christian translators transliterated this as "Jehovah," they misread the vowel markings of Adonai under the consonants of YHWH. Most scholars today prefer "Yahweh."\n\nThe distinction from Elohim is crucial: Elohim emphasizes God's power and transcendence as creator of all; YHWH emphasizes God's personal, covenantal relationship with Israel. When the Bible says "the LORD your God," it is saying "Yahweh, your Elohim" — the personal name tied to relational commitment.\n\nUsed ~6,800 times in the OT. Its absence from most English Bibles, replaced by LORD, obscures how frequently God's personal name appears.`,
+      passages:['Exodus 3:14–15','Psalm 23:1','Isaiah 42:8'],
+    },
+    {
+      id:'bara', word:'בָּרָא', translit:'ba-RA', strongs:'H1254',
+      pos:'verb, qal stem', root:'בָּרָא (bara) — to create',
+      gloss:'To create (uniquely divine activity)', lang:'hebrew',
+      common_translation:'"Created"',
+      better_translation:'"Created" — but noting this verb is used exclusively of God in the OT',
+      meaning:`One of the most remarkable words in Genesis 1:1. While Hebrew has several words for "make" (asah = make/do, yatsar = form/shape, banah = build), bara is used exclusively with God as the subject — never with humans.\n\nThis doesn't automatically prove creation ex nihilo (from nothing), since bara can be used in contexts where material already exists (Isaiah 65:18 — God "creates" a Jerusalem). But the exclusivity of its divine subject strongly implies that bara describes a quality of creative act that belongs to God alone — bringing forth something genuinely new and unprecedented.\n\nThe three verbs compared:\n• bara (בָּרָא) — God's exclusive creative act\n• yatsar (יָצַר) — to form/shape, as a potter shapes clay (used for God forming Adam from dust)\n• asah (עָשָׂה) — to make/do, used broadly of both God and humans\n\nGenesis 1 uses all three, suggesting different aspects of God's creative work — initiating new realities (bara), forming and shaping (yatsar), and making/doing (asah).`,
+      passages:['Genesis 1:1','Genesis 1:21','Isaiah 45:7','Psalm 51:10'],
+    },
+    {
+      id:'hesed', word:'חֶסֶד', translit:'HEH-sed', strongs:'H2617',
+      pos:'noun, masculine', root:'חָסַד (hasad) — to be kind, loyal',
+      gloss:'Steadfast love, covenant loyalty, lovingkindness', lang:'hebrew',
+      common_translation:'"Lovingkindness," "mercy," "steadfast love," "loyalty"',
+      better_translation:'No single English word covers it — covenant faithfulness expressed as tenacious love',
+      meaning:`Hesed is arguably the most important theological word in the Hebrew Bible — and the most untranslatable. Used over 250 times, it has been rendered "lovingkindness" (KJV), "steadfast love" (RSV/ESV), "loyal love," "mercy," "faithfulness," and even "grace."\n\nHesed combines what English keeps separate:\n• Love (emotional warmth and affection)\n• Loyalty (covenantal obligation and faithfulness)\n• Action (it always shows up in deeds, not just feelings)\n\nHesed is the love that doesn't quit. It's what Ruth showed Naomi (Ruth 1:8). It's what God promised Israel despite their failures (Psalm 136, where "his hesed endures forever" is the refrain for 26 consecutive verses). It's what the prodigal father runs to meet his son with.\n\nThe key OT passage is Exodus 34:6–7, God's self-description: "The LORD, the LORD, a God merciful and gracious, slow to anger, and abounding in hesed and faithfulness." This became the foundational description of God's character throughout the OT.`,
+      passages:['Ruth 1:8','Psalm 23:6','Psalm 136','Hosea 6:6','Micah 6:8'],
+    },
+    {
+      id:'shalom', word:'שָׁלוֹם', translit:'sha-LOM', strongs:'H7965',
+      pos:'noun, masculine', root:'שָׁלֵם (shalem) — to be complete, whole, at peace',
+      gloss:'Peace, wholeness, completeness, flourishing', lang:'hebrew',
+      common_translation:'"Peace"',
+      better_translation:'"Wholeness/flourishing" — not merely absence of conflict',
+      meaning:`Shalom is consistently mistranslated if understood only as "peace" in the Western sense (absence of conflict or war). The Hebrew root shalem means completeness, wholeness, soundness, or well-being.\n\nShalom describes the state of flourishing that God intends for all creation — right relationships between God and humans, humans and each other, and humans and the created order. It is the biblical vision of the good life, the healed world.\n\nWhen Isaiah prophesies that the Messiah's government will have no end to shalom (Isaiah 9:7), he is describing a reign of total flourishing — political, relational, physical, spiritual.\n\nWhen Paul writes "the peace of God" (Philippians 4:7), the Greek is εἰρήνη (eirene), which directly corresponds to shalom in the Septuagint. The "peace that passes understanding" is not just a calm feeling — it is participatory access to God's own wholeness.\n\nShalom being broken is the core diagnosis of Genesis 3. The entire biblical story is about its restoration.`,
+      passages:['Isaiah 9:6–7','Isaiah 53:5','Numbers 6:24–26','John 14:27'],
+    },
+    {
+      id:'nefesh', word:'נֶפֶשׁ', translit:'NEH-fesh', strongs:'H5315',
+      pos:'noun, feminine', root:'נָפַשׁ (nafash) — to breathe',
+      gloss:'Soul, living being, life, person, appetite', lang:'hebrew',
+      common_translation:'"Soul"',
+      better_translation:'"Living being" — the whole animated person, not an immortal soul separate from the body',
+      meaning:`This is one of the most consequential mistranslations in popular theology. Genesis 2:7 says: "the LORD God formed man from the dust of the ground, breathed into his nostrils the breath of life, and the man became a living nefesh."\n\nNotice: Adam did not receive a soul — he became a nefesh. The nefesh is not an immortal part inserted into a body; it IS the person as a whole, the animated physical being.\n\nNefesh can mean:\n• A person (Genesis 46:26 — 66 "souls" meaning 66 people)\n• Life itself (Exodus 21:23 — "life for life")\n• Desire/appetite (Proverbs 23:2)\n• The emotional self/inner life (Psalm 42:1 — "my soul thirsts")\n\nThe Greek body/soul dualism (Plato's idea that the soul is imprisoned in the body) is foreign to Hebrew thought. Hebrew anthropology sees humans as embodied-souls or ensouled-bodies — unified wholes. This matters enormously for understanding resurrection (the hope is not escape from the body, but bodily resurrection and new creation).`,
+      passages:['Genesis 2:7','Psalm 42:1–2','Psalm 103:1','Matthew 10:28'],
+    },
+    {
+      id:'ruach', word:'רוּחַ', translit:'ROO-akh', strongs:'H7307',
+      pos:'noun, feminine/masculine', root:'רוּחַ (ruach) — to blow, breathe',
+      gloss:'Spirit, wind, breath', lang:'hebrew',
+      common_translation:'"Spirit" (divine) or "wind" (natural)',
+      better_translation:'Context-dependent: breath of life, wind/storm, or God\'s animating presence',
+      meaning:`Ruach carries a rich semantic field that English must split into three words: spirit, wind, and breath. The same word is used for:\n\n• The wind of God hovering over the waters (Genesis 1:2)\n• The breath that animates all living things (Psalm 104:29–30)\n• The Spirit of God empowering judges, kings, and prophets (Judges 6:34)\n• The inner spirit/disposition of a person (Proverbs 18:14)\n• The coming Spirit promised by Joel (Joel 2:28)\n\nGenesis 1:2 is particularly contested: is "the Spirit of God hovering over the waters" (ruach Elohim) referring to the divine Spirit, or to a mighty wind? Both translations are grammatically possible. The context — preparing for divine speech and creative action — favors the Spirit reading, but the ambiguity may be intentional.\n\nIn Ezekiel 37 (the dry bones vision), ruach is used in all three senses within a single passage: wind (v.9), breath (v.5), and Spirit (v.14) — showing the profound unity of these concepts in Hebrew thought.`,
+      passages:['Genesis 1:2','Ezekiel 37:1–14','Joel 2:28','Psalm 104:29–30'],
+    },
+    {
+      id:'torah', word:'תּוֹרָה', translit:'to-RAH', strongs:'H8451',
+      pos:'noun, feminine', root:'יָרָה (yarah) — to teach, instruct, throw/aim',
+      gloss:'Instruction, teaching, law', lang:'hebrew',
+      common_translation:'"Law"',
+      better_translation:'"Instruction" or "teaching" — the loving guidance of a parent, not a legal code',
+      meaning:`"The Law" is a fair but incomplete translation that carries heavy baggage from later contexts. Torah's root (yarah) means to teach or instruct — the same root used for a parent teaching a child or an archer pointing an arrow.\n\nTorah is God's instruction for human flourishing. It is not primarily a legal code designed to earn favor — it is the relational guidance of a loving Father to his children, given after deliverance (the Ten Commandments come after the Exodus, not before).\n\nThe Psalmist's attitude toward Torah in Psalm 119 — the longest chapter in the Bible, 176 verses — is not dread of a law court but delight: "Oh how I love your Torah! I meditate on it all day long" (v. 97). Psalm 19 describes Torah as "sweeter than honey."\n\nJesus' statement in Matthew 5:17 — "I have not come to abolish the Torah but to fulfill it" — uses the word pleroo (to fill up/complete), suggesting he brings Torah to its fullest expression, not that he replaces it.`,
+      passages:['Psalm 1:1–2','Psalm 119:97','Proverbs 3:1–2','Matthew 5:17'],
+    },
+    {
+      id:'kadosh', word:'קָדוֹשׁ', translit:'ka-DOSH', strongs:'H6918',
+      pos:'adjective / verb', root:'קָדַשׁ (kadash) — to be set apart, consecrated',
+      gloss:'Holy, set apart, other, consecrated', lang:'hebrew',
+      common_translation:'"Holy"',
+      better_translation:'"Set apart / other" — primarily ontological, not merely moral',
+      meaning:`Holy in Hebrew is not first a moral category but an ontological one — it describes something set apart from ordinary use, fundamentally different, belonging to a different order of reality.\n\nWhen Isaiah sees God enthroned and the seraphim cry "Holy, holy, holy" (Isaiah 6:3), the triple repetition is the Hebrew superlative: God is the most thoroughly "other," the most fully set apart from all created things. Isaiah's response is not "I am guilty" but "I am undone/ruined" — the self dissolves before the uncreated.\n\nThings become holy by proximity to God: the burning bush is "holy ground" not because the ground changed its composition but because God is present there. The Sabbath is "holy" because God set it apart. Vessels in the tabernacle were "holy" because they were consecrated.\n\nThe command "Be holy because I am holy" (Leviticus 19:2) is therefore not primarily "be morally perfect" but "be set apart as a people who belong to me and reflect my character in the world." The ethical demands follow from the relational reality.`,
+      passages:['Exodus 3:5','Leviticus 19:2','Isaiah 6:1–8','1 Peter 1:16'],
+    },
+    {
+      id:'kavod', word:'כָּבוֹד', translit:'ka-VOD', strongs:'H3519',
+      pos:'noun, masculine', root:'כָּבֵד (kaved) — to be heavy, weighty',
+      gloss:'Glory, weight, honor, substance', lang:'hebrew',
+      common_translation:'"Glory"',
+      better_translation:'"Weightiness" — God\'s substantial, felt presence and honor',
+      meaning:`The Hebrew kavod comes from a root meaning heavy or weighty. God's glory is not primarily a visual phenomenon (though it often appears as light or fire) but the experienced weight of his presence — the sense that something massive and real has entered the room.\n\nKavod was used of wealthy people (whose influence was "heavy," i.e., substantial) and of honor that carried real social weight. When applied to God, it describes the overwhelming reality of his presence that causes people to fall on their faces.\n\nThe Shekinah — the visible manifestation of God's glory filling the Tabernacle and Temple — is kavod made visible (Exodus 40:34–35). When the "glory departed" from the Temple in Ezekiel 10, it was the most catastrophic event imaginable: God had left the building.\n\nJohn 1:14 says the Word "tabernacled among us and we beheld his kavod (glory)" — directly linking Jesus to the Shekinah of the OT.`,
+      passages:['Exodus 33:18–23','Ezekiel 10:18–19','Isaiah 6:3','John 1:14'],
+    },
+    {
+      id:'mashiach', word:'מָשִׁיחַ', translit:'ma-SHEE-akh', strongs:'H4899',
+      pos:'noun, masculine / adjective', root:'מָשַׁח (mashach) — to smear, anoint with oil',
+      gloss:'Anointed one, Messiah', lang:'hebrew',
+      common_translation:'"Messiah" (transliteration), "anointed" (translation)',
+      better_translation:'"The Anointed One" — not a name but a title designating divine appointment',
+      meaning:`Mashiach simply means "anointed one" — someone on whom oil has been poured as a sign of divine appointment. In the OT it is used of:\n\n• Kings (Saul, David, Solomon are all called "the anointed")\n• Priests (Aaron and his sons were anointed for service)\n• Prophets (Elisha was anointed as prophet, 1 Kings 19:16)\n• Remarkably, even Cyrus the Persian king (Isaiah 45:1)\n\nThe concept of a future supreme Anointed One develops through the OT's "messianic prophecies" — a descendant of David who would reign in righteousness and restore shalom (2 Samuel 7, Isaiah 9, 11, Micah 5, Zechariah 9).\n\nThe Greek word Χριστός (Christos) is the exact translation of Mashiach, which is why "Jesus Christ" means "Jesus the Anointed One" — not a first and last name, but a name and title.`,
+      passages:['1 Samuel 16:1–13','Isaiah 61:1','Daniel 9:25–26','Psalm 2:2'],
+    },
+    {
+      id:'berit', word:'בְּרִית', translit:'be-REET', strongs:'H1285',
+      pos:'noun, feminine', root:'Disputed: possibly בָּרָה (barah) — to eat, or כָּרַת (karat) — to cut',
+      gloss:'Covenant, treaty, agreement', lang:'hebrew',
+      common_translation:'"Covenant"',
+      better_translation:'"Covenant/treaty" — a formally binding relationship, typically ratified by oath and ceremony',
+      meaning:`Berit is the structural backbone of the entire OT narrative. Every major turning point is a covenant — God's formal, binding commitment to a relationship and its obligations.\n\nThe phrase "to cut a covenant" (karat berit) reflects the ancient ratification ceremony in which animals were cut in half and the parties walked between them, symbolizing "may I be torn apart like these animals if I break this agreement" (see Genesis 15, where God alone passes through — making it unconditional).\n\nMajor biblical covenants:\n• Noahic (Genesis 9) — God commits to the earth's preservation; sign: rainbow\n• Abrahamic (Genesis 15, 17) — land, descendants, blessing to all nations; sign: circumcision\n• Mosaic/Sinaitic (Exodus 19–24) — law and national identity; sign: Sabbath\n• Davidic (2 Samuel 7) — an eternal dynasty from David's line\n• New Covenant (Jeremiah 31:31–34) — internalized Torah, full forgiveness\n\nJesus at the Last Supper says "this cup is the new berit in my blood" — directly invoking Jeremiah's prophecy.`,
+      passages:['Genesis 15','Jeremiah 31:31–34','Exodus 24:7–8','Luke 22:20'],
+    },
+    {
+      id:'goel', word:'גֹּאֵל', translit:"go-EL", strongs:'H1350',
+      pos:'noun / participle, masculine', root:'גָּאַל (gaal) — to redeem, buy back, claim',
+      gloss:'Kinsman-redeemer, avenger, redeemer', lang:'hebrew',
+      common_translation:'"Redeemer"',
+      better_translation:'"Kinsman-redeemer" — a family member with legal obligation to rescue',
+      meaning:`The go'el is one of the most beautiful legal-theological concepts in the OT. Under Israelite law, the nearest male relative had specific obligations:\n\n1. To buy back family land that had been sold under poverty (Leviticus 25:25)\n2. To marry a childless widow to preserve the family line (Deuteronomy 25:5–10 — levirate marriage)\n3. To buy back a family member sold into slavery (Leviticus 25:47–49)\n4. To avenge a murdered family member (Numbers 35:19 — "avenger of blood")\n\nBoaz acts as go'el for Ruth in the book of Ruth — one of the most beautiful love stories in the OT, and also a theological illustration of redemption.\n\nJob in his suffering cries out: "I know that my Go'el lives, and at the last he will stand upon the earth" (Job 19:25) — applying the kinsman-redeemer concept to God himself.\n\nThe NT builds its theology of redemption on this concept: Jesus as the divine kinsman who takes on human flesh to claim his family, buy them back, and restore what was lost.`,
+      passages:['Ruth 3–4','Job 19:25','Isaiah 41:14','Leviticus 25:25'],
+    },
+    {
+      id:'olam', word:'עוֹלָם', translit:"o-LAM", strongs:'H5769',
+      pos:'noun, masculine', root:'עָלַם (alam) — to hide, be hidden, beyond the horizon',
+      gloss:'Forever, eternity, age, ancient time, the distant/hidden time', lang:'hebrew',
+      common_translation:'"Forever," "everlasting," "eternal"',
+      better_translation:'"The age" or "the long duration" — not necessarily infinite; often "the hidden/distant time"',
+      meaning:`Olam does not have a built-in concept of infinite duration. Its root suggests something beyond the horizon — the vanishing point of time, whether in the past (ancient times) or future (time beyond sight).\n\nIn context it often means:\n• "Ancient times" (Micah 5:2 — the Messiah's origins are from olam)\n• "A very long time" (Jonah 2:6 — bars of the earth held him "forever")\n• "The present age" or "this world order" (as opposed to the age to come)\n• "Ongoing, perpetual" (an everlasting covenant)\n\nWhen God is described as "el olam" (Genesis 21:33), it means "the God of the ages" or "the eternal God" — encompassing all time.\n\nThe phrase "l'olam va'ed" (לְעוֹלָם וָעֶד) — "forever and ever" or literally "to the age and beyond" — stacks two time words to indicate the longest possible duration.\n\nThis matters for prophetic passages: "everlasting" covenants and "eternal" promises may have an age-long or eschatological scope rather than necessarily a platonic infinite duration.`,
+      passages:['Genesis 21:33','Micah 5:2','Psalm 90:2','Isaiah 9:6'],
+    },
+  ],
+
+  greek: [
+    {
+      id:'logos', word:'λόγος', translit:'LO-gos', strongs:'G3056',
+      pos:'noun, masculine', root:'λέγω (lego) — to speak, reason',
+      gloss:'Word, reason, account, logic, discourse', lang:'greek',
+      common_translation:'"Word"',
+      better_translation:'"The Word" — carrying all of logos\'s resonances: speech, reason, divine ordering principle',
+      meaning:`John 1:1 opens with "In the beginning was the Logos" — a word choice that would have electrified both Jewish and Greek readers.\n\nFor Greek philosophers (Heraclitus, Stoics), the logos was the rational principle ordering the cosmos — the logic behind reality itself, the reason the universe is intelligible.\n\nFor Jewish readers, it connected to:\n• The "Word of God" through whom creation came (Psalm 33:6 — "by his word the heavens were made")\n• The personified Wisdom of Proverbs 8 (present at creation, God's master craftsman)\n• The Aramaic Memra (Word) used in Targums as a way of speaking about God's presence and action\n\nJohn deliberately chooses logos to claim: the organizing principle of the cosmos is personal; the reason the universe is rational is because it was spoken by a Person; that Person became flesh.\n\nJohn then makes the breathtaking move: "The Logos became flesh and tabernacled among us" (John 1:14). The cosmic rational principle put on a body.`,
+      passages:['John 1:1–14','Revelation 19:13','1 John 1:1'],
+    },
+    {
+      id:'agape', word:'ἀγάπη', translit:'a-GA-pay', strongs:'G26',
+      pos:'noun, feminine', root:'ἀγαπάω (agapao) — to love',
+      gloss:'Love (unconditional, self-giving, covenantal)', lang:'greek',
+      common_translation:'"Love"',
+      better_translation:'"Love" — but specifically agape, distinguished from eros, philia, and storge',
+      meaning:`Greek has multiple words for love that English collapses into one:\n\n• Eros (ἔρως) — romantic/physical desire (not used in the NT)\n• Philia (φιλία) — friendship, warm affection between equals\n• Storge (στοργή) — familial love, natural affection\n• Agape (ἀγάπη) — the NT's dominant word, chosen specifically for God's love\n\nAgape was relatively rare in classical Greek and carried no special connotation. The NT writers effectively redefined it to describe a love that:\n• Chooses to act in the beloved's best interest regardless of the beloved's response\n• Is not dependent on the beloved's worthiness\n• Gives at cost to the giver\n• Is best understood through the cross (Romans 5:8 — "God demonstrates his agape in this: while we were still sinners, Christ died for us")\n\n1 Corinthians 13 is a portrait of agape, describing not primarily romantic feeling but deliberate, patient, kind, enduring action. John 3:16 says "God so agaped the world" — the verb form, an act of divine will and initiative, not just a feeling.`,
+      passages:['John 3:16','1 Corinthians 13','Romans 5:8','1 John 4:8–12'],
+    },
+    {
+      id:'charis', word:'χάρις', translit:'KHA-ris', strongs:'G5485',
+      pos:'noun, feminine', root:'χαίρω (chairo) — to rejoice',
+      gloss:'Grace, favor, gift', lang:'greek',
+      common_translation:'"Grace"',
+      better_translation:'"Grace" — unmerited favor; the gift that creates joy',
+      meaning:`Charis comes from the root meaning joy (chara). In the Greco-Roman world it described the generosity of a patron to clients — freely given, not earned, but often creating an obligation of gratitude.\n\nPaul transforms this cultural concept: God's charis in Christ is given without any corresponding obligation or earning on the recipient's part. It is "grace... not based on our works" (2 Timothy 1:9).\n\nThe theological significance in Paul:\n• "By grace (charis) you have been saved through faith — and this is not from yourselves, it is the gift of God" (Ephesians 2:8)\n• Grace comes first; our response (faith, gratitude, obedience) follows from it\n• "Where sin increased, grace increased all the more" (Romans 5:20)\n\nCharis is also the root of:\n• χαρίσμα (charisma) — "grace-gift," a spiritual gift given by God's charis\n• εὐχαριστία (eucharistia) — thanksgiving, "good-grace-ing," from which we get "Eucharist"\n\nThe NT's greeting forms shift from the Hellenistic χαίρετε (chairete — "rejoice!") to χάρις καὶ εἰρήνη — "grace and peace" — combining the Greek and Hebrew greeting traditions.`,
+      passages:['Ephesians 2:8–9','Romans 5:20–21','2 Corinthians 12:9','John 1:16–17'],
+    },
+    {
+      id:'pistis', word:'πίστις', translit:'PIS-tis', strongs:'G4102',
+      pos:'noun, feminine', root:'πείθω (peitho) — to persuade, trust',
+      gloss:'Faith, trust, faithfulness, conviction', lang:'greek',
+      common_translation:'"Faith"',
+      better_translation:'"Trust" or "faithfulness" — relational allegiance, not merely intellectual belief',
+      meaning:`Pistis is consistently rendered "faith" in English but carries a fuller meaning: active trust, loyalty, fidelity, and faithfulness. The same word describes both human faith in God and God's own faithfulness.\n\nImportant nuance: "justification by pistis" (Romans 3:28) may not mean "by intellectual belief in propositions" but "by faithful allegiance/trust" — a whole-life orientation toward God rather than a single moment of mental assent.\n\nThe "faith" of Hebrews 11 is not "believing things without evidence" but deep trust that shapes action: Noah built the ark, Abraham left Ur, Moses led Israel — all on the basis of something not yet seen. This is relational, active, risky trust.\n\nThe "faithfulness of Christ" (πίστις Χριστοῦ — pistis Christou) in Galatians 2:16 and Romans 3:22 is now debated: does it mean "faith in Christ" (objective genitive) or "Christ's own faithfulness" (subjective genitive)? Both are grammatically possible; many scholars now favor "Christ's faithfulness" — his own faithful obedience — as the basis of justification.`,
+      passages:['Romans 3:22–28','Hebrews 11:1','Galatians 2:16','Habakkuk 2:4'],
+    },
+    {
+      id:'metanoia', word:'μετάνοια', translit:'me-TA-noi-a', strongs:'G3341',
+      pos:'noun, feminine', root:'μετά (meta) + νοῦς (nous) — after/change + mind',
+      gloss:'Repentance, change of mind, reorientation', lang:'greek',
+      common_translation:'"Repentance"',
+      better_translation:'"A complete reorientation of how you think and see" — not just remorse',
+      meaning:`Metanoia is one of the most commonly misunderstood words in the NT. It is formed from meta (after, change) and nous (mind, perception, way of seeing) — literally a "change of mind" or "after-thought" in the sense of a fundamental shift in perception.\n\nWhat it is NOT:\n• Merely feeling sorry for sins (that's more like λύπη, lype — grief or sorrow)\n• A ritualistic act of penance (Catholic "penance" comes from Latin, not Greek)\n• Simply "turning around" (that's ἐπιστροφή, epistrophe)\n\nWhat it IS:\n• A complete reorientation of how you perceive reality — now seeing God, yourself, and the world differently\n• The prerequisite for entering the Kingdom (Matthew 4:17 — "Repent, for the kingdom of heaven is at hand")\n• Something God graciously grants (2 Timothy 2:25 — "God may grant them metanoia")\n• The response to encountering true goodness: Romans 2:4 says God's kindness (chrestotes) leads to metanoia\n\nJohn the Baptist's call to "repent" and Jesus' opening proclamation of "repent, for the kingdom is at hand" are both calls to this fundamental cognitive and existential reorientation.`,
+      passages:['Matthew 4:17','Acts 2:38','Romans 2:4','2 Corinthians 7:10'],
+    },
+    {
+      id:'basileia', word:'βασιλεία', translit:'ba-si-LEI-a', strongs:'G932',
+      pos:'noun, feminine', root:'βασιλεύς (basileus) — king',
+      gloss:'Kingdom, reign, rule, dominion', lang:'greek',
+      common_translation:'"Kingdom"',
+      better_translation:'"Reign" or "royal rule" — dynamic activity, not primarily a territory',
+      meaning:`"The Kingdom of God" is the central theme of Jesus' preaching (Mark 1:15, Matthew 4:23). But the word basileia describes not primarily a geographic territory but the active exercise of kingship — a reign or rule.\n\nSo "the Kingdom of God" is better understood as "God's reign" or "the rule of God breaking in" — which explains why Jesus can say it "has come near" and is "in your midst" while also being something still coming.\n\nThe tension in Jesus' teaching:\n• Already: "If I cast out demons by the Spirit of God, then the kingdom of God has come upon you" (Matthew 12:28)\n• Not yet: "Your kingdom come" (Matthew 6:10) — still prayed for\n\nThis "already-not-yet" structure is deliberate: Jesus inaugurated the reign of God (it broke in at his resurrection), but its full consummation awaits. Christians live between the kingdom's arrival and its completion.\n\nThe Kingdom is not the church, not heaven, not Israel — it is the active, transforming rule of God wherever it is acknowledged and embodied.`,
+      passages:['Mark 1:14–15','Matthew 6:10','Luke 17:20–21','Revelation 11:15'],
+    },
+    {
+      id:'zoe', word:'ζωή', translit:'zo-AY', strongs:'G2222',
+      pos:'noun, feminine', root:'ζάω (zao) — to live',
+      gloss:'Life (divine/eternal)', lang:'greek',
+      common_translation:'"Life"',
+      better_translation:'"Divine life" — distinguished from βίος (bios), biological life',
+      meaning:`Greek has two primary words for "life":\n\n• Βίος (bios) — biological, natural, physical life; the life of an organism (from which we get "biology")\n• Ζωή (zoe) — life in the deeper sense, vitality, especially divine/spiritual life\n\nJohn consistently uses zoe for the life that Jesus gives — not merely extended biological existence but participation in God's own life:\n\n"I am the way, the truth, and the zoe" (John 14:6)\n"God so loved the world that he gave his only Son, that whoever believes... should have eternal zoe" (John 3:16)\n"I came that they might have zoe and have it abundantly" (John 10:10)\n\nThe phrase "eternal life" (αἰώνιος ζωή, aionios zoe) in John does not primarily mean "life that goes on forever" but "the life of the coming age" — the quality of life that belongs to God's future, already available now through faith.\n\nJohn 17:3 gives a startling definition: "This is eternal zoe: that they know you, the only true God, and Jesus Christ whom you have sent." Eternal life is not a destination but a relationship.`,
+      passages:['John 3:16','John 10:10','John 17:3','1 John 5:12'],
+    },
+    {
+      id:'ekklesia', word:'ἐκκλησία', translit:'ek-kle-SEE-a', strongs:'G1577',
+      pos:'noun, feminine', root:'ἐκ (ek) + καλέω (kaleo) — out + to call',
+      gloss:'Assembly, church, congregation', lang:'greek',
+      common_translation:'"Church"',
+      better_translation:'"Assembly of the called-out ones" — not a building but a gathered people',
+      meaning:`The English word "church" comes from a different Greek word (kyriakos — "belonging to the Lord") and has accumulated meanings of buildings, denominations, and institutions that ekklesia never had.\n\nEkklesia in the Greco-Roman world was the civic assembly — the gathered citizens of a city who were called out (ek + kaleo) from their homes to conduct public business. It was a political term for an active, functioning assembly.\n\nWhen Jesus says "I will build my ekklesia" (Matthew 16:18), he's describing not an institution but a gathered community of people who are called out — from the world, into relationship with him and each other — and then sent back into the world as his representatives.\n\nThe ekklesia:\n• Is people, not a place\n• Exists wherever Jesus' followers gather\n• Has a political resonance — an alternative polis, an embassy of God's kingdom\n• Is described as Christ's body (1 Corinthians 12), God's household (Ephesians 2), a royal priesthood (1 Peter 2)\n\nEarly Christians meeting in homes would have heard "ekklesia" as charged with civic meaning — this assembly supersedes and challenges the assemblies of the empire.`,
+      passages:['Matthew 16:18','Acts 2:47','1 Corinthians 12:12–27','Ephesians 2:19–22'],
+    },
+    {
+      id:'soteria', word:'σωτηρία', translit:'so-te-REE-a', strongs:'G4991',
+      pos:'noun, feminine', root:'σῴζω (sozo) — to save, rescue, heal, preserve',
+      gloss:'Salvation, deliverance, healing, preservation', lang:'greek',
+      common_translation:'"Salvation"',
+      better_translation:'"Deliverance/wholeness" — comprehensive rescue, including physical healing',
+      meaning:`The root verb sozo (σῴζω) is used throughout the Gospels in contexts that English Bibles sometimes struggle to render consistently:\n\n• Healing the sick: "Your faith has sozo-d you" (Matthew 9:22 — to a woman healed physically)\n• Rescuing from danger: "Lord, sozo us, we are perishing!" (Matthew 8:25 — disciples in the storm)\n• Spiritual deliverance: "She will sozo her people from their sins" (Matthew 1:21)\n\nSoteria is the comprehensive rescue of the whole person — physical, social, spiritual, cosmic. The NT's vision of salvation is not "souls escaping to heaven" but the restoration of the whole person within a renewed creation (Romans 8:18–25).\n\nIn the Greco-Roman world, soter (savior) was a political title for emperors who "saved" their people through military victory or social provision. Caesar was called soter. When the NT calls Jesus soter, it is a direct counter-claim: real deliverance comes not from empire but from the crucified king.\n\nJesus' name (Iesous in Greek, Yeshua in Hebrew) means "YHWH saves" — so every time someone says his name they are announcing his salvific mission.`,
+      passages:['Matthew 1:21','Luke 19:10','Romans 10:9–10','Ephesians 2:5–8'],
+    },
+    {
+      id:'parakleton', word:'παράκλητος', translit:'pa-RA-kle-tos', strongs:'G3875',
+      pos:'noun, masculine', root:'παρά (para) + καλέω (kaleo) — alongside + to call',
+      gloss:'Advocate, comforter, helper, counselor', lang:'greek',
+      common_translation:'"Helper," "Comforter," "Advocate," "Counselor"',
+      better_translation:'"One called alongside" — a helper who comes to stand with you',
+      meaning:`Parakletos is used five times in the NT, all in John's writings — four in Jesus' farewell discourse (John 14–16) referring to the Holy Spirit, and once in 1 John 2:1 referring to Jesus himself as our advocate with the Father.\n\nThe legal background: a parakletos was someone called to stand alongside a defendant in court — an advocate, one who speaks on your behalf. This gives the word a forensic flavor: the Spirit "convicts" (elegcho) the world of sin, righteousness, and judgment (John 16:8) — language from the law court.\n\nBut parakletos is broader than legal advocacy:\n• Comforter — the Spirit comes when Jesus leaves (John 14:16–17) as the One who walks with disciples through grief\n• Teacher — "will guide you into all truth" (John 16:13)\n• Witness — "will testify about me" (John 15:26)\n• Intercessor — Romans 8:26 describes the Spirit interceding for us when we cannot pray\n\nThe KJV's "Comforter" comes from the Latin "Comfortare" (com + fortis = with + strong) — one who comes to strengthen, not merely to console. This captures something the word contains.`,
+      passages:['John 14:16–17','John 14:26','John 16:7–11','1 John 2:1'],
+    },
+  ]
+};
+
+const TIMELINE = [
+  {era:'Primeval History', eraColor:'#C4A882', events:[
+    {name:'Creation',date:'The Beginning',books:'Genesis 1–2',desc:'God creates the heavens and earth, culminating in the creation of humanity (adam) as image-bearers (tselem Elohim). The seventh day is consecrated as holy rest — shabbat.'},
+    {name:'The Fall',date:'Primeval time',books:'Genesis 3',desc:'Adam and Eve disobey in the garden. The shalom of creation is broken. The narrative of exile and longing for return begins. The first messianic promise: the seed of the woman will crush the serpent.'},
+    {name:'Cain & Abel',date:'Primeval time',books:'Genesis 4',desc:'The first murder. Cain kills Abel and becomes a wanderer. The problem of sin multiplies within the first generation.'},
+    {name:'Noah & the Flood',date:'~2350 BC (traditional)',books:'Genesis 6–9',desc:'Humanity\'s corruption reaches its height. God preserves Noah and his family. A new covenant (berit) with all living things — the Noahic covenant — sealed with a rainbow.'},
+    {name:'Tower of Babel',date:'~2200 BC',books:'Genesis 11',desc:'Humanity attempts to build toward heaven. God scatters and diversifies language. The context for the call of Abraham — one man chosen to bless all scattered nations.'},
+  ]},
+  {era:'Patriarchs', eraColor:'#A8C4A2', events:[
+    {name:'Call of Abraham',date:'~2091 BC',books:'Genesis 12',desc:'Abram called from Ur. The Abrahamic covenant: land, descendants, and blessing to all nations. This covenant becomes the thread running through the entire Bible.'},
+    {name:'Covenant Ratified',date:'~2081 BC',books:'Genesis 15',desc:'God passes between the divided animals alone — an unconditional covenant. Abraham\'s descendants will be enslaved 400 years, but God will bring them out.'},
+    {name:'Birth of Isaac',date:'~2066 BC',books:'Genesis 21',desc:'The promised son is born to Abraham and Sarah in their old age. The impossible becomes real — the first act of resurrection-type faith.'},
+    {name:'Binding of Isaac',date:'~2050 BC',books:'Genesis 22',desc:'God tests Abraham by asking for Isaac. Abraham obeys. At the last moment, God provides a substitute — the Akedah is a foundational type of substitutionary sacrifice.'},
+    {name:'Jacob & Esau',date:'~2006–1990 BC',books:'Genesis 25–36',desc:'Jacob (later renamed Israel) wrestles with God at Peniel. The twelve sons of Jacob become the twelve tribes of Israel.'},
+    {name:'Joseph in Egypt',date:'~1898 BC',books:'Genesis 37–50',desc:'Joseph is sold into slavery by his brothers. Through suffering and faithfulness he rises to second in Egypt. "You meant it for evil; God meant it for good."'},
+  ]},
+  {era:'Egypt & Exodus', eraColor:'#C4B482', events:[
+    {name:'Israel Enslaved',date:'~1700–1446 BC',books:'Exodus 1',desc:'A new Pharaoh arises who does not know Joseph. Israel is enslaved. The cry of the oppressed rises to God — and God hears.'},
+    {name:'Moses & the Burning Bush',date:'~1446 BC',books:'Exodus 3',desc:'God reveals himself to Moses as YHWH — "I AM WHO I AM." He sends Moses back to Egypt with a name: the self-existent One who keeps covenant.'},
+    {name:'The Exodus & Passover',date:'~1446 BC',books:'Exodus 12–15',desc:'Ten plagues culminate in the Passover. Substitute lambs\' blood marks the doorposts. Israel departs. The Red Sea parts. The foundational salvation event of the OT.'},
+    {name:'Mount Sinai & the Torah',date:'~1446 BC',books:'Exodus 19–20',desc:'Three months after leaving Egypt, Israel arrives at Sinai. The Ten Commandments (lit. "ten words") are given. The covenant is ratified with blood.'},
+    {name:'40 Years Wandering',date:'~1446–1406 BC',books:'Numbers',desc:'A generation of faithlessness results in wilderness wandering. Moses leads but cannot enter. The generation of slaves must pass away before the conquest can begin.'},
+    {name:"Moses' Death",date:'~1406 BC',books:'Deuteronomy 34',desc:'Moses views Canaan from Mount Nebo but does not enter. His final speeches (Deuteronomy) renew the covenant. "Choose life" — the great summary of Torah.'},
+  ]},
+  {era:'Conquest & Kingdom', eraColor:'#A2B8C4', events:[
+    {name:'Conquest of Canaan',date:'~1406–1380 BC',books:'Joshua',desc:'Under Joshua ("YHWH saves" — same name as Jesus), Israel crosses the Jordan. Jericho falls. The land is divided among the twelve tribes.'},
+    {name:'Period of Judges',date:'~1380–1050 BC',books:'Judges',desc:'A cyclical era: Israel abandons God → oppression → cry out → God raises a judge → deliverance → repeat. The last line of Judges: "everyone did what was right in their own eyes."'},
+    {name:'King Saul',date:'~1050–1010 BC',books:'1 Samuel',desc:'Israel demands a king "like the nations." Saul is anointed. He fails. The kingdom is promised to another.'},
+    {name:'King David',date:'~1010–970 BC',books:'2 Samuel',desc:'The shepherd-king captures Jerusalem, brings the ark, and receives the Davidic covenant: a son of his will reign forever. Despite catastrophic sin, David remains "a man after God\'s own heart."'},
+    {name:"Solomon's Temple",date:'~966–959 BC',books:'1 Kings 5–8',desc:"David's son Solomon builds the Temple. At its dedication, the kavod (glory cloud) fills it. God's presence has a home on earth."},
+    {name:'Divided Kingdom',date:'~930 BC',books:'1 Kings 12',desc:'After Solomon, the kingdom splits: Israel (north, 10 tribes) and Judah (south, 2 tribes). Two centuries of parallel decline begin.'},
+    {name:'Elijah & Elisha',date:'~875–800 BC',books:'1 Kings 18–2 Kings 9',desc:'The great prophetic duo. Elijah confronts Baal worship at Carmel. Elisha performs miracles echoed later in Jesus\' ministry.'},
+    {name:'Northern Kingdom Falls',date:'~722 BC',books:'2 Kings 17',desc:'Assyria conquers Samaria. The ten northern tribes are exiled — the "lost tribes." Never reconstituted as a political entity.'},
+  ]},
+  {era:'Exile & Return', eraColor:'#C4A2B8', events:[
+    {name:'Babylonian Siege',date:'~605–597 BC',books:'Daniel 1, 2 Kings 24',desc:'Nebuchadnezzar of Babylon invades Judah in three waves. Daniel and others are taken to Babylon. The exile begins.'},
+    {name:'Jerusalem Falls',date:'~586 BC',books:'2 Kings 25, Lamentations',desc:'Jerusalem and the Temple are destroyed. The people are exiled to Babylon. Lamentations voices the grief: "How deserted lies the city."'},
+    {name:'Ezekiel in Exile',date:'~593–570 BC',books:'Ezekiel',desc:'Ezekiel prophesies from Babylon. The glory (kavod) departs the Temple. But a vision of restoration: dry bones will live; a new temple; a new covenant.'},
+    {name:'Edict of Cyrus',date:'~538 BC',books:'Ezra 1',desc:'Persian king Cyrus (called YHWH\'s "anointed" in Isaiah 45) decrees that exiles may return. Isaiah had prophesied this 150 years earlier.'},
+    {name:'Temple Rebuilt',date:'~536–516 BC',books:'Ezra 3–6',desc:'Zerubbabel leads the first return. The Second Temple is completed in 516 BC. It lacks the ark and the kavod cloud — but Haggai and Zechariah promise greater glory ahead.'},
+    {name:'Ezra & Nehemiah',date:'~458–430 BC',books:'Ezra 7 – Nehemiah 13',desc:'Ezra brings the Torah back to the people. Nehemiah rebuilds Jerusalem\'s walls in 52 days. Covenant renewed. The OT historical narrative ends.'},
+    {name:'Malachi — Final OT Voice',date:'~430 BC',books:'Malachi',desc:'The last prophet of the OT warns of corrupt priests, urges faithfulness, and promises: "I will send my messenger before me... Elijah before the great day of the LORD." 400 years of prophetic silence follow.'},
+  ]},
+  {era:'New Testament', eraColor:'#B8C4A2', events:[
+    {name:'Birth of Jesus',date:'~5–4 BC',books:'Matthew 1–2, Luke 1–2',desc:'The Logos becomes flesh (John 1:14). Born in Bethlehem (fulfilling Micah 5:2), announced to shepherds, visited by magi. Herod\'s massacre; flight to Egypt.'},
+    {name:"Jesus' Ministry",date:'~27–30 AD',books:'Gospels',desc:'Baptism by John. Temptation in the wilderness. Three years of teaching, healing, and confrontation. The Sermon on the Mount. Parables of the Kingdom. Signs pointing to his identity.'},
+    {name:'Death & Resurrection',date:'~30 AD',books:'Matthew 26–28, John 19–21',desc:'The Passover week. Last Supper institutes the new covenant. Betrayal, arrest, crucifixion. Third day: the tomb is empty. Resurrection appearances. The pivot of history.'},
+    {name:'Pentecost',date:'~30 AD',books:'Acts 2',desc:"Joel's promise fulfilled: the Spirit is poured out on all. Peter preaches; 3,000 are added. The ekklesia is born. The age of the Spirit begins."},
+    {name:"Paul's Journeys",date:'~46–57 AD',books:'Acts 13–21',desc:'Three missionary journeys spanning the Mediterranean. Galatia, Macedonia, Achaia, Asia. Churches established in Philippi, Thessalonica, Corinth, Ephesus. Letters written to these communities.'},
+    {name:'Jerusalem Destroyed',date:'~70 AD',books:'(Historical)',desc:'Roman General Titus destroys the Temple — as Jesus predicted (Matthew 24:2). No stone left on another. The Second Temple era ends permanently. The NT canon is nearly complete.'},
+  ]},
+];
+
+const PASSAGE_NOTES = {
+  'genesis-1': 'The opening word בְּרֵאשִׁית (bereshit) may be a construct form meaning "In the beginning of [God\'s creating]" rather than an absolute "In the beginning." This makes vv. 1–3 a single complex sentence: "When God began to create… God said: Let there be light." Either way, God is the unrivaled actor at the dawn of everything.',
+  'genesis-2': 'In 2:7, humanity does not receive a soul — rather, the dust-creature BECOMES a living נֶפֶשׁ (nefesh, living being). Hebrew anthropology sees no body-soul dualism; the person is a unified whole. This matters enormously for the doctrine of resurrection.',
+  'exodus-3': "God's name YHWH (v.14–15) comes from the Hebrew root 'to be': אֶהְיֶה אֲשֶׁר אֶהְיֶה (ehyeh asher ehyeh) — I AM THAT I AM, or perhaps I WILL BE WHAT I WILL BE, or simply I AM. The name signals God's radical self-existence and covenant faithfulness.",
+  'john-1': 'The opening logos deliberately echoes Genesis 1:1 (both begin "In the beginning"). Logos for Greek readers evoked the rational principle ordering the cosmos; for Jewish readers, God\'s creative Word and personified Wisdom. John claims both — and adds: this Logos became flesh.',
+  'john-3': 'John 3:16 — three words demand attention: ἠγάπησεν (agaped — the verb form of agape, a willed act), μονογενῆ (monogene — unique/one-of-a-kind, not "only-begotten" in a reproductive sense), and ζωήν (zoe — divine/eternal life, not mere biological existence).',
+  'psalms-23': 'The Shepherd is YHWH, not just "the Lord." The intimacy of God\'s personal covenant name opens the psalm. חֶסֶד (hesed) in v.6 — usually "goodness and mercy" — is the covenant love that pursues relentlessly. It will "pursue" (radaf) you, not merely follow.',
+  'isaiah-53': 'The fourth Servant Song. שָׁלוֹם (shalom) in v.5 is not merely "peace" but wholeness and flourishing — "the wholeness that was ours came upon him." The Servant absorbs the fracture of creation to restore שָׁלֵם completeness.',
+  'matthew-5': 'The beatitudes open with πτωχοὶ τῷ πνεύματι (ptochoi to pneumati) — "poor in spirit." Ptochos describes not mild poverty but utter destitution, someone who crouches in begging posture. The profoundly empty-handed before God — these are first in the Kingdom.',
+  'romans-1': 'Romans 1:17 — δικαιοσύνη θεοῦ (dikaiosyne theou, "the righteousness of God") is one of the most debated phrases in the NT. Does it mean God\'s own righteous character (subjective), the status God gives us (objective), or God\'s covenant faithfulness? Likely all three simultaneously.',
+  'revelation-1': 'ἀποκάλυψις (apokalypsis) — from which we get "apocalypse" — means an uncovering or revealing, not destruction. Revelation is not primarily about the world ending but about the curtain being pulled back to show what is always true: the Lamb who was slain is Lord of history.',
+};
+
+const MAPS_DATA = {
+  ane: {
+    title: 'The Ancient Near East',
+    caption: 'The world of the Old Testament — from Egypt to Mesopotamia. Hover over cities for context.',
+    cities: [
+      {id:'ur',name:'Ur of the Chaldeans',x:618,y:305,info:'Birthplace of Abraham (Genesis 11:31). Major Sumerian city near the Euphrates mouth. Abraham leaves this cosmopolitan center at God\'s call.'},
+      {id:'haran',name:'Haran',x:390,y:135,info:'Abraham\'s family settles here (Genesis 11:32). Later, Jacob flees here to his uncle Laban. A major caravan crossroads.'},
+      {id:'nineveh',name:'Nineveh',x:510,y:130,info:'Capital of Assyria. Jonah preaches repentance here. Falls to Babylon in 612 BC as Nahum had predicted. Modern Mosul, Iraq.'},
+      {id:'babylon',name:'Babylon',x:560,y:250,info:'The great empire that destroyed Jerusalem in 586 BC. Where Daniel served and Ezekiel prophesied. Its fall is the backdrop of Isaiah 40–55.'},
+      {id:'jerusalem',name:'Jerusalem',x:232,y:248,info:'The city of David. Site of Solomon\'s Temple. Center of the universe in Hebrew cosmology. The "city of the great King" (Psalm 48:2).'},
+      {id:'bethlehem',name:'Bethlehem',x:235,y:262,info:'City of David\'s birth. Prophesied birthplace of the Messiah (Micah 5:2). Birth of Jesus (~4–5 BC).'},
+      {id:'hebron',name:'Hebron',x:230,y:278,info:'Where Abraham buried Sarah (Genesis 23). David was first crowned king here. Contains the Cave of Machpelah — patriarchal burial site.'},
+      {id:'cairo',name:'Memphis/Egypt',x:110,y:310,info:'Capital of ancient Egypt. Israel enslaved near the Nile Delta. Scene of the ten plagues and the Exodus (~1446 BC).'},
+      {id:'sinai',name:'Mount Sinai',x:190,y:355,info:'Where Moses received the Torah (Exodus 19–20). The meeting point of God and his people. Location debated — tradition places it in the southern Sinai Peninsula.'},
+      {id:'damascus',name:'Damascus',x:268,y:210,info:'Ancient city of Syria. Paul encountered Jesus on the road to Damascus (Acts 9). One of the oldest continuously inhabited cities on earth.'},
+      {id:'antioch',name:'Antioch (Syria)',x:295,y:168,info:'Where followers of Jesus were first called "Christians" (Acts 11:26). Home base for Paul\'s three missionary journeys.'},
+      {id:'susa',name:'Susa/Persia',x:660,y:280,info:'Capital of the Persian Empire. Where Esther became queen. Where Nehemiah served as cupbearer to Artaxerxes. Modern Shush, Iran.'},
+    ]
+  },
+  israel: {
+    title: 'The Land of Israel',
+    caption: 'The Promised Land — from Dan in the north to Beersheba in the south. The narrow geography shaped Israel\'s entire history.',
+    cities: [
+      {id:'jerusalem2',name:'Jerusalem',x:420,y:330,info:'The holy city. Captured by David ~1000 BC. Site of the Temple (Solomon, ~966 BC; Herod, ~20 BC). Where Jesus was crucified and rose.'},
+      {id:'bethlehem2',name:'Bethlehem',x:425,y:358,info:'5 miles south of Jerusalem. Birth of David and Jesus. Rachel\'s tomb nearby (Genesis 35:19).'},
+      {id:'nazareth',name:'Nazareth',x:370,y:180,info:"Jesus' hometown in Galilee. Where he grew up, worked as a craftsman, and was rejected at the synagogue (Luke 4:28–30)."},
+      {id:'capernaum',name:'Capernaum',x:420,y:148,info:"Jesus' ministry headquarters on the north shore of the Sea of Galilee. Home of Peter, Andrew, James, and John."},
+      {id:'jericho',name:'Jericho',x:448,y:300,info:'Oldest city in the world. First conquered by Joshua (Joshua 6). Where Zacchaeus met Jesus. Near where John baptized in the Jordan.'},
+      {id:'beersheba',name:'Beersheba',x:370,y:430,info:'"From Dan to Beersheba" — the southern boundary of Israel. Where Abraham dug wells and called on YHWH (Genesis 21:33).'},
+      {id:'hebron2',name:'Hebron',x:410,y:395,info:'Where Abraham, Isaac, Jacob, and Sarah are buried (Cave of Machpelah). David\'s first capital before Jerusalem.'},
+      {id:'samaria',name:'Samaria',x:390,y:248,info:'Capital of the Northern Kingdom (from ~880 BC). Destroyed by Assyria in 722 BC. In Jesus\' day, the "Samaritans" were the mixed population left behind.'},
+      {id:'caesarea',name:'Caesarea Maritima',x:340,y:218,info:"Herod's great harbor city. Roman capital of Judea. Where Peter preached to Cornelius (Acts 10). Where Paul was imprisoned before Rome."},
+      {id:'dan',name:'Dan',x:430,y:108,info:'Northernmost city of Israel. Site of the golden calves of Jeroboam (1 Kings 12:29). The tell still exists in northern Israel.'},
+    ]
+  },
+  paul: {
+    title: "Paul's Missionary Journeys",
+    caption: 'Three journeys (~46–57 AD) carried the gospel from Antioch across the Mediterranean. The numbers 1, 2, 3 mark the routes.',
+    journeys: [
+      {label:'1', color:'#B8916A', points:'295,235 330,280 370,295 385,275 340,265 295,235'},
+      {label:'2', color:'#6B8B6B', points:'295,235 240,215 200,210 195,230 230,255 260,270 280,260 295,245 310,225 330,215 350,220 370,215 380,220 340,240 295,235'},
+      {label:'3', color:'#2A6B8B', points:'295,235 330,215 370,215 380,220 370,230 340,250 295,235 265,240 240,230 210,240 200,245 210,255 240,255 270,250 295,240'},
+    ],
+    cities: [
+      {id:'rome',name:'Rome',x:155,y:185,info:'The capital of the empire. Paul wrote his magnum opus (Romans) to the church here. He was executed here ~64–68 AD. Peter also martyred here.'},
+      {id:'corinth',name:'Corinth',x:228,y:248,info:"Major port city of Greece. Paul spent 18 months here (Acts 18). Wrote 1 & 2 Corinthians to this church — addressing divisions, spiritual gifts, resurrection."},
+      {id:'athens',name:'Athens',x:242,y:255,info:"Paul's speech at the Areopagus (Acts 17:22–34): 'In him we live and move and have our being.' He engages Greek philosophy with the gospel."},
+      {id:'thessalonica',name:'Thessalonica',x:255,y:220,info:'Modern Thessaloniki. Paul planted a church here in ~50 AD. He wrote the earliest preserved NT letters (1 & 2 Thessalonians) to this congregation.'},
+      {id:'philippi',name:'Philippi',x:265,y:213,info:'First church on European soil (Acts 16). Lydia converted here. Paul and Silas imprisoned and miraculously freed. Paul wrote Philippians from prison years later.'},
+      {id:'ephesus',name:'Ephesus',x:315,y:238,info:'Major city of Asia Minor. Paul spent 3 years here — his longest stay anywhere. Home of the great Temple of Artemis. John also ministered here.'},
+      {id:'antioch2',name:'Antioch (Syria)',x:330,y:222,info:'Home base for all three journeys. First place believers called "Christians." Where Paul and Barnabas were commissioned (Acts 13:1–3).'},
+      {id:'jerusalem3',name:'Jerusalem',x:365,y:258,info:"Paul's journeys consistently connect back to Jerusalem — and end here with his arrest (Acts 21). He travels to Rome as a prisoner."},
+      {id:'caesarea2',name:'Caesarea',x:355,y:248,info:"Paul imprisoned here 2 years before appealing to Caesar (Acts 24–26). Herod's grand harbor city."},
+      {id:'malta',name:'Malta',x:192,y:278,info:'Paul shipwrecked here on the way to Rome (Acts 28:1). He healed the father of the chief official and spent three months on the island.'},
+    ]
+  }
+};
+
+// ─── CROSS-REFERENCES ────────────────────────────────────────────────────────
+const CROSS_REFS = {
+  'genesis-1':{1:[{ref:'John 1:1-3',text:'In the beginning was the Word… through him all things were made.'},{ref:'Psalm 33:6',text:'By the word of the LORD the heavens were made.'},{ref:'Colossians 1:16',text:'For in him all things were created, in heaven and on earth.'}],2:[{ref:'Job 26:13',text:'By his breath the skies became fair.'},{ref:'Psalm 104:30',text:'When you send your Spirit, they are created.'}],3:[{ref:'2 Corinthians 4:6',text:'God who said "Let light shine out of darkness" shone in our hearts.'},{ref:'John 1:4',text:'In him was life, and the life was the light of men.'}],26:[{ref:'Psalm 8:4-6',text:'You made him a little lower than the heavenly beings and crowned him with glory.'},{ref:'Colossians 3:10',text:'The new self, renewed in knowledge after the image of its creator.'}],27:[{ref:'Matthew 19:4',text:'He who created them from the beginning made them male and female.'},{ref:'Genesis 5:2',text:'Male and female he created them, and he blessed them.'}]},
+  'genesis-2':{7:[{ref:'1 Corinthians 15:45',text:'The first man Adam became a living being; the last Adam a life-giving spirit.'},{ref:'Psalm 103:14',text:'He knows our frame; he remembers that we are dust.'},{ref:'Ecclesiastes 12:7',text:'The dust returns to the earth as it was, and the spirit returns to God who gave it.'}],17:[{ref:'Romans 6:23',text:'The wages of sin is death, but the free gift of God is eternal life.'},{ref:'James 1:15',text:'Sin when it is fully grown brings forth death.'}]},
+  'genesis-3':{15:[{ref:'Romans 16:20',text:'The God of peace will soon crush Satan under your feet.'},{ref:'Galatians 3:16',text:'The promises were made to Abraham and to his offspring — Christ.'},{ref:'Revelation 12:9',text:'The great dragon was thrown down, that ancient serpent.'}]},
+  'exodus-3':{14:[{ref:'John 8:58',text:'"Before Abraham was, I am," Jesus said to them.'},{ref:'Isaiah 43:10',text:'"Before me no god was formed, nor shall there be any after me."'},{ref:'Revelation 1:8',text:'"I am the Alpha and the Omega," says the Lord God, "who is and who was and who is to come."'}]},
+  'isaiah-53':{5:[{ref:'1 Peter 2:24',text:'He himself bore our sins in his body on the tree, that we might die to sin.'},{ref:'2 Corinthians 5:21',text:'For our sake he made him to be sin who knew no sin.'},{ref:'Romans 5:8',text:'While we were still sinners, Christ died for us.'}],6:[{ref:'John 1:29',text:'"Behold, the Lamb of God, who takes away the sin of the world!"'},{ref:'Matthew 26:28',text:'"My blood of the covenant, poured out for many for the forgiveness of sins."'}]},
+  'isaiah-9':{6:[{ref:'Luke 1:32',text:'"He will be great and called the Son of the Most High."'},{ref:'John 14:27',text:'"Peace I leave with you; my peace I give to you."'},{ref:'Micah 5:2',text:'"From you shall come forth for me one who is to be ruler in Israel."'}]},
+  'micah-5':{2:[{ref:'Matthew 2:5-6',text:'Bethlehem of Judea, for so it is written by the prophet.'},{ref:'John 7:42',text:'"Has not the Scripture said that the Christ comes from David\'s offspring and from Bethlehem?"'}]},
+  'psalms-23':{1:[{ref:'John 10:11',text:'"I am the good shepherd. The good shepherd lays down his life for the sheep."'},{ref:'Ezekiel 34:11',text:'"I myself will search for my sheep and seek them out."'},{ref:'Isaiah 40:11',text:'He will tend his flock like a shepherd.'}],4:[{ref:'Isaiah 43:2',text:'"When you pass through the waters, I will be with you."'},{ref:'Matthew 28:20',text:'"I am with you always, to the end of the age."'}],6:[{ref:'Romans 8:38-39',text:'Nothing can separate us from the love of God in Christ Jesus our Lord.'},{ref:'Jeremiah 31:3',text:'"I have loved you with an everlasting love."'}]},
+  'john-1':{1:[{ref:'Genesis 1:1',text:'In the beginning, God created the heavens and the earth.'},{ref:'Colossians 1:17',text:'He is before all things, and in him all things hold together.'},{ref:'Proverbs 8:22-23',text:'"The LORD possessed me at the beginning of his work."'}],14:[{ref:'Philippians 2:7',text:'He emptied himself, taking the form of a servant.'},{ref:'Hebrews 2:14',text:'He himself likewise partook of the same things (flesh and blood).'},{ref:'Exodus 40:34',text:'The glory of the LORD filled the tabernacle.'}]},
+  'john-3':{16:[{ref:'Romans 5:8',text:'God shows his love for us in that while we were still sinners, Christ died for us.'},{ref:'1 John 4:9',text:'God sent his only Son into the world, so that we might live through him.'},{ref:'Isaiah 53:5',text:'He was pierced for our transgressions; he was crushed for our iniquities.'}],17:[{ref:'John 12:47',text:'"I did not come to judge the world but to save the world."'},{ref:'Luke 19:10',text:'"The Son of Man came to seek and to save the lost."'}]},
+  'romans-3':{23:[{ref:'Genesis 3:6',text:'She took of its fruit and ate, and also gave some to her husband.'},{ref:'Romans 1:21',text:'Although they knew God, they did not honor him as God.'},{ref:'Isaiah 53:6',text:'All we like sheep have gone astray; we have turned — every one — to his own way.'}]},
+  'romans-8':{28:[{ref:'Genesis 50:20',text:'"You meant evil against me, but God meant it for good."'},{ref:'Jeremiah 29:11',text:'"I know the plans I have for you," declares the LORD, "plans for welfare and not for evil."'}],38:[{ref:'Psalm 23:4',text:'Even though I walk through the valley of the shadow of death, I will fear no evil.'},{ref:'Matthew 28:20',text:'"I am with you always, to the end of the age."'}]},
+  'hebrews-11':{1:[{ref:'Romans 8:24-25',text:'In this hope we were saved. Now hope that is seen is not hope.'},{ref:'2 Corinthians 5:7',text:'We walk by faith, not by sight.'},{ref:'Habakkuk 2:4',text:'"The righteous shall live by his faith."'}]},
+  'revelation-1':{1:[{ref:'Daniel 2:28',text:'There is a God in heaven who reveals mysteries.'},{ref:'Amos 3:7',text:'The Lord God does nothing without revealing his secret to his servants the prophets.'}]},
+};
+
+// ─── INTERLINEAR DATA ─────────────────────────────────────────────────────────
+const INTERLINEAR_DATA = {
+  'genesis-1-1':[
+    {eng:'In the beginning',orig:'בְּרֵאשִׁית',translit:'be-re-SHEET',strongs:'H7225',wordId:'bereshit',lang:'hebrew'},
+    {eng:'created',orig:'בָּרָא',translit:'ba-RA',strongs:'H1254',wordId:'bara',lang:'hebrew'},
+    {eng:'God',orig:'אֱלֹהִים',translit:"e-lo-HEEM",strongs:'H430',wordId:'elohim',lang:'hebrew'},
+    {eng:'[obj. marker]',orig:'אֵת',translit:"'et",strongs:'H853',lang:'hebrew'},
+    {eng:'the heavens',orig:'הַשָּׁמַיִם',translit:'ha-sha-MA-yim',strongs:'H8064',lang:'hebrew'},
+    {eng:'and',orig:'וְ',translit:'ve',strongs:'H0',lang:'hebrew'},
+    {eng:'the earth',orig:'הָאָרֶץ',translit:"ha-A-rets",strongs:'H776',lang:'hebrew'},
+  ],
+  'genesis-1-2':[
+    {eng:'Now the earth',orig:'וְהָאָרֶץ',translit:"ve-ha-A-rets",strongs:'H776',lang:'hebrew'},
+    {eng:'was formless',orig:'תֹהוּ',translit:'TO-hu',strongs:'H8414',lang:'hebrew'},
+    {eng:'and void',orig:'וָבֹהוּ',translit:'va-VO-hu',strongs:'H922',lang:'hebrew'},
+    {eng:'darkness',orig:'חֹשֶׁךְ',translit:'KHO-shekh',strongs:'H2822',lang:'hebrew'},
+    {eng:'the deep',orig:'תְהוֹם',translit:'te-HOM',strongs:'H8415',lang:'hebrew'},
+    {eng:'the Spirit',orig:'רוּחַ',translit:'RU-akh',strongs:'H7307',wordId:'ruach',lang:'hebrew'},
+    {eng:'of God',orig:'אֱלֹהִים',translit:"e-lo-HEEM",strongs:'H430',wordId:'elohim',lang:'hebrew'},
+    {eng:'hovering',orig:'מְרַחֶפֶת',translit:'me-ra-KHE-fet',strongs:'H7363',lang:'hebrew'},
+    {eng:'the waters',orig:'הַמָּיִם',translit:'ha-MA-yim',strongs:'H4325',lang:'hebrew'},
+  ],
+  'genesis-1-3':[
+    {eng:'And God said',orig:'וַיֹּאמֶר אֱלֹהִים',translit:"va-YO-mer e-lo-HEEM",strongs:'H430',lang:'hebrew'},
+    {eng:'Let there be',orig:'יְהִי',translit:'ye-HI',strongs:'H1961',lang:'hebrew'},
+    {eng:'light',orig:'אוֹר',translit:"'OR",strongs:'H216',lang:'hebrew'},
+    {eng:'and there was light',orig:'וַיְהִי-אוֹר',translit:"va-ye-HI 'or",strongs:'H216',lang:'hebrew'},
+  ],
+  'psalms-23-1':[
+    {eng:'The LORD',orig:'יְהוָה',translit:'YHWH',strongs:'H3068',wordId:'yhwh',lang:'hebrew'},
+    {eng:'is my shepherd',orig:'רֹעִי',translit:"ro-'EE",strongs:'H7462',lang:'hebrew'},
+    {eng:'I shall not',orig:'לֹא',translit:'lo',strongs:'H3808',lang:'hebrew'},
+    {eng:'be in want',orig:'אֶחְסָר',translit:"ekh-SAR",strongs:'H2637',lang:'hebrew'},
+  ],
+  'psalms-23-4':[
+    {eng:'Even though I walk',orig:'גַּם כִּי-אֵלֵךְ',translit:'gam ki-e-LEKH',strongs:'H1980',lang:'hebrew'},
+    {eng:'through the valley',orig:'בְּגֵיא',translit:'be-GEI',strongs:'H1516',lang:'hebrew'},
+    {eng:'shadow of death',orig:'צַלְמָוֶת',translit:'tzal-MA-vet',strongs:'H6757',lang:'hebrew'},
+    {eng:'I will fear no evil',orig:'לֹא-אִירָא רָע',translit:"lo-i-RA ra'",strongs:'H7451',lang:'hebrew'},
+    {eng:'you are with me',orig:'אַתָּה עִמָּדִי',translit:"at-TAH im-MA-di",strongs:'H5978',lang:'hebrew'},
+    {eng:'your rod and staff',orig:'שִׁבְטְךָ וּמִשְׁעַנְתֶּךָ',translit:'shiv-TEK-ha u-mish-an-TE-kha',strongs:'H7626',lang:'hebrew'},
+    {eng:'comfort me',orig:'יְנַחֲמֻנִי',translit:'ye-na-kha-MU-ni',strongs:'H5162',lang:'hebrew'},
+  ],
+  'john-1-1':[
+    {eng:'In the beginning',orig:'Ἐν ἀρχῇ',translit:'en ar-KHAY',strongs:'G746',lang:'greek'},
+    {eng:'was',orig:'ἦν',translit:'ayn',strongs:'G1510',lang:'greek'},
+    {eng:'the Word',orig:'ὁ λόγος',translit:'ho LO-gos',strongs:'G3056',wordId:'logos',lang:'greek'},
+    {eng:'and the Word',orig:'καὶ ὁ λόγος',translit:'kai ho LO-gos',strongs:'G3056',wordId:'logos',lang:'greek'},
+    {eng:'was with',orig:'ἦν πρὸς',translit:'ayn pros',strongs:'G4314',lang:'greek'},
+    {eng:'God',orig:'τὸν θεόν',translit:'ton the-ON',strongs:'G2316',lang:'greek'},
+    {eng:'and',orig:'καὶ',translit:'kai',strongs:'G2532',lang:'greek'},
+    {eng:'God [divine nature]',orig:'θεὸς',translit:'the-OS',strongs:'G2316',lang:'greek'},
+    {eng:'was',orig:'ἦν',translit:'ayn',strongs:'G1510',lang:'greek'},
+    {eng:'the Word',orig:'ὁ λόγος',translit:'ho LO-gos',strongs:'G3056',wordId:'logos',lang:'greek'},
+  ],
+  'john-1-14':[
+    {eng:'And the Word',orig:'Καὶ ὁ λόγος',translit:'kai ho LO-gos',strongs:'G3056',wordId:'logos',lang:'greek'},
+    {eng:'became flesh',orig:'σὰρξ ἐγένετο',translit:'sarx e-GE-ne-to',strongs:'G4561',lang:'greek'},
+    {eng:'and tabernacled',orig:'ἐσκήνωσεν',translit:'es-KAY-no-sen',strongs:'G4637',lang:'greek'},
+    {eng:'among us',orig:'ἐν ἡμῖν',translit:'en hay-MIN',strongs:'G2254',lang:'greek'},
+    {eng:'we beheld',orig:'ἐθεασάμεθα',translit:'e-the-a-SA-me-tha',strongs:'G2300',lang:'greek'},
+    {eng:'his glory',orig:'τὴν δόξαν αὐτοῦ',translit:'tayn DO-xan au-TU',strongs:'G1391',lang:'greek'},
+    {eng:'full of grace',orig:'πλήρης χάριτος',translit:'PLAY-rays KHA-ri-tos',strongs:'G5485',wordId:'charis',lang:'greek'},
+    {eng:'and truth',orig:'καὶ ἀληθείας',translit:'kai a-lay-THEI-as',strongs:'G225',lang:'greek'},
+  ],
+  'john-3-16':[
+    {eng:'For God',orig:'ὁ θεὸς',translit:'ho the-OS',strongs:'G2316',lang:'greek'},
+    {eng:'so loved',orig:'οὕτως ἠγάπησεν',translit:'HU-tos ay-GA-pay-sen',strongs:'G25',wordId:'agape',lang:'greek'},
+    {eng:'the world',orig:'τὸν κόσμον',translit:'ton KOS-mon',strongs:'G2889',lang:'greek'},
+    {eng:'that he gave',orig:'ὥστε ἔδωκεν',translit:'HO-ste E-do-ken',strongs:'G1325',lang:'greek'},
+    {eng:'his only Son',orig:'τὸν μονογενῆ υἱόν',translit:'ton mo-no-ge-NAY HUI-on',strongs:'G3439',lang:'greek'},
+    {eng:'that whoever',orig:'ἵνα πᾶς',translit:'HI-na pas',strongs:'G3956',lang:'greek'},
+    {eng:'believes',orig:'ὁ πιστεύων',translit:'ho pi-STEU-on',strongs:'G4100',wordId:'pistis',lang:'greek'},
+    {eng:'in him',orig:'εἰς αὐτόν',translit:'eis au-TON',strongs:'G0',lang:'greek'},
+    {eng:'should not perish',orig:'μὴ ἀπόληται',translit:'may a-PO-lay-tai',strongs:'G622',lang:'greek'},
+    {eng:'but have',orig:"ἀλλ' ἔχῃ",translit:"all' E-khay",strongs:'G2192',lang:'greek'},
+    {eng:'eternal life',orig:'ζωὴν αἰώνιον',translit:'zo-AYN ai-O-ni-on',strongs:'G2222',wordId:'zoe',lang:'greek'},
+  ],
+  'romans-8-28':[
+    {eng:'And we know',orig:'Οἴδαμεν',translit:'OI-da-men',strongs:'G1492',lang:'greek'},
+    {eng:'that to those who love',orig:'ὅτι τοῖς ἀγαπῶσιν',translit:'HO-ti tois a-ga-PO-sin',strongs:'G25',wordId:'agape',lang:'greek'},
+    {eng:'God',orig:'τὸν θεόν',translit:'ton the-ON',strongs:'G2316',lang:'greek'},
+    {eng:'all things',orig:'πάντα',translit:'PAN-ta',strongs:'G3956',lang:'greek'},
+    {eng:'work together',orig:'συνεργεῖ',translit:'su-ner-GEI',strongs:'G4903',lang:'greek'},
+    {eng:'for good',orig:'εἰς ἀγαθόν',translit:'eis a-ga-THON',strongs:'G18',lang:'greek'},
+    {eng:'to those called',orig:'τοῖς κλητοῖς',translit:'tois klay-TOIS',strongs:'G2822',lang:'greek'},
+    {eng:'according to his purpose',orig:'κατὰ πρόθεσιν',translit:'ka-ta PRO-the-sin',strongs:'G4286',lang:'greek'},
+  ],
+};
+
+// ─── COMMENTARY ───────────────────────────────────────────────────────────────
+const COMMENTARY = {
+  'genesis-1':`Genesis 1 follows a structured literary pattern — not a scientific account. Scholar John Walton argues the seven days describe the <em>functional</em> ordering of creation (assigning purposes and roles) as much as material origins. Each day follows the same rhythm: divine speech → divine action → "and it was so" → "God saw that it was good." This is a cosmic liturgy, preparing creation as a sanctuary in which God will dwell. The final "good" (Hebrew <em>tov</em>) signals not just beauty but fitness for purpose.`,
+  'genesis-2':`The second account zooms in on human creation from a different angle. YHWH-Elohim (the covenant name + creator title combined) stoops to "form" (yatsar) humanity from the dust — the same verb a potter uses with clay. The garden is placed "in the east," so that exile goes westward, away from God's presence. Crucially, humanity is given a <em>vocation</em>: to "work and keep" the garden (the very Hebrew words later used of priestly service in the tabernacle). Creation is a temple; humans are its priests.`,
+  'genesis-3':`The Fall narrative is structured as a legal covenant violation. Three elements recur in ancient Near Eastern covenant literature: the oath (prohibition), the violation, and the curse sequence. Note the reversal pattern: the serpent first approaches the woman (not Adam who received the prohibition directly), uses the plural "you" suggesting Adam is present, and distorts God's word. The curses follow a chiastic pattern reversing the blessings. Genesis 3:15 — the <em>protoevangelium</em> (first gospel) — is the first hint that the Serpent's apparent victory is not final.`,
+  'exodus-3':`The burning bush theophany is the theological hinge of the Torah. The divine name YHWH was known before this moment (Genesis 4:26), but its full significance is disclosed here. The Hebrew of Exodus 3:14 — <em>ehyeh asher ehyeh</em> — is famously untranslatable: "I AM WHO I AM," "I WILL BE WHAT I WILL BE," or "I CAUSE TO BE WHAT IS." The verb hayah (to be/become) is radically dynamic. God is not a static essence but a living, acting, self-determining presence. The theological claim: this God cannot be manipulated, contained, or defined by human categories.`,
+  'psalms-23':`Psalm 23 is the most beloved psalm and one of the most exegetically rich. The shepherd metaphor places YHWH in the role of Israel's ideal shepherd-king (cf. Ezekiel 34). "Paths of righteousness" (מַעְגְּלֵי-צֶדֶק) could also be translated "right-making paths" — paths that set things right. The "valley of the shadow of death" (<em>tzalmavet</em>) is literally "deep darkness," though the death reading is ancient and compelling. The stunning final verse: <em>hesed</em> will "pursue" (<em>radaf</em>) me — the same verb used for military pursuit of enemies. Here God's covenant love is the relentless hunter.`,
+  'isaiah-53':`The fourth Servant Song (52:13–53:12) is the most-quoted OT passage in the NT. The identity of the Servant has been debated for millennia: Israel collectively, Jeremiah, Deutero-Isaiah himself, or (NT interpretation) the Messiah. The language is deliberately elusive and may function typologically — pointing through historical figures to their ultimate fulfillment. The passage inverts all ancient expectations: victory comes through voluntary suffering and substitution, not military conquest. The suffering servant "pours out his soul to death" and "bears the sin of many" — the richest OT anticipation of what NT writers saw at the cross.`,
+  'micah-5':`Micah 5:2 is remarkable in its specificity: out of Bethlehem Ephrathah (distinguishing it from another Bethlehem in Zebulun), though small among the clans of Judah, will come a ruler whose "origins are from of old, from ancient days" (<em>miqedem, mime olam</em>). The word <em>olam</em> here points to something beyond ordinary historical time — origins that recede to the vanishing point. Jewish interpreters debated whether this implied a pre-existent Messiah; the NT gospels (Matthew 2:6, Luke 2) read it as pointing to Jesus of Nazareth's Bethlehem birth.`,
+  'john-1':`John's Prologue (1:1-18) mirrors Genesis 1 deliberately — "In the beginning…" — claiming Jesus is the new creation event. The three-clause ascending statement in v.1 builds: the Logos existed (was), was in relationship (with God), and shared the divine nature (was God). The Greek <em>theos</em> without the article in the final clause has been debated: it emphasizes quality/nature (the Word partook of deity) rather than identity (the Word was the same person as the Father). V.14's "tabernacled among us" (ἐσκήνωσεν) directly echoes the Shekinah-glory that filled the Mosaic tabernacle (Exodus 40:34).`,
+  'john-3':`The Nicodemus dialogue is a study in irony and misunderstanding. <em>Anothen</em> (v.3) deliberately means both "again" and "from above" — Nicodemus hears the former; Jesus means the latter. The dialogue's center (3:16) has been called the "gospel in miniature." Three Greek words repay close attention: <em>agaped</em> (loved — a volitional act, not sentiment), <em>monogene</em> (unique/one-of-a-kind — not a reproductive metaphor but a statement of uniqueness), and <em>zoe aionion</em> (the life of the coming age — participation in divine life now, not just future existence).`,
+  'romans-1':`Romans 1:17 contains what Luther called the "thunderbolt" that launched the Reformation: <em>dikaiosyne theou</em> — "the righteousness of God." Is this God's own righteous character, the status he grants to the believer, or his covenant faithfulness in action? Scholars now generally accept it is all three simultaneously — the phrase is deliberately multivalent. Paul's use of Habakkuk 2:4 ("the righteous shall live by faith/faithfulness") sets the agenda for the entire letter: genuine human righteousness is received from God through trust, not generated by human effort.`,
+  'romans-8':`Romans 8 is the apex of Paul's theological argument. The chapter moves from "no condemnation" (v.1) to "no separation" (v.39) — a complete arc of security in Christ. Verses 18-27 broaden the scope dramatically: it's not just humans who groan but the entire creation, in labor pains awaiting its own redemption. Paul's "all things work together for good" (v.28) is frequently sentimentalized; the context is explicitly about suffering (vv.17-27), and the "good" is defined as conformity to Christ's image (v.29) — not comfort, but transformation.`,
+  'hebrews-11':`Hebrews 11's governing definition of faith in v.1 uses two philosophical Greek terms: <em>hypostasis</em> (substance/underlying reality — the title deed of what is hoped for) and <em>elenchos</em> (evidence/proof — a legal term). So faith is not uncertainty bravely endured but conviction resting on solid evidence of unseen realities. The "hall of faith" that follows does not celebrate heroes who achieved great things by their own effort — every figure acted on divine promises that required trust in what was not yet visible, and "none of them received what was promised" (v.39) in their lifetime.`,
+  'revelation-1':`The book's opening word <em>apokalypsis</em> (uncovering/revelation) names the genre: apocalyptic literature uses symbolic imagery to reveal the spiritual reality beneath visible events, not to predict a timeline. Written to seven real churches facing real Roman persecution (~95 AD), Revelation's primary function was pastoral: "the Lamb who was slain" reigns over Caesar. Its violent imagery draws almost entirely from OT allusions (nearly 70% of verses echo OT texts). The "last things" depicted are not novelties but the completion and vindication of everything Israel's story promised.`,
+};
+
+const App = {
+  state: {
+    book: null,
+    chapter: 1,
+    translation: 'web',
+    view: 'read',
+    map: 'ane',
+    messages: [],
+    apiKey: sessionStorage.getItem('logos_api_key') || '',
+    loading: false,
+    lexFilter: 'all',
+    interlinear: false,
+    compare: false,
+    commentary: false,
+    noteTarget: null,
+  },
+
+  init() {
+    this.renderSidebar();
+    this.renderLexicon();
+    this.renderTimeline();
+    this.renderMap('ane');
+    this.updateApiStatus();
+    this.updateNoBanner();
+    // Restore last reading position
+    try {
+      const prog = JSON.parse(localStorage.getItem('logos_progress') || 'null');
+      if (prog && prog.bookId) {
+        const book = BOOKS.find(b => b.id === prog.bookId);
+        if (book) {
+          this.state.book = book;
+          this.state.chapter = prog.chapter || 1;
+          this.renderSidebar();
+          this.loadChapter();
+          this.updateWordPanel();
+        }
+      }
+    } catch(e) {}
+  },
+
+  renderSidebar(filter = '') {
+    const container = document.getElementById('books-container');
+    const q = filter.toLowerCase();
+    let html = '';
+    let lastSec = null;
+    let lastTestament = null;
+    const filtered = BOOKS.filter(b => !q || b.name.toLowerCase().includes(q));
+    filtered.forEach(b => {
+      if (b.t !== lastTestament) {
+        html += `<div class="sidebar-section" style="color:var(--gold-light);font-size:10px;margin-top:${lastTestament?'10px':'0'}">${b.t === 'OT' ? '— OLD TESTAMENT —' : '— NEW TESTAMENT —'}</div>`;
+        lastTestament = b.t; lastSec = null;
+      }
+      if (b.sec !== lastSec) {
+        html += `<div class="sidebar-section">${b.sec}</div>`;
+        lastSec = b.sec;
+      }
+      const active = this.state.book && this.state.book.id === b.id ? 'active' : '';
+      html += `<button class="book-btn ${active}" onclick="App.selectBook('${b.id}')">${b.name}</button>`;
+    });
+    container.innerHTML = html;
+  },
+
+  filterBooks(q) { this.renderSidebar(q); },
+
+  selectBook(bookId) {
+    const book = BOOKS.find(b => b.id === bookId);
+    if (!book) return;
+    this.state.book = book; this.state.chapter = 1;
+    this.renderSidebar(document.getElementById('book-search').value);
+    this.switchView('read');
+    this.loadChapter();
+    this.updateWordPanel();
+  },
+
+  goToChapter(ch) { this.state.chapter = ch; this.loadChapter(); this.updateWordPanel(); },
+  prevChapter() { if (this.state.chapter > 1) { this.state.chapter--; this.loadChapter(); this.updateWordPanel(); } },
+  nextChapter() { if (this.state.book && this.state.chapter < this.state.book.ch) { this.state.chapter++; this.loadChapter(); this.updateWordPanel(); } },
+  changeTranslation(val) { this.state.translation = val; if (this.state.book) this.loadChapter(); },
+
+  async loadChapter() {
+    const { book, chapter, translation } = this.state;
+    if (!book) return;
+    const title = `${book.name} ${chapter}`;
+    document.getElementById('chapter-title').textContent = title;
+    document.getElementById('loc-text').textContent = title;
+    let opts = '';
+    for (let i = 1; i <= book.ch; i++) opts += `<option value="${i}" ${i===chapter?'selected':''}>Ch. ${i}</option>`;
+    document.getElementById('chapter-select').innerHTML = opts;
+    document.getElementById('prev-ch').disabled = chapter <= 1;
+    document.getElementById('next-ch').disabled = chapter >= book.ch;
+    // Save progress
+    try { localStorage.setItem('logos_progress', JSON.stringify({bookId: book.id, chapter})); } catch(e) {}
+    const content = document.getElementById('reader-content');
+    content.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Loading…</span></div>';
+    try {
+      const url = `https://bible-api.com/${book.id}+${chapter}?translation=${translation}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const chKey = `${book.id.replace(/\+/g,'-')}-${chapter}`;
+      let html = '';
+      // Scholar's note
+      const passageNote = PASSAGE_NOTES[chKey];
+      if (passageNote) html += `<div class="passage-note"><strong>📜 Scholar's Note — ${title}</strong><br>${passageNote}</div>`;
+      // Commentary section
+      if (this.state.commentary && COMMENTARY[chKey]) {
+        html += `<div class="commentary-section" id="commentary-${chKey}">
+          <div class="commentary-toggle open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+            <span>📚 Scholarly Commentary — ${title}</span><span class="arr">▾</span>
+          </div>
+          <div style="padding:14px 0 10px">${COMMENTARY[chKey]}</div>
+        </div>`;
+      }
+      const transNames = {web:'World English Bible',ylt:"Young's Literal Translation",kjv:'King James Version',asv:'American Standard Version'};
+      html += `<div style="font-size:11px;color:var(--text-3);margin-bottom:18px;letter-spacing:0.5px;text-transform:uppercase;font-weight:600;">${transNames[translation]}</div>`;
+      // Load highlights
+      let hlMap = {};
+      try { hlMap = JSON.parse(localStorage.getItem('logos_highlights') || '{}'); } catch(e) {}
+      // Render verses
+      const xrefs = CROSS_REFS[chKey] || {};
+      html += '<div class="bible-chapter">';
+      if (data.verses && data.verses.length) {
+        data.verses.forEach(v => {
+          const vKey = `${chKey}-${v.verse}`;
+          const hl = hlMap[vKey] ? hlMap[vKey].color : '';
+          const hasNote = hlMap[vKey] && hlMap[vKey].note;
+          const isBookmarked = this.isBookmarked(vKey);
+          const verseText = this.escapeHtml(v.text).trim();
+          html += `<div class="verse-wrap ${hl ? 'hl-'+hl : ''}" id="vw-${vKey}" data-key="${vKey}">`;
+          // Verse tools bar
+          html += `<div class="verse-tools">
+            <button class="verse-tool-btn" onclick="App.highlight('${vKey}','yellow')" title="Highlight yellow" style="color:#C8960A">●</button>
+            <button class="verse-tool-btn" onclick="App.highlight('${vKey}','green')" title="Highlight green" style="color:#4A8A4A">●</button>
+            <button class="verse-tool-btn" onclick="App.highlight('${vKey}','blue')" title="Highlight blue" style="color:#3A6FAA">●</button>
+            <button class="verse-tool-btn" onclick="App.highlight('${vKey}','')" title="Clear highlight" style="color:var(--text-3)">✕</button>
+            <button class="verse-tool-btn" onclick="App.openNoteModal('${vKey}','${verseText.replace(/'/g,"&#39;")}')" title="${hasNote?'Edit note':'Add note'}" style="${hasNote?'color:var(--gold)':''}">📝</button>
+            <button class="verse-tool-btn" onclick="App.bookmark('${vKey}')" title="${isBookmarked?'Remove bookmark':'Bookmark'}" style="${isBookmarked?'color:var(--gold)':''}">⭐</button>
+          </div>`;
+          // Verse number + text
+          html += `<span class="verse-num">${v.verse}</span>`;
+          // Interlinear or plain text
+          const iKey = `${chKey}-${v.verse}`;
+          if (this.state.interlinear && INTERLINEAR_DATA[iKey]) {
+            html += `<span class="interlinear-verse">`;
+            INTERLINEAR_DATA[iKey].forEach(w => {
+              const isH = w.lang === 'hebrew';
+              html += `<span class="wg" onclick="App.showWordModal('${w.wordId||w.strongs}','${w.lang}')" title="${w.strongs}">
+                <span class="wg-orig ${isH?'':'greek'}" style="direction:${isH?'rtl':'ltr'}">${w.orig}</span>
+                <span class="wg-translit">${w.translit}</span>
+                <span class="wg-eng">${w.eng}</span>
+                <span class="wg-snum">${w.strongs}</span>
+              </span>`;
+            });
+            html += `</span>`;
+          } else {
+            html += verseText + ' ';
+          }
+          // Note indicator
+          if (hasNote) html += `<span style="cursor:pointer;font-size:11px;color:var(--gold);margin-left:4px;vertical-align:super" onclick="App.openNoteModal('${vKey}','${verseText.replace(/'/g,"&#39;")}')" title="${hlMap[vKey].note.replace(/"/g,'&quot;')}">✎</span>`;
+          // Cross-references
+          if (xrefs[v.verse] && xrefs[v.verse].length) {
+            const xid = `xr-${vKey}`;
+            html += `<div class="xref-section">
+              <button class="xref-toggle" onclick="const d=document.getElementById('${xid}');const open=d.style.display!=='none';d.style.display=open?'none':'block';this.textContent=open?'▸ Cross-references (${xrefs[v.verse].length})':'▾ Cross-references (${xrefs[v.verse].length})'">▸ Cross-references (${xrefs[v.verse].length})</button>
+              <div class="xref-list" id="${xid}" style="display:none">${xrefs[v.verse].map(x=>`<div class="xref-item"><span class="xref-ref" onclick="App.goToPassage('${x.ref}')">${x.ref}</span> <span class="xref-text">${this.escapeHtml(x.text)}</span></div>`).join('')}</div>
+            </div>`;
+          }
+          html += `</div>`;
+        });
+      } else { html += this.escapeHtml(data.text || ''); }
+      html += '</div>';
+      content.innerHTML = html;
+      content.scrollTop = 0;
+    } catch (e) {
+      content.innerHTML = `<div class="error-state"><strong>Could not load chapter.</strong><br>Check your internet — this fetches from bible-api.com.<br><small style="opacity:0.7;display:block;margin-top:6px">${e.message}</small></div>`;
+    }
+  },
+
+  escapeHtml(str) { return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); },
+
+  updateWordPanel() {
+    const { book } = this.state;
+    if (!book) return;
+    const pool = book.t === 'OT' ? WORD_STUDIES.hebrew : WORD_STUDIES.greek;
+    const also = book.t === 'OT' ? WORD_STUDIES.greek : WORD_STUDIES.hebrew;
+    const words = [...pool.slice(0,6), ...also.slice(0,2)];
+    document.getElementById('word-panel-content').innerHTML = words.map(w => {
+      const isH = w.lang === 'hebrew';
+      return `<div class="word-card" onclick="App.showWordModal('${w.id}','${w.lang}')">
+        <span class="lang-tag ${isH?'heb':'grk'}">${isH?'HEBREW':'GREEK'}</span>
+        <span class="script ${isH?'':'greek'}">${w.word}</span>
+        <span class="translit">${w.translit}</span>
+        <span class="gloss">${w.gloss}</span>
+        <div class="strongs">${w.strongs}</div>
+      </div>`;
+    }).join('');
+  },
+
+  switchView(view) {
+    this.state.view = view;
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const viewEl = document.getElementById(`view-${view}`);
+    if (viewEl) viewEl.classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      const map = {read:'read',lexicon:'lex',timeline:'time',maps:'map',ask:'ask',notes:'note'};
+      if (b.textContent.toLowerCase().includes(map[view]||view)) b.classList.add('active');
+    });
+    if (view === 'notes') this.renderNotesView();
+  },
+
+  renderLexicon(filter = 'all') {
+    this.state.lexFilter = filter;
+    const words = [...WORD_STUDIES.hebrew.filter(()=>filter!=='greek'), ...WORD_STUDIES.greek.filter(()=>filter!=='hebrew')];
+    document.getElementById('lexicon-grid').innerHTML = words.map(w => {
+      const isH = w.lang === 'hebrew';
+      return `<div class="word-card" onclick="App.showWordModal('${w.id}','${w.lang}')">
+        <span class="lang-tag ${isH?'heb':'grk'}">${isH?'HEBREW':'GREEK'}</span>
+        <span class="script ${isH?'':'greek'}">${w.word}</span>
+        <span class="translit">${w.translit}</span>
+        <span class="gloss">${w.gloss}</span>
+        <div class="strongs">${w.strongs} · ${w.pos}</div>
+      </div>`;
+    }).join('');
+  },
+
+  filterLexicon(filter, btn) {
+    document.querySelectorAll('#lexicon-toolbar .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    this.renderLexicon(filter);
+  },
+
+  showWordModal(id, lang) {
+    const words = lang === 'hebrew' ? WORD_STUDIES.hebrew : WORD_STUDIES.greek;
+    const w = words.find(x => x.id === id);
+    if (!w) return;
+    const isH = lang === 'hebrew';
+    document.getElementById('word-modal-header-content').innerHTML = `
+      <span class="lang-tag ${isH?'heb':'grk'}" style="margin-bottom:8px;display:inline-block">${isH?'HEBREW':'GREEK'} · ${w.strongs}</span>
+      <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;">
+        <span class="script-large ${isH?'':'greek'}">${w.word}</span>
+        <div><div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:2px">${w.gloss}</div>
+        <div style="font-size:13px;color:var(--text-3);font-style:italic">${w.translit} · ${w.pos}</div></div>
+      </div>`;
+    const paragraphs = w.meaning.split('\n\n').map(p => `<p>${p.replace(/\n/g,'<br>')}</p>`).join('');
+    document.getElementById('word-modal-body').innerHTML = `
+      <section><div class="section-label">Root</div><div class="section-content">${w.root}</div></section>
+      <section><div class="section-label">Common English Translation</div><div class="section-content">${w.common_translation}</div></section>
+      <section><div class="section-label">More Precise Rendering</div><div class="highlight-box">${w.better_translation}</div></section>
+      <section><div class="section-label">Full Semantic Analysis</div><div class="section-content" style="font-size:14px;line-height:1.8">${paragraphs}</div></section>
+      <section><div class="section-label">Key Passages</div><div class="section-content">${w.passages.map(p =>
+        `<span onclick="App.goToPassage('${p}')" style="display:inline-block;margin:2px 6px 2px 0;padding:2px 10px;background:var(--gold-bg);border:1px solid var(--border);border-radius:12px;font-size:12.5px;cursor:pointer;color:var(--gold-dark)">${p}</span>`
+      ).join('')}</div></section>`;
+    document.getElementById('word-modal').classList.add('open');
+  },
+
+  closeWordModal() { document.getElementById('word-modal').classList.remove('open'); },
+
+  goToPassage(ref) {
+    const match = ref.match(/^(.+?)\s+(\d+)/);
+    if (!match) return;
+    const book = BOOKS.find(b => b.name.toLowerCase().startsWith(match[1].toLowerCase()) || b.abbr.toLowerCase() === match[1].toLowerCase());
+    if (book) { this.closeWordModal(); this.state.book = book; this.state.chapter = parseInt(match[2]); this.renderSidebar(); this.switchView('read'); this.loadChapter(); this.updateWordPanel(); }
+  },
+
+  renderTimeline() {
+    let html = '';
+    this._eventMap = {};
+    TIMELINE.forEach(era => {
+      html += `<div class="timeline-era"><div class="era-label" style="color:${era.eraColor}">${era.era}</div><div class="timeline-events">`;
+      era.events.forEach((ev, i) => {
+        const key = `${era.era}-${i}`;
+        this._eventMap[key] = ev;
+        html += `<div class="timeline-event" onmouseenter="App.showEventDetail(event,'${key}')" onmouseleave="App.hideEventDetail()">
+          <div class="event-dot" style="border-color:${era.eraColor}"></div>
+          <div class="event-body"><div class="event-date">${ev.date}</div><div class="event-name">${ev.name}</div><div class="event-books">${ev.books}</div></div>
+        </div>`;
+      });
+      html += `</div></div>`;
+    });
+    document.getElementById('timeline-track').innerHTML = html;
+  },
+
+  showEventDetail(e, key) {
+    const ev = this._eventMap[key]; if (!ev) return;
+    const d = document.getElementById('event-detail');
+    d.innerHTML = `<strong style="font-size:14px;color:var(--text)">${ev.name}</strong><br><span style="font-size:11.5px;font-weight:600;color:var(--gold-dark);display:block;margin:3px 0 8px">${ev.date} · ${ev.books}</span>${ev.desc}`;
+    d.style.left = Math.min(e.clientX+12, window.innerWidth-320)+'px';
+    d.style.top = Math.min(e.clientY-20, window.innerHeight-200)+'px';
+    d.classList.add('visible');
+  },
+  hideEventDetail() { document.getElementById('event-detail').classList.remove('visible'); },
+
+  switchMap(mapId, btn) {
+    document.querySelectorAll('#maps-toolbar .filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    this.state.map = mapId; this.renderMap(mapId);
+  },
+
+  renderMap(mapId) {
+    const data = MAPS_DATA[mapId];
+    let svgContent = '';
+    if (mapId === 'ane') svgContent = this.svgANE(data);
+    else if (mapId === 'israel') svgContent = this.svgIsrael(data);
+    else svgContent = this.svgPaul(data);
+    document.getElementById('map-render').innerHTML = `<div class="map-container">${svgContent}<div class="map-caption">${data.caption}</div></div>`;
+  },
+
+  svgANE(data) {
+    const cities = data.cities.map(c => `<g class="city-dot" onmouseenter="App.showCityTip(event,'${c.id}')" onmouseleave="App.hideCityTip()"><circle cx="${c.x}" cy="${c.y}" r="5" fill="var(--gold)" stroke="var(--card)" stroke-width="1.5"/><text x="${c.x+8}" y="${c.y+4}" font-size="10.5" fill="#2C1E12">${c.name.split('(')[0].trim()}</text></g>`).join('');
+    return `<svg class="map-svg" viewBox="0 0 750 430" style="background:#C8DEEA">
+      <polygon points="0,150 80,140 120,130 160,140 210,120 260,95 330,90 400,85 470,80 540,85 610,100 680,120 750,130 750,430 0,430" fill="#D6C9A8"/>
+      <polygon points="0,150 80,140 120,130 145,160 110,195 75,215 30,220 0,230" fill="#C8DEEA"/>
+      <polygon points="60,220 100,210 135,215 150,235 145,270 120,290 85,295 60,280 50,255" fill="#C8D4A0"/>
+      <path d="M180,205 Q250,180 310,190 Q380,180 450,190 Q520,175 580,185 Q630,195 640,210" fill="none" stroke="#9EBB88" stroke-width="14" stroke-opacity="0.4"/>
+      <polygon points="190,290 250,275 320,285 400,300 500,320 600,360 680,400 750,430 400,430 150,430" fill="#E0CFA0"/>
+      <polyline points="265,130 268,155 264,180 262,210 258,240 255,268" fill="none" stroke="#6AA0B8" stroke-width="2"/>
+      <ellipse cx="265" cy="180" rx="9" ry="13" fill="#6AA0B8"/>
+      <ellipse cx="261" cy="255" rx="8" ry="18" fill="#6AA0B8" opacity="0.8"/>
+      <polyline points="380,120 420,160 470,200 520,240 560,270 610,300 630,330" fill="none" stroke="#6AA0B8" stroke-width="2.5"/>
+      <polyline points="410,110 440,145 470,185 500,220 530,250 560,270" fill="none" stroke="#6AA0B8" stroke-width="2"/>
+      <polyline points="105,345 100,310 95,275 98,240 108,215 120,205" fill="none" stroke="#6AA0B8" stroke-width="2.5"/>
+      <polygon points="145,285 150,320 155,365 160,410 140,430 120,430 125,380 130,340 135,295" fill="#C8DEEA" opacity="0.9"/>
+      <polygon points="215,285 218,310 220,350 215,390 205,430 195,430 198,385 205,340 208,300" fill="#C8DEEA" opacity="0.9"/>
+      <text x="40" y="182" font-size="11" fill="#3A7090" opacity="0.8" font-style="italic">Mediterranean</text>
+      <text x="100" y="265" font-size="10" fill="#5A4A30" opacity="0.7" font-style="italic">Egypt</text>
+      <text x="240" y="222" font-size="10" fill="#5A4A30" opacity="0.7" font-style="italic">Canaan</text>
+      <text x="490" y="218" font-size="11" fill="#5A4A30" opacity="0.7" font-style="italic">Mesopotamia</text>
+      <text x="360" y="370" font-size="12" fill="#7A6A50" opacity="0.6" font-style="italic">Arabian Peninsula</text>
+      <rect x="10" y="10" width="210" height="26" rx="4" fill="rgba(255,255,255,0.75)"/>
+      <text x="18" y="27" font-size="13" font-weight="600" fill="#2C1E12">${data.title}</text>
+      ${cities}</svg>`;
+  },
+
+  svgIsrael(data) {
+    const cities = data.cities.map(c => `<g class="city-dot" onmouseenter="App.showCityTip(event,'${c.id}')" onmouseleave="App.hideCityTip()"><circle cx="${c.x}" cy="${c.y}" r="5.5" fill="var(--gold)" stroke="var(--card)" stroke-width="1.5"/><text x="${c.x+8}" y="${c.y+4}" font-size="11" fill="#2C1E12">${c.name}</text></g>`).join('');
+    return `<svg class="map-svg" viewBox="0 0 580 540" style="background:#C8DEEA">
+      <polygon points="300,60 340,65 380,80 410,115 430,150 440,200 445,250 440,310 435,360 420,400 400,440 370,480 340,510 320,530 310,540 280,540 270,530 265,500 275,460 280,420 275,380 278,340 282,300 285,250 280,200 275,150 278,110 285,80 295,65" fill="#D6C9A8"/>
+      <polygon points="295,65 310,80 310,120 310,180 305,240 300,300 295,360 285,400 278,420 275,380 278,340 282,300 285,250 280,200 275,150 278,110" fill="#CCCF9E"/>
+      <polygon points="280,420 295,415 340,420 380,430 400,440 370,480 340,510 310,540 280,540 270,530 265,500 275,460" fill="#E0D0A0"/>
+      <polyline points="352,90 355,120 358,155 358,195 360,230 362,268 360,300 355,325" fill="none" stroke="#6AA0B8" stroke-width="2.5"/>
+      <ellipse cx="362" cy="195" rx="14" ry="22" fill="#6AA0B8"/>
+      <ellipse cx="360" cy="338" rx="12" ry="30" fill="#6AA0B8" opacity="0.85"/>
+      <text x="308" y="160" font-size="11" fill="#5A4A30" font-style="italic" opacity="0.8">Galilee</text>
+      <text x="300" y="260" font-size="11" fill="#5A4A30" font-style="italic" opacity="0.8">Samaria</text>
+      <text x="295" y="350" font-size="11" fill="#5A4A30" font-style="italic" opacity="0.8">Judea</text>
+      <text x="340" y="202" font-size="9" fill="#3A7090" opacity="0.9">Sea of Galilee</text>
+      <text x="333" y="340" font-size="9" fill="#3A7090" opacity="0.9">Dead Sea</text>
+      <text x="150" y="300" font-size="11" fill="#3A7090" opacity="0.8" font-style="italic" transform="rotate(-90,150,300)">Mediterranean Sea</text>
+      <rect x="10" y="10" width="190" height="26" rx="4" fill="rgba(255,255,255,0.75)"/>
+      <text x="18" y="27" font-size="13" font-weight="600" fill="#2C1E12">${data.title}</text>
+      ${cities}</svg>`;
+  },
+
+  svgPaul(data) {
+    const jc = {'1':'#B8916A','2':'#6B8B6B','3':'#2A6B8B'};
+    const cities = data.cities.map(c => `<g class="city-dot" onmouseenter="App.showCityTip(event,'${c.id}')" onmouseleave="App.hideCityTip()"><circle cx="${c.x}" cy="${c.y}" r="5" fill="var(--gold)" stroke="var(--card)" stroke-width="1.5"/><text x="${c.x+7}" y="${c.y+4}" font-size="10" fill="#2C1E12">${c.name.split('(')[0].trim()}</text></g>`).join('');
+    return `<svg class="map-svg" viewBox="0 0 580 430" style="background:#C8DEEA">
+      <polygon points="185,80 200,90 210,110 215,140 220,170 215,200 200,220 190,240 180,255 170,265 160,260 155,245 162,220 170,200 175,175 172,155 165,135 158,110 162,90 172,80" fill="#D6C9A8"/>
+      <polygon points="210,100 270,80 310,85 330,95 320,120 305,140 295,165 285,180 275,200 265,215 255,220 240,215 230,205 225,190 230,170 235,150 230,130 220,115" fill="#D6C9A8"/>
+      <polygon points="300,95 370,80 430,75 480,80 510,90 520,110 515,135 500,155 475,165 445,170 415,168 385,165 360,170 335,175 310,170 300,155 295,135 295,115" fill="#D6C9A8"/>
+      <polygon points="430,140 480,130 500,140 505,160 500,185 490,205 480,215 465,220 450,215 440,200 435,180 430,160" fill="#D6C9A8"/>
+      <polygon points="0,295 100,280 160,275 210,275 260,280 310,285 370,285 430,288 480,285 530,280 580,285 580,430 0,430" fill="#D6C9A8"/>
+      <ellipse cx="450" cy="185" rx="20" ry="10" fill="#D6C9A8"/>
+      <!-- Journey 1 -->
+      <polyline points="330,222 370,215 395,222 415,215 395,230 365,238 340,234 330,225" fill="none" stroke="${jc['1']}" stroke-width="2.5" stroke-dasharray="8,4" opacity="0.9"/>
+      <!-- Journey 2 -->
+      <polyline points="330,222 295,220 265,215 245,225 228,248 242,254 265,248 285,240 310,235 330,228" fill="none" stroke="${jc['2']}" stroke-width="2.5" stroke-dasharray="8,4" opacity="0.9"/>
+      <!-- Journey 3 -->
+      <polyline points="330,222 355,215 385,218 405,228 390,240 360,243 330,240 295,235 260,238 242,245 265,250 310,248 330,240" fill="none" stroke="${jc['3']}" stroke-width="2.5" stroke-dasharray="8,4" opacity="0.9"/>
+      <rect x="10" y="388" width="310" height="26" rx="4" fill="rgba(255,255,255,0.7)"/>
+      <rect x="18" y="398" width="16" height="3" fill="${jc['1']}" rx="1"/><text x="38" y="407" font-size="10" fill="#2C1E12">1st (~46–48 AD)</text>
+      <rect x="115" y="398" width="16" height="3" fill="${jc['2']}" rx="1"/><text x="135" y="407" font-size="10" fill="#2C1E12">2nd (~50–52 AD)</text>
+      <rect x="215" y="398" width="16" height="3" fill="${jc['3']}" rx="1"/><text x="235" y="407" font-size="10" fill="#2C1E12">3rd (~53–57 AD)</text>
+      <text x="145" y="218" font-size="10" fill="#3A7090" opacity="0.8" font-style="italic">Mediterranean Sea</text>
+      <rect x="10" y="10" width="220" height="26" rx="4" fill="rgba(255,255,255,0.75)"/>
+      <text x="18" y="27" font-size="13" font-weight="600" fill="#2C1E12">${data.title}</text>
+      ${cities}</svg>`;
+  },
+
+  showCityTip(e, cityId) {
+    const allCities = [...MAPS_DATA.ane.cities, ...MAPS_DATA.israel.cities, ...MAPS_DATA.paul.cities];
+    const city = allCities.find(c => c.id === cityId); if (!city) return;
+    const tip = document.getElementById('city-tooltip');
+    tip.innerHTML = `<div class="city-name">${city.name}</div><div class="city-info">${city.info}</div>`;
+    tip.style.display = 'block';
+    tip.style.left = Math.min(e.clientX+14, window.innerWidth-260)+'px';
+    tip.style.top = Math.min(e.clientY-10, window.innerHeight-160)+'px';
+  },
+  hideCityTip() { document.getElementById('city-tooltip').style.display = 'none'; },
+
+  chatKeyDown(e) { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); } },
+
+  async sendMessage() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+    if (!this.state.apiKey) { this.openApiModal(); return; }
+    input.value = ''; input.style.height = '';
+    this.appendMessage('user', text);
+    this.state.messages.push({role:'user',content:text});
+    document.getElementById('send-btn').disabled = true;
+    this.appendMessage('assistant','<div class="spinner" style="margin:4px 0"></div>','typing-indicator');
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'x-api-key':this.state.apiKey,
+          'anthropic-version':'2023-06-01',
+          'anthropic-dangerous-allow-browser':'true',
+        },
+        body:JSON.stringify({
+          model:'claude-sonnet-4-5',
+          max_tokens:1024,
+          system:`You are a biblical scholar with deep expertise in Biblical Hebrew, Koine Greek, and Aramaic. You have comprehensive knowledge of textual criticism, Ancient Near Eastern history and culture, Second Temple Judaism, and early Christianity. When answering: always reference the original Hebrew/Greek with transliteration and Strong's numbers; explain the semantic range of key terms and where English translations fall short; give historical context; present scholarly perspectives where there is debate; be direct and scholarly. Use **bold** for key original language terms. Format in clear paragraphs.`,
+          messages:this.state.messages,
+        }),
+      });
+      const data = await res.json();
+      document.getElementById('typing-indicator')?.remove();
+      if (data.error) throw new Error(data.error.message);
+      const reply = data.content[0].text;
+      this.state.messages.push({role:'assistant',content:reply});
+      this.appendMessage('assistant', this.formatText(reply));
+    } catch (err) {
+      document.getElementById('typing-indicator')?.remove();
+      this.appendMessage('assistant',`<span style="color:var(--error)">Error: ${err.message}</span>`);
+    }
+    document.getElementById('send-btn').disabled = false;
+  },
+
+  formatText(t) {
+    return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>')
+      .split('\n\n').map(p=>p.trim()?`<p>${p.replace(/\n/g,'<br>')}</p>`:'').join('');
+  },
+
+  appendMessage(role, html, id='') {
+    const el = document.createElement('div');
+    el.className = `msg ${role}`; if (id) el.id = id;
+    const av = role==='user'?`<div class="msg-avatar">K</div>`:`<div class="msg-avatar">λ</div>`;
+    el.innerHTML = `${role==='user'?'':av}<div class="msg-bubble">${html}</div>${role==='user'?av:''}`;
+    const c = document.getElementById('chat-messages');
+    c.appendChild(el); c.scrollTop = c.scrollHeight;
+  },
+
+  openApiModal() {
+    document.getElementById('api-key-input').value = this.state.apiKey || '';
+    document.getElementById('api-modal').classList.add('open');
+    setTimeout(()=>document.getElementById('api-key-input').focus(),100);
+  },
+  closeApiModal() { document.getElementById('api-modal').classList.remove('open'); },
+  saveApiKey() {
+    const key = document.getElementById('api-key-input').value.trim(); if (!key) return;
+    this.state.apiKey = key; sessionStorage.setItem('logos_api_key', key);
+    this.closeApiModal(); this.updateApiStatus(); this.updateNoBanner();
+  },
+  updateApiStatus() {
+    document.getElementById('api-dot').classList.toggle('active', !!this.state.apiKey);
+    document.getElementById('api-status-text').textContent = this.state.apiKey ? 'Claude API: connected' : 'Claude API: not connected';
+  },
+  updateNoBanner() { document.getElementById('no-key-banner').style.display = this.state.apiKey ? 'none' : 'flex'; },
+
+  // ── HIGHLIGHT & NOTES ──────────────────────────────────────────────────────
+  _hlLoad() { try { return JSON.parse(localStorage.getItem('logos_highlights') || '{}'); } catch(e) { return {}; } },
+  _hlSave(map) { try { localStorage.setItem('logos_highlights', JSON.stringify(map)); } catch(e) {} },
+
+  highlight(key, color) {
+    const map = this._hlLoad();
+    if (!map[key]) map[key] = {};
+    if (color) { map[key].color = color; } else { delete map[key].color; if (!map[key].note) delete map[key]; }
+    this._hlSave(map);
+    const wrap = document.getElementById(`vw-${key}`);
+    if (wrap) {
+      wrap.classList.remove('hl-yellow','hl-green','hl-blue');
+      if (color) wrap.classList.add(`hl-${color}`);
+    }
+  },
+
+  openNoteModal(key, verseText) {
+    this.state.noteTarget = key;
+    const map = this._hlLoad();
+    const existing = (map[key] && map[key].note) || '';
+    const parts = key.split('-');
+    const verse = parts.pop(); const ch = parts.pop(); const bookId = parts.join('-');
+    const book = BOOKS.find(b => b.id === bookId);
+    const ref = book ? `${book.name} ${ch}:${verse}` : key;
+    document.getElementById('note-modal-ref').textContent = ref;
+    document.getElementById('note-textarea').value = existing;
+    document.getElementById('note-modal').classList.add('open');
+    setTimeout(() => document.getElementById('note-textarea').focus(), 80);
+  },
+  closeNoteModal() { document.getElementById('note-modal').classList.remove('open'); this.state.noteTarget = null; },
+
+  saveNote() {
+    const key = this.state.noteTarget; if (!key) return;
+    const text = document.getElementById('note-textarea').value.trim();
+    const map = this._hlLoad();
+    if (!map[key]) map[key] = {};
+    if (text) { map[key].note = text; } else { delete map[key].note; if (!map[key].color) delete map[key]; }
+    this._hlSave(map);
+    this.closeNoteModal();
+    // refresh note indicator in DOM
+    const wrap = document.getElementById(`vw-${key}`);
+    if (wrap) {
+      const indicator = wrap.querySelector('.note-indicator');
+      if (text && !indicator) {
+        // note indicator is already rendered in loadChapter; just reload chapter to reflect
+        this.loadChapter();
+      } else if (!text) { this.loadChapter(); }
+    }
+  },
+
+  deleteNote() {
+    const key = this.state.noteTarget; if (!key) return;
+    const map = this._hlLoad();
+    if (map[key]) { delete map[key].note; if (!map[key].color) delete map[key]; }
+    this._hlSave(map);
+    this.closeNoteModal();
+    this.loadChapter();
+  },
+
+  // ── BOOKMARKS ──────────────────────────────────────────────────────────────
+  _bkLoad() { try { return JSON.parse(localStorage.getItem('logos_bookmarks') || '[]'); } catch(e) { return []; } },
+  _bkSave(arr) { try { localStorage.setItem('logos_bookmarks', JSON.stringify(arr)); } catch(e) {} },
+  isBookmarked(key) { return this._bkLoad().includes(key); },
+
+  bookmark(key) {
+    let arr = this._bkLoad();
+    const idx = arr.indexOf(key);
+    if (idx >= 0) { arr.splice(idx, 1); } else { arr.unshift(key); }
+    this._bkSave(arr);
+    this.renderBookmarks();
+    this.loadChapter();
+  },
+
+  toggleBookmarkPanel() {
+    const list = document.getElementById('bk-list');
+    const arrow = document.getElementById('bk-arrow');
+    const open = list.style.display !== 'none';
+    list.style.display = open ? 'none' : 'block';
+    if (arrow) arrow.textContent = open ? '▸' : '▾';
+    if (!open) this.renderBookmarks();
+  },
+
+  renderBookmarks() {
+    const arr = this._bkLoad();
+    const el = document.getElementById('bk-list');
+    if (!el) return;
+    if (!arr.length) { el.innerHTML = '<div style="padding:8px 0;font-size:12px;color:var(--text-3)">No bookmarks yet.</div>'; return; }
+    el.innerHTML = arr.map(key => {
+      const parts = key.split('-');
+      const verse = parts.pop();
+      const ch = parts.pop();
+      const bookId = parts.join('-');
+      const book = BOOKS.find(b => b.id === bookId);
+      const label = book ? `${book.name} ${ch}:${verse}` : key;
+      return `<div class="bk-item"><span onclick="App.goToPassage('${label}')" style="cursor:pointer;flex:1">${label}</span><button onclick="App.bookmark('${key}')" style="background:none;border:none;cursor:pointer;color:var(--text-3);font-size:13px;padding:0 4px" title="Remove">✕</button></div>`;
+    }).join('');
+  },
+
+  // ── INTERLINEAR ────────────────────────────────────────────────────────────
+  toggleInterlinear() {
+    this.state.interlinear = !this.state.interlinear;
+    const btn = document.getElementById('interlinear-toggle');
+    if (btn) btn.classList.toggle('active', this.state.interlinear);
+    if (this.state.book) this.loadChapter();
+  },
+
+  // ── COMMENTARY ─────────────────────────────────────────────────────────────
+  toggleCommentary() {
+    this.state.commentary = !this.state.commentary;
+    const btn = document.getElementById('commentary-toggle');
+    if (btn) btn.classList.toggle('active', this.state.commentary);
+    if (this.state.book) this.loadChapter();
+  },
+
+  // ── TRANSLATION COMPARE ────────────────────────────────────────────────────
+  toggleCompare() {
+    this.state.compare = !this.state.compare;
+    const btn = document.getElementById('compare-toggle');
+    if (btn) btn.classList.toggle('active', this.state.compare);
+    const bar = document.getElementById('compare-bar');
+    if (bar) bar.classList.toggle('visible', this.state.compare);
+    const cc = document.getElementById('compare-content');
+    if (cc) cc.style.display = this.state.compare ? 'flex' : 'none';
+    if (this.state.compare && this.state.book) this.updateCompare(['kjv','web','ylt','asv']);
+  },
+
+  async updateCompare(translations) {
+    const { book, chapter } = this.state;
+    if (!book) return;
+    const panels = document.getElementById('compare-panels');
+    if (!panels) return;
+    panels.style.gridTemplateColumns = `repeat(${translations.length}, 1fr)`;
+    panels.innerHTML = translations.map(t => `<div style="border-right:1px solid var(--border-light);padding:18px 16px;overflow-y:auto;height:100%"><div style="font-size:10px;text-transform:uppercase;font-weight:700;color:var(--text-3);letter-spacing:0.8px;margin-bottom:12px">${{web:'World English',kjv:'King James',ylt:"Young's Literal",asv:'American Std.'}[t]||t}</div><div id="compare-${t}" style="font-family:'EB Garamond',serif;font-size:16px;line-height:1.9;color:var(--text)"><div class="loading-state" style="padding:20px 0"><div class="spinner"></div></div></div></div>`).join('');
+    await Promise.all(translations.map(async t => {
+      try {
+        const url = `https://bible-api.com/${book.id}+${chapter}?translation=${t}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const el = document.getElementById(`compare-${t}`);
+        if (!el) return;
+        let h = '';
+        if (data.verses && data.verses.length) {
+          data.verses.forEach(v => { h += `<span style="font-size:11px;font-weight:700;color:var(--gold-dark);margin-right:4px;vertical-align:super">${v.verse}</span>${this.escapeHtml(v.text).trim()} `; });
+        } else { h = this.escapeHtml(data.text || ''); }
+        el.innerHTML = h;
+      } catch(e) { const el = document.getElementById(`compare-${t}`); if (el) el.innerHTML = `<span style="color:var(--error);font-size:13px">Failed to load</span>`; }
+    }));
+  },
+
+  // ── SEARCH ─────────────────────────────────────────────────────────────────
+  openSearch() {
+    document.getElementById('search-overlay').classList.add('open');
+    setTimeout(() => document.getElementById('search-input').focus(), 80);
+  },
+  closeSearch() {
+    document.getElementById('search-overlay').classList.remove('open');
+    document.getElementById('search-results').innerHTML = '';
+    document.getElementById('search-input').value = '';
+  },
+
+  doSearch(q) {
+    q = (q || '').trim();
+    const el = document.getElementById('search-results');
+    if (!el) return;
+    if (q.length < 2) { el.innerHTML = '<div style="padding:20px 16px;color:var(--text-3);font-size:13px;text-align:center">Type at least 2 characters…</div>'; return; }
+    const ql = q.toLowerCase();
+    let results = [];
+    // Search word studies
+    [...WORD_STUDIES.hebrew, ...WORD_STUDIES.greek].forEach(w => {
+      if (w.word.includes(q) || w.translit.toLowerCase().includes(ql) || w.gloss.toLowerCase().includes(ql) || w.strongs.toLowerCase().includes(ql) || w.meaning.toLowerCase().includes(ql)) {
+        results.push({type:'word', label:`${w.word} — ${w.gloss}`, sub:`${w.strongs} · ${w.translit}`, action:`App.closeSearch();App.showWordModal('${w.id}','${w.lang}')`});
+      }
+    });
+    // Search notes
+    try {
+      const hlMap = JSON.parse(localStorage.getItem('logos_highlights') || '{}');
+      Object.entries(hlMap).forEach(([key, val]) => {
+        if (val.note && val.note.toLowerCase().includes(ql)) {
+          results.push({type:'note', label:`Note: ${val.note.slice(0,60)}${val.note.length>60?'…':''}`, sub:key.replace(/-/g,' '), action:`App.closeSearch();App.goToPassage('${key.replace(/-/g,' ').replace(/(\d+) (\d+)$/,'$1:$2')}')`});
+        }
+      });
+    } catch(e) {}
+    // Search passage references (book names)
+    BOOKS.forEach(b => {
+      if (b.name.toLowerCase().includes(ql)) {
+        results.push({type:'book', label:b.name, sub:`${b.t} · ${b.sec} · ${b.ch} chapters`, action:`App.closeSearch();App.selectBook('${b.id}')`});
+      }
+    });
+    if (!results.length) { el.innerHTML = `<div style="padding:20px 16px;color:var(--text-3);font-size:13px;text-align:center">No results for "<strong>${this.escapeHtml(q)}</strong>"</div>`; return; }
+    el.innerHTML = results.slice(0,24).map(r => {
+      const icons = {word:'🔤',note:'📝',book:'📖'};
+      return `<div class="search-result-item" onclick="${r.action}" style="display:flex;align-items:flex-start;gap:10px;padding:10px 16px;cursor:pointer;border-bottom:1px solid var(--border-light);transition:background 0.1s" onmouseenter="this.style.background='var(--gold-bg)'" onmouseleave="this.style.background=''">
+        <span style="font-size:16px;margin-top:1px">${icons[r.type]||'•'}</span>
+        <div><div style="font-size:13.5px;color:var(--text);font-weight:500">${this.escapeHtml(r.label)}</div><div style="font-size:11.5px;color:var(--text-3);margin-top:1px">${this.escapeHtml(r.sub)}</div></div>
+      </div>`;
+    }).join('');
+  },
+
+  // ── MY NOTES VIEW ──────────────────────────────────────────────────────────
+  renderNotesView() {
+    const el = document.getElementById('view-notes');
+    if (!el) return;
+    let hlMap = {};
+    try { hlMap = JSON.parse(localStorage.getItem('logos_highlights') || '{}'); } catch(e) {}
+    const notes = Object.entries(hlMap).filter(([k, v]) => v.note);
+    const bookmarks = this._bkLoad();
+    if (!notes.length && !bookmarks.length) {
+      el.innerHTML = `<div id="notes-header" style="padding:20px 24px 12px;border-bottom:1px solid var(--border-light);font-size:13px;font-weight:600;color:var(--text)">My Notes & Bookmarks</div><div style="display:flex;align-items:center;justify-content:center;flex:1;flex-direction:column;gap:8px;color:var(--text-3)"><span style="font-size:32px">📝</span><span style="font-size:14px">No notes or bookmarks yet.</span><span style="font-size:12px">Highlight verses and tap 📝 to add notes.</span></div>`;
+      return;
+    }
+    let html = `<div id="notes-header" style="padding:20px 24px 12px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:12px;flex-shrink:0"><span style="font-size:13px;font-weight:600;color:var(--text);flex:1">My Notes & Bookmarks</span>`;
+    if (notes.length) html += `<button onclick="App.clearAllNotes()" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:none;cursor:pointer;color:var(--text-3)">Clear all notes</button>`;
+    html += `</div><div id="notes-grid" style="overflow-y:auto;flex:1;padding:16px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;align-content:start">`;
+    notes.forEach(([key, val]) => {
+      const parts = key.split('-');
+      const verse = parts.pop(); const ch = parts.pop(); const bookId = parts.join('-');
+      const book = BOOKS.find(b => b.id === bookId);
+      const ref = book ? `${book.name} ${ch}:${verse}` : key;
+      const hl = val.color ? `nc-${val.color}` : '';
+      html += `<div class="note-card ${hl}" onclick="App.goToPassage('${ref}')" style="cursor:pointer">
+        <div style="font-size:11px;font-weight:700;color:var(--gold-dark);margin-bottom:6px;letter-spacing:0.3px">${ref}</div>
+        <div style="font-size:13.5px;line-height:1.6;color:var(--text)">${this.escapeHtml(val.note)}</div>
+        <div style="margin-top:8px;display:flex;gap:6px"><button onclick="event.stopPropagation();App.openNoteModal('${key}','')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:none;cursor:pointer;color:var(--text-3)">Edit</button></div>
+      </div>`;
+    });
+    if (bookmarks.length) {
+      html += `<div style="grid-column:1/-1;font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.6px;margin:8px 0 4px">Bookmarks</div>`;
+      bookmarks.forEach(key => {
+        const parts = key.split('-');
+        const verse = parts.pop(); const ch = parts.pop(); const bookId = parts.join('-');
+        const book = BOOKS.find(b => b.id === bookId);
+        const ref = book ? `${book.name} ${ch}:${verse}` : key;
+        html += `<div class="note-card" onclick="App.goToPassage('${ref}')" style="cursor:pointer;display:flex;align-items:center;gap:8px"><span style="font-size:16px">⭐</span><span style="font-size:13px;font-weight:500;color:var(--text)">${ref}</span><button onclick="event.stopPropagation();App.bookmark('${key}')" style="margin-left:auto;font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:none;cursor:pointer;color:var(--text-3)">Remove</button></div>`;
+      });
+    }
+    html += '</div>';
+    el.innerHTML = html;
+  },
+
+  clearAllNotes() {
+    if (!confirm('Delete all notes? This cannot be undone.')) return;
+    try {
+      const hlMap = this._hlLoad();
+      Object.keys(hlMap).forEach(k => { delete hlMap[k].note; if (!hlMap[k].color) delete hlMap[k]; });
+      this._hlSave(hlMap);
+    } catch(e) {}
+    this.renderNotesView();
+  },
+};
+
+document.getElementById('api-modal').addEventListener('click',e=>{ if(e.target===e.currentTarget) App.closeApiModal(); });
+document.getElementById('word-modal').addEventListener('click',e=>{ if(e.target===e.currentTarget) App.closeWordModal(); });
+document.getElementById('note-modal').addEventListener('click',e=>{ if(e.target===e.currentTarget) App.closeNoteModal(); });
+document.getElementById('search-overlay').addEventListener('click',e=>{ if(e.target===e.currentTarget) App.closeSearch(); });
+document.addEventListener('keydown',e=>{
+  if (e.key==='Escape') { App.closeWordModal(); App.closeApiModal(); App.closeNoteModal(); App.closeSearch(); }
+  if ((e.ctrlKey||e.metaKey) && e.key==='k') { e.preventDefault(); App.openSearch(); }
+  if (e.key==='ArrowLeft' && App.state.view==='read') App.prevChapter();
+  if (e.key==='ArrowRight' && App.state.view==='read') App.nextChapter();
+});
+document.getElementById('chat-input').addEventListener('input',function(){ this.style.height=''; this.style.height=Math.min(this.scrollHeight,120)+'px'; });
+// Search input live handler
+document.getElementById('search-input').addEventListener('input', e => App.doSearch(e.target.value));
+
+App.init();
+</script>
+</body>
+</html>
