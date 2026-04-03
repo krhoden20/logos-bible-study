@@ -911,6 +911,45 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
 }
 .guide-ref-btn:hover { background: var(--gold-bg); border-color: var(--gold-dark); }
 
+/* ─── DASHBOARD ────────────────────────────────────────── */
+#view-home { padding: 0; background: var(--bg); }
+.dash-wrap { max-width: 640px; margin: 0 auto; padding: 24px 20px 100px; display: flex; flex-direction: column; gap: 18px; }
+.dash-greeting { font-family: 'EB Garamond', serif; font-size: 28px; color: var(--text-1); font-weight: 400; }
+.dash-datetime { font-size: 13px; color: var(--text-3); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.dash-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+}
+.dash-card-header {
+  padding: 10px 16px 0; font-size: 10px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; color: var(--text-3);
+}
+.dash-verse-text {
+  font-family: 'Crimson Text', serif; font-size: 19px; line-height: 1.55;
+  color: var(--text-1); font-style: italic; padding: 8px 16px 2px;
+}
+.dash-verse-ref {
+  font-size: 12.5px; font-weight: 600; color: var(--gold-dark);
+  padding: 0 16px 2px; cursor: pointer; display: inline-block;
+}
+.dash-verse-ref:hover { text-decoration: underline; }
+.dash-reflection {
+  font-size: 13.5px; color: var(--text-2); line-height: 1.65;
+  padding: 8px 16px 14px; border-top: 1px solid var(--border); margin-top: 6px;
+  background: var(--gold-bg);
+}
+.dash-reflection-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--gold-dark); margin-bottom: 4px;
+}
+.dash-guide-header { padding: 12px 16px 8px; border-bottom: 1px solid var(--border); }
+.dash-guide-title { font-size: 13px; font-weight: 700; color: var(--text-1); margin-bottom: 1px; }
+.dash-guide-sub { font-size: 11.5px; color: var(--text-3); font-style: italic; }
+/* guide-topics / guide-topic / guide-refs reused from existing CSS */
+#dash-guide-topics { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
+#dash-guide-refs-panel { display: none; padding: 10px 14px; background: var(--sidebar-bg); border-top: 1px solid var(--border); }
+#dash-guide-refs-panel.open { display: block; }
+
 /* ─── FEATURE: COMMENTARY ────────────────────────────── */
 .commentary-section {
   margin: 0 0 20px; border: 1px solid var(--border);
@@ -1089,8 +1128,8 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
   transition: color 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
-.bnav-btn .bnav-icon { font-size: 18px; line-height: 1; }
-.bnav-btn .bnav-label { font-size: 9.5px; font-weight: 500; letter-spacing: 0.2px; }
+.bnav-btn .bnav-icon { font-size: 17px; line-height: 1; }
+.bnav-btn .bnav-label { font-size: 8.5px; font-weight: 500; letter-spacing: 0.1px; }
 .bnav-btn.active { color: var(--gold-dark); }
 
 /* ─── MOBILE / IPHONE ─────────────────────────────────── */
@@ -1182,6 +1221,7 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
 
   /* Guide: single column on mobile */
   .guide-topics { grid-template-columns: 1fr; }
+  #dash-guide-topics { grid-template-columns: 1fr; }
   #guide-panel { max-height: 55vh; }
   .daily-verse-text { font-size: 15px; }
 
@@ -1310,6 +1350,7 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
   <div id="main">
     <div id="header">
       <button id="mobile-menu-btn" onclick="App.toggleSidebar()" aria-label="Open books menu">☰</button>
+      <button class="tab-btn" onclick="App.switchView('home')">🏠 Home</button>
       <button class="tab-btn active" onclick="App.switchView('read')">📖 Read</button>
       <button class="tab-btn" onclick="App.switchView('lexicon')">🔤 Lexicon</button>
       <button class="tab-btn" onclick="App.switchView('timeline')">📅 Timeline</button>
@@ -1340,7 +1381,7 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
     </div>
 
     <!-- Read View -->
-    <div class="view active" id="view-read">
+    <div class="view" id="view-read">
       <div id="reader-panel">
         <div id="reader-toolbar">
           <button class="nav-btn" id="prev-ch" onclick="App.prevChapter()" title="Previous chapter">‹</button>
@@ -1354,27 +1395,12 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
             <button class="toggle-btn" id="commentary-toggle" onclick="App.toggleCommentary()" title="Show scholarly commentary">
               <span class="toggle-dot"></span> Commentary
             </button>
-            <button class="toggle-btn" id="guide-toggle" onclick="App.toggleGuide()" title="Scripture needs guide">
-              <span class="toggle-dot"></span> Guide
-            </button>
-          </div>
-        </div>
-        <div id="guide-panel">
-          <div class="guide-header">
-            <div class="guide-title">Searching the Scriptures</div>
-            <div class="guide-subtitle">Find verses for whatever you're facing</div>
-          </div>
-          <div class="guide-topics" id="guide-topics"></div>
-          <div class="guide-refs-panel" id="guide-refs-panel">
-            <div class="guide-topic-label" id="guide-topic-label"></div>
-            <div id="guide-ref-buttons"></div>
           </div>
         </div>
         <div id="compare-content" style="display:none;flex:1;overflow:hidden">
           <div id="compare-panels" style="display:grid;height:100%;overflow-y:auto"></div>
         </div>
         <div id="reader-content">
-          <div id="daily-verse-home"></div>
           <div class="welcome-msg" id="welcome-msg">
             <div class="icon">📜</div>
             <h3>Choose a book to begin</h3>
@@ -1389,6 +1415,9 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
         </div>
       </div>
     </div>
+
+    <!-- Home / Dashboard View -->
+    <div class="view" id="view-home" style="overflow-y:auto;flex-direction:column"></div>
 
     <!-- Lexicon View -->
     <div class="view" id="view-lexicon">
@@ -2030,38 +2059,38 @@ const COMMENTARY = {
   'revelation-1':`The book's opening word <em>apokalypsis</em> (uncovering/revelation) names the genre: apocalyptic literature uses symbolic imagery to reveal the spiritual reality beneath visible events, not to predict a timeline. Written to seven real churches facing real Roman persecution (~95 AD), Revelation's primary function was pastoral: "the Lamb who was slain" reigns over Caesar. Its violent imagery draws almost entirely from OT allusions (nearly 70% of verses echo OT texts). The "last things" depicted are not novelties but the completion and vindication of everything Israel's story promised.`,
 };
 
-// ─── DAILY VERSES (day-of-year cycles through these) ──────────────────────────
+// ─── DAILY VERSES [ref, text, modern-reflection] ──────────────────────────────
 const DAILY_VERSES = [
-  ['John 3:16','For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.'],
-  ['Phil 4:13','I can do all things through Christ who strengthens me.'],
-  ['Jer 29:11','For I know the plans I have for you, declares the LORD, plans for welfare and not for evil, to give you a future and a hope.'],
-  ['Prov 3:5','Trust in the LORD with all your heart, and do not lean on your own understanding.'],
-  ['Isa 40:31','But those who wait for the LORD shall renew their strength; they shall mount up with wings like eagles; they shall run and not be weary; they shall walk and not faint.'],
-  ['Ps 23:1','The LORD is my shepherd; I shall not want.'],
-  ['Rom 8:28','We know that for those who love God all things work together for good, for those who are called according to his purpose.'],
-  ['Matt 11:28','Come to me, all who labor and are heavy laden, and I will give you rest.'],
-  ['Josh 1:9','Be strong and courageous. Do not be frightened, and do not be dismayed, for the LORD your God is with you wherever you go.'],
-  ['Ps 46:1','God is our refuge and strength, a very present help in trouble.'],
-  ['Phil 4:6','Do not be anxious about anything, but in everything by prayer and supplication with thanksgiving let your requests be made known to God.'],
-  ['Rom 8:38','For I am sure that neither death nor life, nor angels nor rulers, nor things present nor things to come, nor powers, nor height nor depth, nor anything else in all creation, will be able to separate us from the love of God in Christ Jesus our Lord.'],
-  ['Gal 5:22','But the fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control; against such things there is no law.'],
-  ['Isa 41:10','Fear not, for I am with you; be not dismayed, for I am your God; I will strengthen you, I will help you, I will uphold you with my righteous right hand.'],
-  ['Ps 119:105','Your word is a lamp to my feet and a light to my path.'],
-  ['1 John 1:9','If we confess our sins, he is faithful and just to forgive us our sins and to cleanse us from all unrighteousness.'],
-  ['Heb 11:1','Now faith is the assurance of things hoped for, the conviction of things not seen.'],
-  ['James 1:2','Count it all joy, my brothers, when you meet trials of various kinds, for you know that the testing of your faith produces steadfastness.'],
-  ['Matt 5:4','Blessed are those who mourn, for they shall be comforted.'],
-  ['Prov 16:3','Commit your work to the LORD, and your plans will be established.'],
-  ['John 14:27','Peace I leave with you; my peace I give to you. Not as the world gives do I give to you. Let not your hearts be troubled, neither let them be afraid.'],
-  ['2 Tim 1:7','For God gave us a spirit not of fear but of power and love and self-control.'],
-  ['Lam 3:22','The steadfast love of the LORD never ceases; his mercies never come to an end; they are new every morning; great is your faithfulness.'],
-  ['1 Pet 5:7','Cast all your anxieties on him, because he cares for you.'],
-  ['Neh 8:10','The joy of the LORD is your strength.'],
-  ['Deut 31:6','Be strong and courageous. Do not fear or be in dread of them, for it is the LORD your God who goes with you. He will not leave you or forsake you.'],
-  ['Rom 15:13','May the God of hope fill you with all joy and peace in believing, so that by the power of the Holy Spirit you may abound in hope.'],
-  ['Ps 34:18','The LORD is near to the brokenhearted and saves the crushed in spirit.'],
-  ['Col 3:15','And let the peace of Christ rule in your hearts, to which indeed you were called in one body. And be thankful.'],
-  ['Eph 2:8','For by grace you have been saved through faith. And this is not your own doing; it is the gift of God, not a result of works, so that no one may boast.'],
+  ['John 3:16','For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.','No performance review, no relationship failure, no past version of yourself can change this — you were worth everything to God before you did a single thing to earn it.'],
+  ['Phil 4:13','I can do all things through Christ who strengthens me.','That project deadline, that difficult conversation, that goal that feels out of reach — you are not drawing on your own reserves alone.'],
+  ['Jer 29:11','For I know the plans I have for you, declares the LORD, plans for welfare and not for evil, to give you a future and a hope.','The layoff, the diagnosis, the plan that collapsed — none of it cancelled the plan that was written before you were born.'],
+  ['Prov 3:5','Trust in the LORD with all your heart, and do not lean on your own understanding.','Before you make that decision you\'ve been agonizing over, try loosening your grip on needing to control how it all works out.'],
+  ['Isa 40:31','But those who wait for the LORD shall renew their strength; they shall mount up with wings like eagles; they shall run and not be weary; they shall walk and not faint.','Burnout is real and it is not weakness — but so is this promise that strength can be renewed for those willing to wait on God.'],
+  ['Ps 23:1','The LORD is my shepherd; I shall not want.','Financial pressure, job uncertainty, the gap between what you have and what you need — the one who provides hasn\'t left the role.'],
+  ['Rom 8:28','We know that for those who love God all things work together for good, for those who are called according to his purpose.','The missed opportunity, the broken relationship, the plan that went sideways — it is still being woven into something good, even when you can\'t see the pattern.'],
+  ['Matt 11:28','Come to me, all who labor and are heavy laden, and I will give you rest.','Exhausted from keeping up appearances, carrying other people\'s expectations, or just the sheer weight of daily life — this invitation is still open.'],
+  ['Josh 1:9','Be strong and courageous. Do not be frightened, and do not be dismayed, for the LORD your God is with you wherever you go.','The new role, the hard conversation you\'ve been avoiding, the unfamiliar season ahead — you are not walking into any of it alone.'],
+  ['Ps 46:1','God is our refuge and strength, a very present help in trouble.','When the news, the diagnosis, or the relationship crisis feels like too much to hold — here is the anchor that does not move.'],
+  ['Phil 4:6','Do not be anxious about anything, but in everything by prayer and supplication with thanksgiving let your requests be made known to God.','Instead of replaying the same worry at 2am, try turning it into a specific, honest prayer — and notice what the "with thanksgiving" part does to your posture.'],
+  ['Rom 8:38','For I am sure that neither death nor life, nor angels nor rulers, nor things present nor things to come, nor powers, nor height nor depth, nor anything else in all creation, will be able to separate us from the love of God in Christ Jesus our Lord.','Distance, failure, mental health struggles, seasons of silence from God — none of them actually sever the thing you\'re afraid of losing.'],
+  ['Gal 5:22','But the fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control; against such things there is no law.','The qualities that make you genuinely good to be around at home and at work — they\'re grown in you, not performed by you.'],
+  ['Isa 41:10','Fear not, for I am with you; be not dismayed, for I am your God; I will strengthen you, I will help you, I will uphold you with my righteous right hand.','When anxiety about the future or dread about tomorrow has its grip on you, stand on the specificity of this promise — strengthened, helped, upheld.'],
+  ['Ps 119:105','Your word is a lamp to my feet and a light to my path.','When you genuinely don\'t know what to do next in life, start with what you already know — clarity usually comes one step at a time, not all at once.'],
+  ['1 John 1:9','If we confess our sins, he is faithful and just to forgive us our sins and to cleanse us from all unrighteousness.','The thing you keep carrying guilt about, the mistake you can\'t stop replaying — it can be set down today, not because it wasn\'t real, but because this is.'],
+  ['Heb 11:1','Now faith is the assurance of things hoped for, the conviction of things not seen.','Faith isn\'t wishful thinking bravely maintained — it\'s conviction resting on actual evidence of things you cannot yet see with your eyes.'],
+  ['James 1:2','Count it all joy, my brothers, when you meet trials of various kinds, for you know that the testing of your faith produces steadfastness.','The difficult coworker, the unexpected setback, the season you didn\'t ask for — something is being built in you through it that couldn\'t be built any other way.'],
+  ['Matt 5:4','Blessed are those who mourn, for they shall be comforted.','Grief doesn\'t have to be performed, rushed, or explained away — comfort is specifically promised to those who actually let themselves feel the loss.'],
+  ['Prov 16:3','Commit your work to the LORD, and your plans will be established.','Before sending that proposal, starting that project, or making that move — try actually committing it, not just praying over it.'],
+  ['John 14:27','Peace I leave with you; my peace I give to you. Not as the world gives do I give to you. Let not your hearts be troubled, neither let them be afraid.','The kind of peace this offers doesn\'t require circumstances to settle down first — it is available right now, in the middle of the uncertainty.'],
+  ['2 Tim 1:7','For God gave us a spirit not of fear but of power and love and self-control.','The anxiety, the self-doubt, the hesitation to speak up or step forward — that is not what God put in you. Something stronger is available.'],
+  ['Lam 3:22','The steadfast love of the LORD never ceases; his mercies never come to an end; they are new every morning; great is your faithfulness.','Yesterday\'s regrets, last month\'s failures, last year\'s worst moments — every morning the mercies actually reset. Start today from there.'],
+  ['1 Pet 5:7','Cast all your anxieties on him, because he cares for you.','The worry you\'ve been holding tightly because it feels irresponsible to let go — you are specifically invited to release it to someone who can actually hold it.'],
+  ['Neh 8:10','The joy of the LORD is your strength.','On the days when your motivation is gone and you\'re running on empty, strength is available from a source that isn\'t depleted by circumstances.'],
+  ['Deut 31:6','Be strong and courageous. Do not fear or be in dread of them, for it is the LORD your God who goes with you. He will not leave you or forsake you.','The intimidating meeting, the relationship you\'re afraid to fix, the next step that terrifies you — you\'re not going in alone.'],
+  ['Rom 15:13','May the God of hope fill you with all joy and peace in believing, so that by the power of the Holy Spirit you may abound in hope.','Hope isn\'t naive optimism that ignores reality — it\'s something actively given by the God of hope to those who believe.'],
+  ['Ps 34:18','The LORD is near to the brokenhearted and saves the crushed in spirit.','The loss, the disappointment, the grief that broke something in you — God is specifically close to that exact place, not distant from it.'],
+  ['Col 3:15','And let the peace of Christ rule in your hearts, to which indeed you were called in one body. And be thankful.','Let peace be the deciding vote in your decisions today — not anxiety, not fear, not pressure from others.'],
+  ['Eph 2:8','For by grace you have been saved through faith. And this is not your own doing; it is the gift of God, not a result of works, so that no one may boast.','The performance treadmill of trying to earn approval — at work, at home, before God — you are invited to step off. This was given, not earned.'],
 ];
 
 // ─── SCRIPTURE INDEX (topical needs guide) ────────────────────────────────────
@@ -2119,8 +2148,9 @@ const App = {
     this.renderMap('ane');
     this.updateApiStatus();
     this.updateNoBanner();
-    this.renderDailyVerse();
-    // Restore last reading position
+    // Always open on Home/Dashboard
+    this.switchView('home');
+    // Restore last reading position (keep in background)
     try {
       const prog = JSON.parse(localStorage.getItem('logos_progress') || 'null');
       if (prog && prog.bookId) {
@@ -2129,11 +2159,6 @@ const App = {
           this.state.book = book;
           this.state.chapter = prog.chapter || 1;
           this.renderSidebar();
-          this.loadChapter();
-          this.updateWordPanel();
-          // Hide welcome msg when a chapter loads
-          const wm = document.getElementById('welcome-msg');
-          if (wm) wm.style.display = 'none';
         }
       }
     } catch(e) {}
@@ -2314,11 +2339,13 @@ const App = {
     });
     // Mobile bottom nav
     document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
-    const icons = {read:'📖',lexicon:'🔤',timeline:'📅',maps:'🗺',notes:'📌',ask:'💬'};
+    const icons = {home:'🏠',read:'📖',lexicon:'🔤',timeline:'📅',maps:'🗺',notes:'📌',ask:'💬'};
     document.querySelectorAll('.bnav-btn').forEach(b => {
       if (b.querySelector('.bnav-icon')?.textContent === icons[view]) b.classList.add('active');
     });
     if (view === 'notes') this.renderNotesView();
+    if (view === 'home') { this.renderDashboard(); }
+    else { this._stopClock(); }
   },
 
   toggleSidebar() {
@@ -2778,17 +2805,83 @@ const App = {
     document.getElementById('guide-toggle')?.classList.remove('active');
   },
 
-  renderDailyVerse() {
-    const el = document.getElementById('daily-verse-home');
+  renderDailyVerse() {}, // kept for compat — dashboard handles this now
+
+  renderDashboard() {
+    const el = document.getElementById('view-home');
     if (!el) return;
     const day = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
-    const [ref, text] = DAILY_VERSES[day % DAILY_VERSES.length];
-    el.innerHTML = `<div class="daily-verse-card">
-      <div class="daily-verse-label">✦ Verse of the Day</div>
-      <div class="daily-verse-text">"${text}"</div>
-      <div class="daily-verse-ref" onclick="App.goToRef('${ref}')">${ref} →</div>
+    const [ref, text, reflection] = DAILY_VERSES[day % DAILY_VERSES.length];
+    el.innerHTML = `<div class="dash-wrap">
+      <div>
+        <div class="dash-greeting" id="dash-greeting"></div>
+        <div class="dash-datetime" id="dash-datetime"></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-header">✦ Verse of the Day</div>
+        <div class="dash-verse-text">"${text}"</div>
+        <div class="dash-verse-ref" onclick="App.goToRef('${ref}');App.switchView('read')">${ref} →</div>
+        <div class="dash-reflection">
+          <div class="dash-reflection-label">💡 In today's world</div>
+          ${reflection}
+        </div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-guide-header">
+          <div class="dash-guide-title">Searching the Scriptures</div>
+          <div class="dash-guide-sub">Find verses for whatever you're facing right now</div>
+        </div>
+        <div id="dash-guide-topics"></div>
+        <div id="dash-guide-refs-panel">
+          <div class="guide-topic-label" id="dash-topic-label"></div>
+          <div id="dash-ref-buttons"></div>
+        </div>
+      </div>
     </div>`;
+    // Build topic grid
+    const tg = document.getElementById('dash-guide-topics');
+    if (tg) tg.innerHTML = SCRIPTURE_INDEX.map((t,i) =>
+      `<button class="guide-topic" style="border:none" onclick="App.selectDashTopic(${i})">${t.l}</button>`
+    ).join('');
+    this._startClock();
   },
+
+  selectDashTopic(i) {
+    const t = SCRIPTURE_INDEX[i];
+    document.querySelectorAll('#dash-guide-topics .guide-topic').forEach((b,j) => b.classList.toggle('active', j===i));
+    const label = document.getElementById('dash-topic-label');
+    const refs = document.getElementById('dash-ref-buttons');
+    const panel = document.getElementById('dash-guide-refs-panel');
+    if (!label || !refs || !panel) return;
+    label.textContent = t.l;
+    refs.innerHTML = t.r.map(r => `<button class="guide-ref-btn" onclick="App.goToRef('${r}');App.switchView('read')">${r}</button>`).join('');
+    panel.classList.add('open');
+    panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+  },
+
+  _startClock() {
+    this._stopClock();
+    const tick = () => {
+      const now = new Date();
+      const h = now.getHours();
+      const greeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : h < 21 ? 'Good evening' : 'Good night';
+      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const gEl = document.getElementById('dash-greeting');
+      const dEl = document.getElementById('dash-datetime');
+      if (gEl) gEl.textContent = greeting;
+      if (dEl) {
+        const mins = String(now.getMinutes()).padStart(2,'0');
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const hr = h % 12 || 12;
+        dEl.textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()} · ${hr}:${mins} ${ampm}`;
+      }
+    };
+    tick();
+    this._clockId = setInterval(tick, 10000);
+  },
+
+  _stopClock() { if (this._clockId) { clearInterval(this._clockId); this._clockId = null; } },
 
   // ── TRANSLATION COMPARE ────────────────────────────────────────────────────
   toggleCompare() {
@@ -2945,9 +3038,9 @@ App.init();
 
 <!-- Mobile bottom navigation -->
 <nav id="bottom-nav">
+  <button class="bnav-btn" onclick="App.switchView('home')"><span class="bnav-icon">🏠</span><span class="bnav-label">Home</span></button>
   <button class="bnav-btn active" onclick="App.switchView('read')"><span class="bnav-icon">📖</span><span class="bnav-label">Read</span></button>
   <button class="bnav-btn" onclick="App.switchView('lexicon')"><span class="bnav-icon">🔤</span><span class="bnav-label">Words</span></button>
-  <button class="bnav-btn" onclick="App.switchView('timeline')"><span class="bnav-icon">📅</span><span class="bnav-label">Timeline</span></button>
   <button class="bnav-btn" onclick="App.switchView('maps')"><span class="bnav-icon">🗺</span><span class="bnav-label">Maps</span></button>
   <button class="bnav-btn" onclick="App.switchView('notes')"><span class="bnav-icon">📌</span><span class="bnav-label">Notes</span></button>
   <button class="bnav-btn" onclick="App.switchView('ask')"><span class="bnav-icon">💬</span><span class="bnav-label">Ask</span></button>
