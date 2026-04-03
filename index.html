@@ -7,34 +7,39 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+Hebrew:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #F2EDE4;
-  --surface: #FAF7F2;
+  --bg: #F7F3EE;
+  --surface: #FDFAF6;
   --card: #FFFFFF;
-  --sidebar-bg: #18130E;
-  --sidebar-hover: #261C14;
-  --sidebar-active: #33241A;
+  --parchment: #F5F0E8;
+  --sidebar-bg: #1A1410;
+  --sidebar-hover: #2A1E16;
+  --sidebar-active: #362618;
   --sidebar-section: #8B7560;
   --gold: #B8916A;
   --gold-light: #D4AE8C;
-  --gold-dark: #8B6642;
-  --gold-bg: #FBF4EC;
-  --text: #18130E;
+  --gold-dark: #8B6035;
+  --gold-bg: #FBF5EC;
+  --gold-muted: #E8D5B8;
+  --text: #1C150E;
+  --text-1: #1C150E;
   --text-2: #4A3C2C;
-  --text-3: #8B7A65;
-  --text-inv: #F2EDE4;
-  --border: #DDD3C4;
-  --border-light: #EDE6DA;
+  --text-3: #9C8A74;
+  --text-inv: #F7F3EE;
+  --border: #E2D8CC;
+  --border-light: #EDE8DF;
   --hebrew: #6B4FA8;
   --hebrew-bg: #F5F0FF;
   --greek: #2A6B8B;
   --greek-bg: #EFF7FC;
-  --note-bg: #F5F0E4;
+  --note-bg: #F8F3E8;
   --note-border: #C4A870;
   --error: #B85555;
-  --radius: 8px;
-  --radius-lg: 14px;
-  --shadow: 0 1px 3px rgba(24,19,14,0.08), 0 4px 12px rgba(24,19,14,0.05);
-  --shadow-lg: 0 4px 16px rgba(24,19,14,0.12), 0 8px 32px rgba(24,19,14,0.08);
+  --radius: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --shadow-sm: 0 1px 4px rgba(28,21,14,0.06);
+  --shadow: 0 2px 8px rgba(28,21,14,0.08), 0 1px 3px rgba(28,21,14,0.05);
+  --shadow-lg: 0 8px 24px rgba(28,21,14,0.10), 0 2px 8px rgba(28,21,14,0.06);
   --transition: 0.18s ease;
 }
 
@@ -912,43 +917,130 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
 .guide-ref-btn:hover { background: var(--gold-bg); border-color: var(--gold-dark); }
 
 /* ─── DASHBOARD ────────────────────────────────────────── */
-#view-home { padding: 0; background: var(--bg); }
-.dash-wrap { max-width: 640px; margin: 0 auto; padding: 24px 20px 100px; display: flex; flex-direction: column; gap: 18px; }
-.dash-greeting { font-family: 'EB Garamond', serif; font-size: 28px; color: var(--text-1); font-weight: 400; }
-.dash-datetime { font-size: 13px; color: var(--text-3); margin-top: 2px; font-variant-numeric: tabular-nums; }
-.dash-card {
+#view-home { padding: 0; background: var(--bg); overflow-y: auto; }
+.dash-wrap { max-width: 760px; margin: 0 auto; padding: 28px 24px 120px; display: flex; flex-direction: column; gap: 28px; }
+
+/* Hero */
+.dash-hero { text-align: center; padding: 8px 0 4px; }
+.dash-rule { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+.dash-rule::before, .dash-rule::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--gold-muted), transparent); }
+.dash-rule span { font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold-dark); white-space: nowrap; font-weight: 600; }
+.dash-greeting { font-family: 'EB Garamond', serif; font-size: 34px; color: var(--text-1); font-weight: 400; line-height: 1.2; margin-bottom: 4px; }
+.dash-datetime { font-size: 12.5px; color: var(--text-3); font-variant-numeric: tabular-nums; letter-spacing: 0.3px; }
+.dash-admin-btn { float: right; background: none; border: none; cursor: pointer; color: var(--text-3); font-size: 15px; opacity: 0.4; padding: 2px 4px; transition: var(--transition); }
+.dash-admin-btn:hover { opacity: 1; color: var(--gold-dark); }
+
+/* Verse card */
+.verse-hero-card {
   background: var(--card); border: 1px solid var(--border);
-  border-radius: var(--radius); overflow: hidden;
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow); position: relative;
 }
-.dash-card-header {
-  padding: 10px 16px 0; font-size: 10px; font-weight: 700;
-  letter-spacing: 1px; text-transform: uppercase; color: var(--text-3);
+.verse-hero-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--gold-muted), var(--gold), var(--gold-muted));
 }
-.dash-verse-text {
-  font-family: 'Crimson Text', serif; font-size: 19px; line-height: 1.55;
-  color: var(--text-1); font-style: italic; padding: 8px 16px 2px;
+.verse-hero-inner { padding: 20px 24px; }
+.verse-hero-label { font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-dark); font-weight: 700; margin-bottom: 10px; }
+.verse-hero-text { font-family: 'EB Garamond', serif; font-size: 22px; line-height: 1.55; color: var(--text-1); font-style: italic; margin-bottom: 8px; }
+.verse-hero-ref { font-size: 12.5px; font-weight: 600; color: var(--gold-dark); cursor: pointer; display: inline-block; }
+.verse-hero-ref:hover { text-decoration: underline; }
+.verse-hero-reflection { padding: 14px 24px; background: var(--parchment); border-top: 1px solid var(--border-light); }
+.verse-hero-reflection-label { font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold-dark); font-weight: 700; margin-bottom: 5px; }
+.verse-hero-reflection p { font-size: 13.5px; color: var(--text-2); line-height: 1.7; }
+
+/* Section header */
+.dash-section-label { font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-3); font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+.dash-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* Feature card grid */
+.feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.feat-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px 14px 14px;
+  cursor: pointer; text-align: center; transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm); display: flex; flex-direction: column; align-items: center; gap: 8px;
 }
-.dash-verse-ref {
-  font-size: 12.5px; font-weight: 600; color: var(--gold-dark);
-  padding: 0 16px 2px; cursor: pointer; display: inline-block;
+.feat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--gold-muted); background: var(--surface); }
+.feat-card:active { transform: translateY(0); }
+.feat-icon { font-size: 24px; line-height: 1; }
+.feat-title { font-size: 12.5px; font-weight: 600; color: var(--text-2); letter-spacing: 0.2px; }
+.feat-sub { font-size: 10.5px; color: var(--text-3); line-height: 1.3; }
+
+/* Widgets */
+.widget-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.widget-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 16px;
+  box-shadow: var(--shadow-sm); cursor: pointer; transition: all 0.2s ease;
+  display: flex; flex-direction: column; gap: 4px;
 }
-.dash-verse-ref:hover { text-decoration: underline; }
-.dash-reflection {
-  font-size: 13.5px; color: var(--text-2); line-height: 1.65;
-  padding: 8px 16px 14px; border-top: 1px solid var(--border); margin-top: 6px;
-  background: var(--gold-bg);
+.widget-card:hover { box-shadow: var(--shadow); border-color: var(--gold-muted); }
+.widget-label { font-size: 9px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--text-3); font-weight: 700; }
+.widget-value { font-family: 'EB Garamond', serif; font-size: 18px; color: var(--text-1); line-height: 1.3; }
+.widget-meta { font-size: 11px; color: var(--text-3); }
+
+/* Resource spotlight */
+.resource-grid { display: flex; flex-direction: column; gap: 8px; }
+.res-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 16px;
+  display: flex; gap: 14px; align-items: flex-start;
+  cursor: pointer; transition: all 0.18s ease; box-shadow: var(--shadow-sm);
+  text-decoration: none;
 }
-.dash-reflection-label {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
-  text-transform: uppercase; color: var(--gold-dark); margin-bottom: 4px;
+.res-card:hover { box-shadow: var(--shadow); border-color: var(--gold-muted); background: var(--surface); }
+.res-thumb {
+  width: 52px; height: 52px; border-radius: 8px; flex-shrink: 0;
+  background: var(--parchment); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; border: 1px solid var(--border-light);
 }
-.dash-guide-header { padding: 12px 16px 8px; border-bottom: 1px solid var(--border); }
-.dash-guide-title { font-size: 13px; font-weight: 700; color: var(--text-1); margin-bottom: 1px; }
-.dash-guide-sub { font-size: 11.5px; color: var(--text-3); font-style: italic; }
-/* guide-topics / guide-topic / guide-refs reused from existing CSS */
+.res-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.res-body { flex: 1; min-width: 0; }
+.res-title { font-size: 13.5px; font-weight: 600; color: var(--text-1); margin-bottom: 3px; line-height: 1.3; }
+.res-desc { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+.res-tag { display: inline-block; margin-top: 5px; font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--gold-dark); background: var(--gold-bg); border-radius: 10px; padding: 2px 8px; }
+.res-featured { border-left: 3px solid var(--gold); }
+.res-add-btn { width: 100%; padding: 12px; background: none; border: 1px dashed var(--border); border-radius: var(--radius); cursor: pointer; font-size: 12.5px; color: var(--text-3); transition: var(--transition); font-family: 'Inter', sans-serif; }
+.res-add-btn:hover { border-color: var(--gold-muted); color: var(--gold-dark); background: var(--gold-bg); }
+
+/* Scripture Guide embedded in dash */
+.dash-guide-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+.dash-guide-head { padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.dash-guide-head h3 { font-family: 'EB Garamond', serif; font-size: 19px; color: var(--text-1); font-weight: 400; }
+.dash-guide-head p { font-size: 12px; color: var(--text-3); margin-top: 1px; }
 #dash-guide-topics { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
-#dash-guide-refs-panel { display: none; padding: 10px 14px; background: var(--sidebar-bg); border-top: 1px solid var(--border); }
+#dash-guide-refs-panel { display: none; padding: 12px 16px; background: var(--parchment); border-top: 1px solid var(--border); }
 #dash-guide-refs-panel.open { display: block; }
+
+/* Admin modal */
+#admin-modal { display:none; position:fixed; inset:0; z-index:1000; background:rgba(28,21,14,0.5); align-items:center; justify-content:center; }
+#admin-modal.open { display:flex; }
+#admin-inner { background:var(--card); border-radius:var(--radius-lg); width:min(680px,95vw); max-height:85vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:var(--shadow-lg); }
+#admin-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+#admin-header h3 { font-family:'EB Garamond',serif; font-size:20px; color:var(--text-1); }
+#admin-body { flex:1; overflow-y:auto; padding:16px 20px; }
+#admin-footer { padding:12px 20px; border-top:1px solid var(--border); display:flex; gap:8px; flex-wrap:wrap; }
+.admin-list-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius); margin-bottom:8px; background:var(--surface); }
+.admin-item-title { flex:1; font-size:13px; font-weight:600; color:var(--text-1); }
+.admin-item-tag { font-size:10px; color:var(--text-3); }
+.admin-item-feat { font-size:13px; cursor:pointer; opacity:0.4; transition:var(--transition); }
+.admin-item-feat.on { opacity:1; color:var(--gold-dark); }
+.admin-item-btn { background:none; border:1px solid var(--border); border-radius:6px; padding:3px 8px; font-size:11px; cursor:pointer; font-family:'Inter',sans-serif; color:var(--text-3); transition:var(--transition); }
+.admin-item-btn:hover { border-color:var(--gold); color:var(--gold-dark); }
+.admin-form { background:var(--parchment); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin-top:12px; display:none; }
+.admin-form.open { display:block; }
+.admin-form label { display:block; font-size:11px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; color:var(--text-3); margin:10px 0 4px; }
+.admin-form label:first-child { margin-top:0; }
+.admin-form input, .admin-form textarea, .admin-form select { width:100%; padding:7px 10px; border:1px solid var(--border); border-radius:6px; font-size:13px; font-family:'Inter',sans-serif; background:var(--card); color:var(--text-1); outline:none; }
+.admin-form input:focus, .admin-form textarea:focus, .admin-form select:focus { border-color:var(--gold); }
+.admin-form textarea { resize:vertical; min-height:60px; }
+.admin-form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.admin-btn { padding:7px 14px; border-radius:7px; border:1px solid var(--border); background:var(--surface); font-size:12px; font-weight:500; cursor:pointer; font-family:'Inter',sans-serif; color:var(--text-2); transition:var(--transition); }
+.admin-btn:hover { border-color:var(--gold-muted); color:var(--gold-dark); background:var(--gold-bg); }
+.admin-btn.primary { background:var(--gold-dark); color:#fff; border-color:var(--gold-dark); }
+.admin-btn.primary:hover { background:var(--gold); border-color:var(--gold); }
 
 /* ─── FEATURE: COMMENTARY ────────────────────────────── */
 .commentary-section {
@@ -1219,6 +1311,18 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
   #note-modal-inner { width: 92vw; max-width: 92vw; }
   #word-modal-content { width: 95vw; max-width: 95vw; border-radius: 16px 16px 0 0; position: fixed; bottom: 0; top: auto; max-height: 80vh; }
 
+  /* Dashboard mobile */
+  .feat-grid { grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  .feat-card { padding: 14px 8px 10px; gap: 5px; }
+  .feat-icon { font-size: 20px; }
+  .feat-title { font-size: 10.5px; }
+  .feat-sub { display: none; }
+  .widget-row { grid-template-columns: 1fr; gap: 7px; }
+  .dash-wrap { padding: 16px 14px 110px; gap: 20px; }
+  .verse-hero-text { font-size: 18px; }
+  .dash-greeting { font-size: 26px; }
+  #admin-inner { max-height: 95vh; }
+  .admin-form-row { grid-template-columns: 1fr; }
   /* Guide: single column on mobile */
   .guide-topics { grid-template-columns: 1fr; }
   #dash-guide-topics { grid-template-columns: 1fr; }
@@ -2124,6 +2228,21 @@ const SCRIPTURE_INDEX = [
   {l:'When you need courage',r:['Josh 1:9','Deut 31:6','Ps 27:1','1 Cor 16:13']},
 ];
 
+// ─── RESOURCE SPOTLIGHT (editable via admin panel) ───────────────────────────
+const DEFAULT_RESOURCES = [
+  {id:1,title:'The Case for Christ',desc:'Lee Strobel investigates the historical evidence for Jesus with journalistic rigor.',type:'book',url:'https://www.amazon.com/Case-Christ-Journalists-Personal-Investigation/dp/0310345863',thumb:'📖',tag:'Apologetics',featured:true,order:0},
+  {id:2,title:'Does God Exist? — William Lane Craig',desc:'One of the clearest philosophical defenses of theism from a leading scholar.',type:'video',url:'https://www.youtube.com/watch?v=HkXr8oBNjaE',thumb:'🎬',tag:'Philosophy',featured:false,order:1},
+  {id:3,title:'The Dead Sea Scrolls and Biblical Reliability',desc:'How the discovery at Qumran confirmed the textual integrity of the Hebrew Bible.',type:'article',url:'https://www.biblearcaeology.org',thumb:'📜',tag:'Archaeology',featured:false,order:2},
+  {id:4,title:'Miracles — C.S. Lewis',desc:'A rigorous philosophical argument for the possibility and reality of miracles.',type:'book',url:'https://www.amazon.com/Miracles-C-S-Lewis/dp/0060653019',thumb:'✨',tag:'Theology',featured:false,order:3},
+  {id:5,title:'The Resurrection: Fact or Fiction?',desc:'Gary Habermas examines the historical evidence for the resurrection of Jesus.',type:'video',url:'https://www.youtube.com/watch?v=ay_Db4RwZ_M',thumb:'🎬',tag:'Evidence',featured:false,order:4},
+  {id:6,title:'Biblical Archaeology Review',desc:'Ongoing discoveries that illuminate the world of the Bible.',type:'article',url:'https://www.biblicalarchaeology.org',thumb:'🏺',tag:'Archaeology',featured:false,order:5},
+];
+
+function getResources() {
+  try { return JSON.parse(localStorage.getItem('logos_resources_draft') || 'null') || DEFAULT_RESOURCES; } catch(e) { return DEFAULT_RESOURCES; }
+}
+function saveResources(arr) { try { localStorage.setItem('logos_resources_draft', JSON.stringify(arr)); } catch(e) {} }
+
 const App = {
   state: {
     book: null,
@@ -2148,6 +2267,16 @@ const App = {
     this.renderMap('ane');
     this.updateApiStatus();
     this.updateNoBanner();
+    // Streak tracking
+    try {
+      const today = new Date().toDateString();
+      const lastDay = localStorage.getItem('logos_streak_day');
+      if (lastDay !== today) {
+        const streak = lastDay ? (parseInt(localStorage.getItem('logos_streak')||'0') + 1) : 1;
+        localStorage.setItem('logos_streak', streak);
+        localStorage.setItem('logos_streak_day', today);
+      }
+    } catch(e) {}
     // Always open on Home/Dashboard
     this.switchView('home');
     // Restore last reading position (keep in background)
@@ -2805,31 +2934,96 @@ const App = {
     document.getElementById('guide-toggle')?.classList.remove('active');
   },
 
-  renderDailyVerse() {}, // kept for compat — dashboard handles this now
+  renderDailyVerse() {},
 
   renderDashboard() {
     const el = document.getElementById('view-home');
     if (!el) return;
     const day = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
     const [ref, text, reflection] = DAILY_VERSES[day % DAILY_VERSES.length];
+    // Widgets data
+    const prog = (() => { try { return JSON.parse(localStorage.getItem('logos_progress')); } catch(e) { return null; } })();
+    const streak = (() => { try { return parseInt(localStorage.getItem('logos_streak') || '1'); } catch(e) { return 1; } })();
+    const memVerse = (() => { try { return localStorage.getItem('logos_memory') || 'Phil 4:13'; } catch(e) { return 'Phil 4:13'; } })();
+    const hlCount = (() => { try { return Object.keys(JSON.parse(localStorage.getItem('logos_highlights') || '{}')).length; } catch(e) { return 0; } })();
+    const contRead = prog ? `${BOOKS.find(b=>b.id===prog.bookId)?.name||''} ${prog.chapter}` : 'Choose a book';
+    // Resources
+    const resources = getResources().sort((a,b)=>(b.featured?1:0)-(a.featured?1:0)||a.order-b.order);
+    const feats = [
+      {icon:'📖',title:'Read',sub:'Open Scripture',view:'read'},
+      {icon:'🔤',title:'Word Study',sub:'Original languages',view:'lexicon'},
+      {icon:'⚖️',title:'Compare',sub:'Side-by-side translations',view:'read',cb:'App.switchView("read");App.toggleCompare()'},
+      {icon:'📅',title:'Timeline',sub:'Biblical history',view:'timeline'},
+      {icon:'🗺',title:'Maps',sub:'Biblical geography',view:'maps'},
+      {icon:'📌',title:'Notes',sub:'Highlights & notes',view:'notes'},
+      {icon:'💬',title:'Ask AI',sub:'Study assistant',view:'ask'},
+      {icon:'🔍',title:'Scripture Guide',sub:'Find verses by need',view:'home',cb:'document.getElementById("dash-guide-card").scrollIntoView({behavior:"smooth"})'},
+      {icon:'🔖',title:'Bookmarks',sub:'Saved passages',view:'notes',cb:'App.switchView("notes");document.getElementById("tab-bookmarks")?.click()'},
+    ];
     el.innerHTML = `<div class="dash-wrap">
-      <div>
-        <div class="dash-greeting" id="dash-greeting"></div>
+
+      <!-- Hero -->
+      <div class="dash-hero">
+        <div class="dash-rule"><span>✦ &nbsp; LOGOS &nbsp; · &nbsp; BIBLICAL WORD STUDY &nbsp; ✦</span></div>
+        <div style="display:flex;align-items:baseline;justify-content:center;gap:12px">
+          <div class="dash-greeting" id="dash-greeting"></div>
+          <button class="dash-admin-btn" onclick="App.openAdmin()" title="Resource Admin">⚙</button>
+        </div>
         <div class="dash-datetime" id="dash-datetime"></div>
       </div>
-      <div class="dash-card">
-        <div class="dash-card-header">✦ Verse of the Day</div>
-        <div class="dash-verse-text">"${text}"</div>
-        <div class="dash-verse-ref" onclick="App.goToRef('${ref}');App.switchView('read')">${ref} →</div>
-        <div class="dash-reflection">
-          <div class="dash-reflection-label">💡 In today's world</div>
-          ${reflection}
+
+      <!-- Verse of the Day -->
+      <div class="verse-hero-card">
+        <div class="verse-hero-inner">
+          <div class="verse-hero-label">✦ &nbsp; Verse of the Day</div>
+          <div class="verse-hero-text">"${text}"</div>
+          <div class="verse-hero-ref" onclick="App.goToRef('${ref}');App.switchView('read')">${ref} &nbsp;→</div>
+        </div>
+        <div class="verse-hero-reflection">
+          <div class="verse-hero-reflection-label">💡 &nbsp; In Today's World</div>
+          <p>${reflection}</p>
         </div>
       </div>
-      <div class="dash-card">
-        <div class="dash-guide-header">
-          <div class="dash-guide-title">Searching the Scriptures</div>
-          <div class="dash-guide-sub">Find verses for whatever you're facing right now</div>
+
+      <!-- Feature Grid -->
+      <div>
+        <div class="dash-section-label">Quick Access</div>
+        <div class="feat-grid">
+          ${feats.map(f=>`<div class="feat-card" onclick="${f.cb||`App.switchView('${f.view}')`}">
+            <div class="feat-icon">${f.icon}</div>
+            <div class="feat-title">${f.title}</div>
+            <div class="feat-sub">${f.sub}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- Widgets -->
+      <div>
+        <div class="dash-section-label">Your Study</div>
+        <div class="widget-row">
+          <div class="widget-card" onclick="App.switchView('read')">
+            <div class="widget-label">Continue Reading</div>
+            <div class="widget-value">${contRead}</div>
+            <div class="widget-meta">${prog ? 'Resume where you left off' : 'Tap to begin'}</div>
+          </div>
+          <div class="widget-card">
+            <div class="widget-label">Study Streak</div>
+            <div class="widget-value">🔥 Day ${streak}</div>
+            <div class="widget-meta">${hlCount} verse${hlCount!==1?'s':''} highlighted</div>
+          </div>
+          <div class="widget-card" onclick="App._editMemoryVerse()">
+            <div class="widget-label">Memory Verse</div>
+            <div class="widget-value" id="mem-verse-display">${memVerse}</div>
+            <div class="widget-meta">Tap to change</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scripture Guide -->
+      <div id="dash-guide-card" class="dash-guide-card">
+        <div class="dash-guide-head">
+          <h3>Searching the Scriptures</h3>
+          <p>Find verses for whatever you're facing right now</p>
         </div>
         <div id="dash-guide-topics"></div>
         <div id="dash-guide-refs-panel">
@@ -2837,10 +3031,27 @@ const App = {
           <div id="dash-ref-buttons"></div>
         </div>
       </div>
+
+      <!-- Resource Spotlight -->
+      <div>
+        <div class="dash-section-label">Resource Spotlight</div>
+        <div class="resource-grid" id="resource-grid">
+          ${resources.map(r=>`<a class="res-card${r.featured?' res-featured':''}" href="${r.url}" target="_blank" rel="noopener">
+            <div class="res-thumb">${r.thumb && r.thumb.startsWith('http') ? `<img src="${r.thumb}" alt="">` : r.thumb||'📄'}</div>
+            <div class="res-body">
+              <div class="res-title">${r.title}</div>
+              <div class="res-desc">${r.desc}</div>
+              <span class="res-tag">${r.type}${r.tag ? ' · '+r.tag : ''}</span>
+            </div>
+          </a>`).join('')}
+          <button class="res-add-btn" onclick="App.openAdmin()">+ Add resource</button>
+        </div>
+      </div>
+
     </div>`;
-    // Build topic grid
+    // Topic grid
     const tg = document.getElementById('dash-guide-topics');
-    if (tg) tg.innerHTML = SCRIPTURE_INDEX.map((t,i) =>
+    if (tg) tg.innerHTML = SCRIPTURE_INDEX.map((t,i)=>
       `<button class="guide-topic" style="border:none" onclick="App.selectDashTopic(${i})">${t.l}</button>`
     ).join('');
     this._startClock();
@@ -2848,15 +3059,123 @@ const App = {
 
   selectDashTopic(i) {
     const t = SCRIPTURE_INDEX[i];
-    document.querySelectorAll('#dash-guide-topics .guide-topic').forEach((b,j) => b.classList.toggle('active', j===i));
+    document.querySelectorAll('#dash-guide-topics .guide-topic').forEach((b,j)=>b.classList.toggle('active',j===i));
     const label = document.getElementById('dash-topic-label');
     const refs = document.getElementById('dash-ref-buttons');
     const panel = document.getElementById('dash-guide-refs-panel');
-    if (!label || !refs || !panel) return;
+    if (!panel) return;
     label.textContent = t.l;
-    refs.innerHTML = t.r.map(r => `<button class="guide-ref-btn" onclick="App.goToRef('${r}');App.switchView('read')">${r}</button>`).join('');
+    refs.innerHTML = t.r.map(r=>`<button class="guide-ref-btn" onclick="App.goToRef('${r}');App.switchView('read')">${r}</button>`).join('');
     panel.classList.add('open');
-    panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+    panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },
+
+  _editMemoryVerse() {
+    const cur = localStorage.getItem('logos_memory') || 'Phil 4:13';
+    const v = prompt('Memory verse reference (e.g. Phil 4:13):', cur);
+    if (v && v.trim()) {
+      localStorage.setItem('logos_memory', v.trim());
+      const el = document.getElementById('mem-verse-display');
+      if (el) el.textContent = v.trim();
+    }
+  },
+
+  // ── RESOURCE ADMIN ──────────────────────────────────────────────────────────
+  openAdmin() {
+    document.getElementById('admin-modal').classList.add('open');
+    this.renderAdminList();
+  },
+  closeAdmin() {
+    document.getElementById('admin-modal').classList.remove('open');
+    document.getElementById('admin-form').classList.remove('open');
+    // Re-render dashboard resources
+    const rg = document.getElementById('resource-grid');
+    if (rg) {
+      const resources = getResources().sort((a,b)=>(b.featured?1:0)-(a.featured?1:0)||a.order-b.order);
+      rg.innerHTML = resources.map(r=>`<a class="res-card${r.featured?' res-featured':''}" href="${r.url}" target="_blank" rel="noopener">
+        <div class="res-thumb">${r.thumb&&r.thumb.startsWith('http')?`<img src="${r.thumb}" alt="">`:r.thumb||'📄'}</div>
+        <div class="res-body"><div class="res-title">${r.title}</div><div class="res-desc">${r.desc}</div><span class="res-tag">${r.type}${r.tag?' · '+r.tag:''}</span></div>
+      </a>`).join('') + '<button class="res-add-btn" onclick="App.openAdmin()">+ Add resource</button>';
+    }
+  },
+  renderAdminList() {
+    const items = getResources();
+    const el = document.getElementById('admin-list');
+    if (!el) return;
+    el.innerHTML = items.length ? items.map((r,i)=>`
+      <div class="admin-list-item">
+        <span style="font-size:18px">${r.thumb&&!r.thumb.startsWith('http')?r.thumb:'📄'}</span>
+        <div style="flex:1;min-width:0"><div class="admin-item-title">${r.title}</div><div class="admin-item-tag">${r.type}${r.tag?' · '+r.tag:''}</div></div>
+        <span class="admin-item-feat${r.featured?' on':''}" onclick="App.toggleFeatured(${i})" title="Toggle featured">★</span>
+        <button class="admin-item-btn" onclick="App.editResourceItem(${i})">Edit</button>
+        <button class="admin-item-btn" style="color:var(--error)" onclick="App.deleteResourceItem(${i})">Delete</button>
+      </div>`).join('') : '<p style="color:var(--text-3);font-size:13px;padding:8px 0">No resources yet. Add one below.</p>';
+  },
+  addResourceItem() {
+    document.getElementById('af-id').value = '';
+    ['af-title','af-desc','af-url','af-thumb','af-tag'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('af-type').value = 'article';
+    document.getElementById('admin-form').classList.add('open');
+    document.getElementById('af-title').focus();
+  },
+  editResourceItem(i) {
+    const r = getResources()[i];
+    if (!r) return;
+    document.getElementById('af-id').value = i;
+    document.getElementById('af-title').value = r.title||'';
+    document.getElementById('af-desc').value = r.desc||'';
+    document.getElementById('af-type').value = r.type||'article';
+    document.getElementById('af-tag').value = r.tag||'';
+    document.getElementById('af-url').value = r.url||'';
+    document.getElementById('af-thumb').value = r.thumb||'';
+    document.getElementById('admin-form').classList.add('open');
+    document.getElementById('af-title').focus();
+  },
+  saveResourceItem() {
+    const title = document.getElementById('af-title').value.trim();
+    if (!title) { alert('Title is required.'); return; }
+    const items = getResources();
+    const idxStr = document.getElementById('af-id').value;
+    const item = {
+      title, desc: document.getElementById('af-desc').value.trim(),
+      type: document.getElementById('af-type').value,
+      tag: document.getElementById('af-tag').value.trim(),
+      url: document.getElementById('af-url').value.trim(),
+      thumb: document.getElementById('af-thumb').value.trim() || '📄',
+      featured: false, order: items.length,
+    };
+    if (idxStr !== '') { item.featured = items[idxStr].featured; items[parseInt(idxStr)] = {...items[parseInt(idxStr)], ...item}; }
+    else { item.id = Date.now(); items.push(item); }
+    saveResources(items);
+    document.getElementById('admin-form').classList.remove('open');
+    this.renderAdminList();
+  },
+  cancelAdminForm() { document.getElementById('admin-form').classList.remove('open'); },
+  deleteResourceItem(i) {
+    if (!confirm('Delete this resource?')) return;
+    const items = getResources(); items.splice(i,1);
+    saveResources(items); this.renderAdminList();
+  },
+  toggleFeatured(i) {
+    const items = getResources(); items[i].featured = !items[i].featured;
+    saveResources(items); this.renderAdminList();
+  },
+  exportResources() {
+    const json = JSON.stringify(getResources(), null, 2);
+    const a = document.createElement('a');
+    a.href = 'data:application/json,' + encodeURIComponent(json);
+    a.download = 'logos-resources.json'; a.click();
+  },
+  importResources(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => { try { const data = JSON.parse(ev.target.result); saveResources(data); this.renderAdminList(); alert('Imported.'); } catch(err) { alert('Invalid JSON.'); } };
+    reader.readAsText(file);
+  },
+  revertResources() {
+    if (!confirm('Reset to default resources? Your edits will be lost.')) return;
+    localStorage.removeItem('logos_resources_draft');
+    this.renderAdminList();
   },
 
   _startClock() {
@@ -3045,5 +3364,41 @@ App.init();
   <button class="bnav-btn" onclick="App.switchView('notes')"><span class="bnav-icon">📌</span><span class="bnav-label">Notes</span></button>
   <button class="bnav-btn" onclick="App.switchView('ask')"><span class="bnav-icon">💬</span><span class="bnav-label">Ask</span></button>
 </nav>
+
+<!-- Admin Modal -->
+<div id="admin-modal">
+  <div id="admin-inner">
+    <div id="admin-header">
+      <h3>⚙ Resource Spotlight — Admin</h3>
+      <button onclick="App.closeAdmin()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-3)">✕</button>
+    </div>
+    <div id="admin-body">
+      <div id="admin-list"></div>
+      <div id="admin-form" class="admin-form">
+        <input type="hidden" id="af-id">
+        <label>Title</label><input id="af-title" placeholder="Resource title">
+        <label>Description</label><textarea id="af-desc" rows="2" placeholder="Short description"></textarea>
+        <div class="admin-form-row">
+          <div><label>Type</label>
+            <select id="af-type"><option>video</option><option>article</option><option>book</option><option>testimony</option><option>research</option><option>podcast</option></select>
+          </div>
+          <div><label>Tag / Category</label><input id="af-tag" placeholder="e.g. Apologetics"></div>
+        </div>
+        <label>URL</label><input id="af-url" placeholder="https://...">
+        <label>Thumbnail emoji or image URL</label><input id="af-thumb" placeholder="🎬 or https://...">
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="admin-btn primary" onclick="App.saveResourceItem()">Save Item</button>
+          <button class="admin-btn" onclick="App.cancelAdminForm()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div id="admin-footer">
+      <button class="admin-btn" onclick="App.addResourceItem()">+ Add New</button>
+      <button class="admin-btn" onclick="App.exportResources()">Export JSON</button>
+      <label class="admin-btn" style="cursor:pointer">Import JSON<input type="file" accept=".json" style="display:none" onchange="App.importResources(event)"></label>
+      <button class="admin-btn" onclick="App.revertResources()" style="margin-left:auto;color:var(--error)">Revert to Default</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
