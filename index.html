@@ -847,6 +847,70 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
 }
 .compare-col .bible-chapter { font-size: 17px; }
 
+/* ─── DAILY VERSE ─────────────────────────────────────── */
+.daily-verse-card {
+  background: var(--gold-bg); border-left: 3px solid var(--gold-dark);
+  border-radius: var(--radius); padding: 14px 16px; margin-bottom: 18px;
+  cursor: default;
+}
+.daily-verse-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--gold-dark); margin-bottom: 6px;
+}
+.daily-verse-text {
+  font-family: 'Crimson Text', serif; font-size: 17px; line-height: 1.55;
+  color: var(--text-1); font-style: italic; margin-bottom: 6px;
+}
+.daily-verse-ref {
+  font-size: 12px; font-weight: 600; color: var(--gold-dark); cursor: pointer;
+  display: inline-block;
+}
+.daily-verse-ref:hover { text-decoration: underline; }
+
+/* ─── SCRIPTURE INDEX / GUIDE ──────────────────────────── */
+#guide-panel {
+  display: none; flex-direction: column; gap: 0;
+  background: var(--card); border-top: 1px solid var(--border);
+  max-height: 420px; overflow-y: auto;
+}
+#guide-panel.open { display: flex; }
+.guide-header {
+  padding: 12px 16px 8px; position: sticky; top: 0;
+  background: var(--card); border-bottom: 1px solid var(--border); z-index: 2;
+}
+.guide-title {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 8px;
+}
+.guide-subtitle { font-size: 11px; color: var(--text-3); font-style: italic; }
+.guide-topics {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--border);
+}
+.guide-topic {
+  background: var(--card); padding: 9px 12px; font-size: 12.5px;
+  color: var(--text-2); cursor: pointer; border: none; text-align: left;
+  font-family: 'Inter', sans-serif; line-height: 1.3; transition: var(--transition);
+}
+.guide-topic:hover, .guide-topic.active { background: var(--gold-bg); color: var(--gold-dark); }
+.guide-refs-panel {
+  display: none; padding: 10px 16px; background: var(--sidebar-bg);
+  border-top: 1px solid var(--border);
+}
+.guide-refs-panel.open { display: block; }
+.guide-topic-label {
+  font-size: 11px; font-weight: 600; color: var(--text-3); margin-bottom: 6px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.guide-ref-btn {
+  display: inline-block; margin: 3px 4px 3px 0;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 4px 10px; font-size: 12px;
+  color: var(--gold-dark); cursor: pointer; font-family: 'Inter', sans-serif;
+  font-weight: 500; transition: var(--transition);
+}
+.guide-ref-btn:hover { background: var(--gold-bg); border-color: var(--gold-dark); }
+
 /* ─── FEATURE: COMMENTARY ────────────────────────────── */
 .commentary-section {
   margin: 0 0 20px; border: 1px solid var(--border);
@@ -1116,6 +1180,11 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
   #note-modal-inner { width: 92vw; max-width: 92vw; }
   #word-modal-content { width: 95vw; max-width: 95vw; border-radius: 16px 16px 0 0; position: fixed; bottom: 0; top: auto; max-height: 80vh; }
 
+  /* Guide: single column on mobile */
+  .guide-topics { grid-template-columns: 1fr; }
+  #guide-panel { max-height: 55vh; }
+  .daily-verse-text { font-size: 15px; }
+
   /* Lexicon: 1 column */
   #lexicon-grid { grid-template-columns: 1fr; }
 
@@ -1285,13 +1354,28 @@ svg.map-svg { display: block; width: 100%; cursor: crosshair; }
             <button class="toggle-btn" id="commentary-toggle" onclick="App.toggleCommentary()" title="Show scholarly commentary">
               <span class="toggle-dot"></span> Commentary
             </button>
+            <button class="toggle-btn" id="guide-toggle" onclick="App.toggleGuide()" title="Scripture needs guide">
+              <span class="toggle-dot"></span> Guide
+            </button>
+          </div>
+        </div>
+        <div id="guide-panel">
+          <div class="guide-header">
+            <div class="guide-title">Searching the Scriptures</div>
+            <div class="guide-subtitle">Find verses for whatever you're facing</div>
+          </div>
+          <div class="guide-topics" id="guide-topics"></div>
+          <div class="guide-refs-panel" id="guide-refs-panel">
+            <div class="guide-topic-label" id="guide-topic-label"></div>
+            <div id="guide-ref-buttons"></div>
           </div>
         </div>
         <div id="compare-content" style="display:none;flex:1;overflow:hidden">
           <div id="compare-panels" style="display:grid;height:100%;overflow-y:auto"></div>
         </div>
         <div id="reader-content">
-          <div class="welcome-msg">
+          <div id="daily-verse-home"></div>
+          <div class="welcome-msg" id="welcome-msg">
             <div class="icon">📜</div>
             <h3>Choose a book to begin</h3>
             <p>Select any book from the sidebar. Switch translations using the dropdown above to compare how the text reads in different versions — especially Young's Literal Translation for maximum linguistic precision.</p>
@@ -1946,6 +2030,71 @@ const COMMENTARY = {
   'revelation-1':`The book's opening word <em>apokalypsis</em> (uncovering/revelation) names the genre: apocalyptic literature uses symbolic imagery to reveal the spiritual reality beneath visible events, not to predict a timeline. Written to seven real churches facing real Roman persecution (~95 AD), Revelation's primary function was pastoral: "the Lamb who was slain" reigns over Caesar. Its violent imagery draws almost entirely from OT allusions (nearly 70% of verses echo OT texts). The "last things" depicted are not novelties but the completion and vindication of everything Israel's story promised.`,
 };
 
+// ─── DAILY VERSES (day-of-year cycles through these) ──────────────────────────
+const DAILY_VERSES = [
+  ['John 3:16','For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.'],
+  ['Phil 4:13','I can do all things through Christ who strengthens me.'],
+  ['Jer 29:11','For I know the plans I have for you, declares the LORD, plans for welfare and not for evil, to give you a future and a hope.'],
+  ['Prov 3:5','Trust in the LORD with all your heart, and do not lean on your own understanding.'],
+  ['Isa 40:31','But those who wait for the LORD shall renew their strength; they shall mount up with wings like eagles; they shall run and not be weary; they shall walk and not faint.'],
+  ['Ps 23:1','The LORD is my shepherd; I shall not want.'],
+  ['Rom 8:28','We know that for those who love God all things work together for good, for those who are called according to his purpose.'],
+  ['Matt 11:28','Come to me, all who labor and are heavy laden, and I will give you rest.'],
+  ['Josh 1:9','Be strong and courageous. Do not be frightened, and do not be dismayed, for the LORD your God is with you wherever you go.'],
+  ['Ps 46:1','God is our refuge and strength, a very present help in trouble.'],
+  ['Phil 4:6','Do not be anxious about anything, but in everything by prayer and supplication with thanksgiving let your requests be made known to God.'],
+  ['Rom 8:38','For I am sure that neither death nor life, nor angels nor rulers, nor things present nor things to come, nor powers, nor height nor depth, nor anything else in all creation, will be able to separate us from the love of God in Christ Jesus our Lord.'],
+  ['Gal 5:22','But the fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control; against such things there is no law.'],
+  ['Isa 41:10','Fear not, for I am with you; be not dismayed, for I am your God; I will strengthen you, I will help you, I will uphold you with my righteous right hand.'],
+  ['Ps 119:105','Your word is a lamp to my feet and a light to my path.'],
+  ['1 John 1:9','If we confess our sins, he is faithful and just to forgive us our sins and to cleanse us from all unrighteousness.'],
+  ['Heb 11:1','Now faith is the assurance of things hoped for, the conviction of things not seen.'],
+  ['James 1:2','Count it all joy, my brothers, when you meet trials of various kinds, for you know that the testing of your faith produces steadfastness.'],
+  ['Matt 5:4','Blessed are those who mourn, for they shall be comforted.'],
+  ['Prov 16:3','Commit your work to the LORD, and your plans will be established.'],
+  ['John 14:27','Peace I leave with you; my peace I give to you. Not as the world gives do I give to you. Let not your hearts be troubled, neither let them be afraid.'],
+  ['2 Tim 1:7','For God gave us a spirit not of fear but of power and love and self-control.'],
+  ['Lam 3:22','The steadfast love of the LORD never ceases; his mercies never come to an end; they are new every morning; great is your faithfulness.'],
+  ['1 Pet 5:7','Cast all your anxieties on him, because he cares for you.'],
+  ['Neh 8:10','The joy of the LORD is your strength.'],
+  ['Deut 31:6','Be strong and courageous. Do not fear or be in dread of them, for it is the LORD your God who goes with you. He will not leave you or forsake you.'],
+  ['Rom 15:13','May the God of hope fill you with all joy and peace in believing, so that by the power of the Holy Spirit you may abound in hope.'],
+  ['Ps 34:18','The LORD is near to the brokenhearted and saves the crushed in spirit.'],
+  ['Col 3:15','And let the peace of Christ rule in your hearts, to which indeed you were called in one body. And be thankful.'],
+  ['Eph 2:8','For by grace you have been saved through faith. And this is not your own doing; it is the gift of God, not a result of works, so that no one may boast.'],
+];
+
+// ─── SCRIPTURE INDEX (topical needs guide) ────────────────────────────────────
+const SCRIPTURE_INDEX = [
+  {l:'When you feel alone',r:['Ps 23:4','Heb 13:5','Matt 28:20','Deut 31:6']},
+  {l:'When you are afraid',r:['Isa 41:10','Ps 46:1','2 Tim 1:7','Ps 56:3']},
+  {l:'When you need peace',r:['John 14:27','Phil 4:7','Isa 26:3','Rom 8:6']},
+  {l:'When you feel overwhelmed',r:['Matt 11:28','1 Pet 5:7','Phil 4:13','Ps 55:22']},
+  {l:'When you need wisdom',r:['James 1:5','Prov 3:5','Prov 16:3','Ps 119:105']},
+  {l:'When you need strength',r:['Isa 40:31','Phil 4:13','Ps 28:7','Neh 8:10']},
+  {l:'When you need forgiveness',r:['1 John 1:9','Ps 103:12','Rom 8:1','Mic 7:18']},
+  {l:'When you are grieving',r:['Ps 34:18','Matt 5:4','2 Cor 1:3','Rev 21:4']},
+  {l:'When you need direction',r:['Prov 3:6','Ps 32:8','Ps 119:105','James 1:5']},
+  {l:'When facing temptation',r:['1 Cor 10:13','Heb 4:15','James 4:7','Rom 8:37']},
+  {l:'When you worry',r:['Phil 4:6','Matt 6:34','1 Pet 5:7','Ps 94:19']},
+  {l:'When you struggle with doubt',r:['Mark 9:24','Heb 11:1','John 20:29','Rom 10:17']},
+  {l:'When you want to give thanks',r:['Ps 100:4','1 Thess 5:18','Col 3:15','Ps 107:1']},
+  {l:'When you need to feel loved',r:['John 3:16','Rom 8:38','1 John 4:9','Jer 31:3']},
+  {l:'When you need healing',r:['Ps 147:3','Jer 17:14','Isa 53:5','James 5:15']},
+  {l:'When you need joy',r:['Neh 8:10','Ps 16:11','John 15:11','Rom 15:13']},
+  {l:'When questioning your purpose',r:['Jer 29:11','Eph 2:10','Rom 8:28','1 Cor 10:31']},
+  {l:'When dealing with anger',r:['Eph 4:26','James 1:19','Prov 15:1','Ps 37:8']},
+  {l:'When you need patience',r:['Rom 5:3','James 5:11','Heb 12:1','Gal 6:9']},
+  {l:'When you want to pray',r:['Phil 4:6','Matt 6:9','1 Thess 5:17','James 5:16']},
+  {l:'When you struggle to trust God',r:['Prov 3:5','Ps 37:5','Isa 26:4','Jer 29:11']},
+  {l:'When you are exhausted',r:['Isa 40:31','Matt 11:28','Ps 23:2','2 Cor 12:9']},
+  {l:'When making a big decision',r:['Prov 16:3','James 1:5','Ps 25:12','Isa 30:21']},
+  {l:'When you need hope',r:['Jer 29:11','Rom 15:13','Ps 31:24','Lam 3:22']},
+  {l:'When you feel inadequate',r:['2 Cor 12:9','Phil 4:13','Eph 2:10','1 Cor 1:27']},
+  {l:'When relationships are hard',r:['1 Cor 13:4','Eph 4:32','Rom 12:18','Col 3:13']},
+  {l:'When you need courage',r:['Josh 1:9','Deut 31:6','Ps 27:1','1 Cor 16:13']},
+];
+
 const App = {
   state: {
     book: null,
@@ -1970,6 +2119,7 @@ const App = {
     this.renderMap('ane');
     this.updateApiStatus();
     this.updateNoBanner();
+    this.renderDailyVerse();
     // Restore last reading position
     try {
       const prog = JSON.parse(localStorage.getItem('logos_progress') || 'null');
@@ -1981,6 +2131,9 @@ const App = {
           this.renderSidebar();
           this.loadChapter();
           this.updateWordPanel();
+          // Hide welcome msg when a chapter loads
+          const wm = document.getElementById('welcome-msg');
+          if (wm) wm.style.display = 'none';
         }
       }
     } catch(e) {}
@@ -2039,6 +2192,9 @@ const App = {
     document.getElementById('next-ch').disabled = chapter >= book.ch;
     // Save progress
     try { localStorage.setItem('logos_progress', JSON.stringify({bookId: book.id, chapter})); } catch(e) {}
+    // Hide welcome msg, keep daily verse card
+    const wm = document.getElementById('welcome-msg');
+    if (wm) wm.style.display = 'none';
     const content = document.getElementById('reader-content');
     content.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Loading…</span></div>';
     try {
@@ -2555,6 +2711,83 @@ const App = {
     const btn = document.getElementById('commentary-toggle');
     if (btn) btn.classList.toggle('active', this.state.commentary);
     if (this.state.book) this.loadChapter();
+  },
+
+  // ── GUIDE ──────────────────────────────────────────────────────────────────
+  toggleGuide() {
+    const panel = document.getElementById('guide-panel');
+    if (!panel) return;
+    const open = panel.classList.toggle('open');
+    const btn = document.getElementById('guide-toggle');
+    if (btn) btn.classList.toggle('active', open);
+    if (open) this.renderGuide();
+  },
+
+  renderGuide() {
+    const el = document.getElementById('guide-topics');
+    if (!el || el.dataset.built) return;
+    el.dataset.built = '1';
+    el.innerHTML = SCRIPTURE_INDEX.map((t,i) =>
+      `<button class="guide-topic" onclick="App.selectGuideTopic(${i})">${t.l}</button>`
+    ).join('');
+  },
+
+  selectGuideTopic(i) {
+    const t = SCRIPTURE_INDEX[i];
+    document.querySelectorAll('.guide-topic').forEach((b,j) => b.classList.toggle('active', j===i));
+    const label = document.getElementById('guide-topic-label');
+    const refs = document.getElementById('guide-ref-buttons');
+    const panel = document.getElementById('guide-refs-panel');
+    if (!label || !refs || !panel) return;
+    label.textContent = t.l;
+    refs.innerHTML = t.r.map(r => `<button class="guide-ref-btn" onclick="App.goToRef('${r}')">${r}</button>`).join('');
+    panel.classList.add('open');
+    panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+  },
+
+  goToRef(refStr) {
+    // Parse e.g. "1 Cor 10:13", "Ps 23:4", "John 3:16"
+    const m = refStr.match(/^([\d\s]*[A-Za-z]+(?:\s[A-Za-z]+)*)\s+(\d+)/);
+    if (!m) return;
+    const nameRaw = m[1].trim().toLowerCase();
+    const ch = parseInt(m[2]) || 1;
+    const abbr = {ps:'psalms',prov:'proverbs',isa:'isaiah',jer:'jeremiah',
+      lam:'lamentations',mic:'micah',mal:'malachi',gen:'genesis',
+      exod:'exodus',deut:'deuteronomy','1 cor':'1 corinthians','2 cor':'2 corinthians',
+      '1 thess':'1 thessalonians','2 thess':'2 thessalonians','1 pet':'1 peter',
+      '2 pet':'2 peter','1 john':'1 john','2 john':'2 john','3 john':'3 john',
+      '1 tim':'1 timothy','2 tim':'2 timothy','1 sam':'1 samuel','2 sam':'2 samuel',
+      '1 kgs':'1 kings','2 kgs':'2 kings','1 chr':'1 chronicles','2 chr':'2 chronicles',
+      neh:'nehemiah',eph:'ephesians',phil:'philippians',col:'colossians',
+      gal:'galatians',rom:'romans',heb:'hebrews',rev:'revelation',
+      matt:'matthew',mk:'mark',lk:'luke',jn:'john',jas:'james'};
+    const lookup = abbr[nameRaw] || nameRaw;
+    const book = BOOKS.find(b => {
+      const bn = b.name.toLowerCase();
+      return bn === lookup || bn.startsWith(lookup) || lookup.startsWith(bn.slice(0,4));
+    });
+    if (!book) return;
+    this.state.book = book;
+    this.state.chapter = Math.min(ch, book.ch);
+    this.renderSidebar();
+    this.loadChapter();
+    this.switchView('read');
+    this.closeSidebarMobile();
+    // close guide
+    document.getElementById('guide-panel')?.classList.remove('open');
+    document.getElementById('guide-toggle')?.classList.remove('active');
+  },
+
+  renderDailyVerse() {
+    const el = document.getElementById('daily-verse-home');
+    if (!el) return;
+    const day = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+    const [ref, text] = DAILY_VERSES[day % DAILY_VERSES.length];
+    el.innerHTML = `<div class="daily-verse-card">
+      <div class="daily-verse-label">✦ Verse of the Day</div>
+      <div class="daily-verse-text">"${text}"</div>
+      <div class="daily-verse-ref" onclick="App.goToRef('${ref}')">${ref} →</div>
+    </div>`;
   },
 
   // ── TRANSLATION COMPARE ────────────────────────────────────────────────────
